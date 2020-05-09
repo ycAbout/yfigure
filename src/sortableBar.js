@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 /**
  * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of e.g., [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
@@ -36,7 +37,8 @@ export function sortableBar(data, options = {}) {
   let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
 
   let selection = d3.select(options.location)
-    .append('g')
+    .append('span')       //non-block container
+    .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
     .attr('id', graphID)
     .append('div')   // make it on top of figure
     .attr('style', `margin: ${top}px 0 0 ${left}px; width: ${width - left}px`)        //px need to be specified, otherwise not working

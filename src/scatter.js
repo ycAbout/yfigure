@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 /**
  * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of [{columnX: n1, columnY: n2},{columnX: n3, columnY: n4}].
@@ -45,7 +46,7 @@ export function scatter(data, options = {}) {
   let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
 
   d3.select(options.location)
-    .append('g')
+    .append('span')       //non-block container
     .attr('id', graphID);
 
   let svg = d3.select('#' + graphID)

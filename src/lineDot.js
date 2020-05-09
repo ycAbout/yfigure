@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 /**
  * This function draws a line with dot graph (y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2}].
@@ -46,7 +47,7 @@ export function lineDot(data, options = {}) {
   let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
 
   d3.select(options.location)
-    .append('g')
+    .append('span')       //non-block container
     .attr('id', graphID);
 
   let svg = d3.select('#' + graphID)
