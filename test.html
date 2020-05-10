@@ -1,12 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
+
 <body>
-    <script src='./dist/yd3.min.js'> </script>
-    <script> console.log(yd3)</script>
+  <div id="x"></div>
+  <script src='./dist/yd3.min.js'> </script>
+  <script> console.log(yd3)</script>
+  <script>
+
+    let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
+    //example 1
+    yd3.bar(data);
+    //example 2
+    yd3.bar(data, {
+      size: { width: 350, height: 300 },
+    });
+    //example 3
+    yd3.bar(data, {
+      size: { width: 350, height: 300 },
+      margin: { left: 40, top: 20, right: 60, bottom: 40 },
+      location: 'body',
+    });
+
+    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
+    //example 1
+    yd3.sortableBar(data);
+    //example 2
+    yd3.sortableBar(data, {
+      size: { width: 350, height: 300 },
+    });
+    //example 3
+    yd3.sortableBar(data, {
+      size: { width: 350, height: 300 },
+      margin: { left: 40, top: 20, right: 60, bottom: 40 },
+      location: 'body',
+    });
+
+
+    data = [];
+    for (i = 0; i < 300; i++) {
+      let element = {
+        "age": Math.floor(Math.random() * 100)
+      }
+      data.push(element)
+    }
+    // example 1  
+    yd3.histogram(data);
+    // example 2 
+    yd3.histogram(data, {
+      size: { width: 350, height: 300 },
+      nBins: 30
+    });
+    // example 3 
+    yd3.histogram(data, {
+      size: { width: 350, height: 300 },
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      nBins: 30
+    });
+
+    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }];
+    // example 1  
+    yd3.lineDot(data);
+    // example 2 
+    yd3.lineDot(data, {
+      size: { width: 350, height: 300 },
+    });
+    // example 3 
+    let data2 = [
+      { "group": 1, "score1": 20, "score2": 120, "score3": 220 },
+      { "group": 2, "score1": 40, "score2": 140, "score3": 240 },
+      { "group": 3, "score1": 90, "score2": 190, "score3": 290 }
+    ];
+    yd3.lineDot(data2, {
+      size: { width: 350, height: 300 },
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+
+    data = [];
+    for (i = 0; i < 50; i++) {
+      let element = {
+        "age": i,
+        "score1": Math.floor(Math.random() * 100)
+      }
+      data.push(element)
+    }
+    // example 1  
+    yd3.scatter(data);
+    // example 2 
+    yd3.scatter(data, {
+      size: { width: 350, height: 300 },
+    });
+    // example 3 
+    data2 = [];
+    for (i = 0; i < 50; i++) {
+      let element = {
+        "age": i,
+        "score1": Math.floor(Math.random() * 100),
+        "score2": Math.floor(Math.random() * 100 + 200),
+        "score3": Math.floor(Math.random() * 100 + 400),
+        "score4": Math.floor(Math.random() * 100 + 600)
+      }
+      data2.push(element)
+    }
+    yd3.scatter(data2, {
+      size: { width: 350, height: 300 },
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+
+  </script>
 </body>
+
 </html>
