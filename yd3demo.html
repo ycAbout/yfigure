@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>yd3demo</title>
+</head>
+
+<body>
+  <div id="x"></div>
+  <script src='./dist/yd3.min.js'> </script>
+  <script>
+
+    size1 = { width: 400, height: 300 };
+    size2 = { width: 600, height: 300 };
+    size3 = { width: 1080, height: 400 };
+
+    function createTitle(level, head) {
+      let h = document.createElement(level); // Create the H1 element 
+      let t = document.createTextNode(head); // Create a text element 
+      h.appendChild(t); // Append the text node to the H1 element 
+      document.body.appendChild(h); // Append the H1 element to the document
+    }
+    function br() {
+      let br = document.createElement("br");
+      document.body.appendChild(br);
+    }
+
+    createTitle("H1", "yd3 Demo");
+    createTitle("H2", "bar");
+
+    let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
+    // example 1
+    yd3.bar(data);
+    // example 2
+    let data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
+    yd3.bar(data2, {
+      size: size2,
+    });
+    br();
+    // example 3
+    data3 = [];
+    for (let i = 0; i < 80; i++) {
+      let element = {
+        "group": i + 1,
+        "score": Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)
+      }
+      data3.push(element)
+    }
+    yd3.bar(data3, {
+      size: size3,
+      margin: { left: 40, top: 20, right: 60, bottom: 40 },
+      location: 'body',
+    });
+
+    createTitle("H2", "sortableBar");
+
+    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
+    // example 1
+    yd3.sortableBar(data);
+    // example 2
+    data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
+    yd3.sortableBar(data2, {
+      size: size2,
+    });
+    br();
+    // example 3
+    data3 = [];
+    for (let i = 0; i < 80; i++) {
+      let element = {
+        "group": i + 1,
+        "score": Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)
+      }
+      data3.push(element)
+    }
+    yd3.sortableBar(data3, {
+      size: size3,
+      margin: { left: 40, top: 20, right: 60, bottom: 40 },
+      location: 'body',
+    });
+
+    createTitle("H2", "histogram");
+
+    //generate a sudo normal distributed dataset
+    data = [];
+    for (let i = 0; i < 900; i++) {
+      let element = {
+        "age": (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100
+      }
+      data.push(element)
+    }
+
+    // example 1  
+    yd3.histogram(data);
+    // example 2 
+    yd3.histogram(data, {
+      size: size2,
+      nBins: 30
+    });
+    br();
+    // example 3 
+    yd3.histogram(data, {
+      size: size3,
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      nBins: 100
+    });
+
+    createTitle("H2", "lineDot");
+
+    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 40 }, { "group": 5, "score": 20 }];
+    // example 1  
+    yd3.lineDot(data, { dotRadius: 1 });
+    // example 2
+    data2 = [
+      { "group": 1, "score1": 50, "score2": 50 - 20, "score3": 50 + 20, "score4": 50 + 40 },
+      { "group": 2, "score1": 160, "score2": 160 - 20, "score3": 160 + 20, "score4": 160 + 40 },
+      { "group": 3, "score1": 30, "score2": 30 - 20, "score3": 30 + 20, "score4": 30 + 40 },
+      { "group": 4, "score1": 80, "score2": 80 - 20, "score3": 80 + 20, "score4": 80 + 40 },
+      { "group": 5, "score1": 20, "score2": 20 - 20, "score3": 20 + 20, "score4": 20 + 40 }
+    ];
+    yd3.lineDot(data2, {
+      size: size2,
+    });
+    br();
+    // example 3 
+    data3 = [];
+    for (i = 0; i < 80; i++) {
+      let element = {
+        "age": i + 18,
+        "score1": Math.floor(Math.random() * 100 * i),
+        "score2": Math.floor(Math.random() * 100 * i),
+        "score3": Math.floor(Math.random() * 100 * i),
+        "score4": Math.floor(Math.random() * 100 * i),
+        "score5": Math.floor(Math.random() * 100 * i),
+        "score6": Math.floor(Math.random() * 100 * i),
+      }
+      data3.push(element)
+    }
+
+    yd3.lineDot(data3, {
+      size: size3,
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      dotRadius: 3,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+    createTitle("H2", "scatter");
+
+    data = [];
+    for (i = 0; i < 50; i++) {
+      let element = {
+        "age": i + 18,
+        "score1": Math.floor(Math.random() * 100)
+      }
+      data.push(element)
+    }
+    // example 1  
+    yd3.scatter(data);
+    // example 2 
+    data2 = [];
+    for (i = 0; i < 60; i++) {
+      let element = {
+        "age": i + 18,
+        "score1": Math.floor(Math.random() * 100),
+        "score2": Math.floor(Math.random() * 100 + 200),
+        "score3": Math.floor(Math.random() * 100 + 400),
+        "score4": Math.floor(Math.random() * 100 + 600)
+      }
+      data2.push(element)
+    }
+    yd3.scatter(data2, {
+      size: size2,
+    });
+    br();
+    // example 3 
+    data3 = [];
+    for (i = 0; i < 300; i++) {
+      let element = {
+        "age": i + 18,
+        "score1": Math.floor(Math.random() * 100 * (300 - i)),
+        "score2": Math.floor(Math.random() * 100 * (300 - i)),
+        "score3": Math.floor(Math.random() * 100 * (300 - i)),
+        "score4": Math.floor(Math.random() * 100 * (300 - i)),
+        "score5": Math.floor(Math.random() * 100 * (300 - i)),
+        "score6": Math.floor(Math.random() * 100 * (300 - i))
+      }
+      data3.push(element)
+    }
+    yd3.scatter(data3, {
+      size: size3,
+      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+      location: 'body',
+      dotRadius: 4,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+  </script>
+</body>
+
+</html>

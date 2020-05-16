@@ -38,25 +38,27 @@ This function draws a horizontal bar graph (y represents continuous value) using
     size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
     margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
     location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
-* @return {} append a bar graph to html.
+* @return {} append a bar graph to html.  
+* Automatcially handles negative data, plot downwards with a y = 0 grid.  
 
 #### Example
 ```
-let data = [{"group":1,"score":50},{"group":2,"score":80},{"group":3,"score":30}, {"group":4,"score":80}, {"group":5,"score":40}];
+let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
 
 //example 1
 yd3.bar(data);
 
 //example 2
-yd3.bar(data, {
-    size: { width: 350, height: 300 }, 
+let data2 =[{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
+yd3.bar(data2, {
+  size: { width: 350, height: 300 },
 });
 
 //example 3
-yd3.bar(data, {
-    size: { width: 350, height: 300 }, 
-    margin: { left: 40, top: 20, right: 60, bottom: 40 }, 
-    location: 'body',
+yd3.bar(data2, {
+  size: { width: 350, height: 300 },
+  margin: { left: 40, top: 20, right: 60, bottom: 40 },
+  location: 'body',
 });
 ```
 ![bar](readmePic/bar.png)
@@ -75,21 +77,22 @@ This function draws a horizontal sortable bar graph (y represents continuous val
 
 #### Example
 ```
-let data = [{"group":1,"score":50},{"group":2,"score":80},{"group":3,"score":30}, {"group":4,"score":80}, {"group":5,"score":40}];
+let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
 
 //example 1
 yd3.sortableBar(data);
 
 //example 2
-yd3.sortableBar(data, {
-    size: { width: 350, height: 300 }, 
+let data2 =[{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
+yd3.sortableBar(data2, {
+  size: { width: 350, height: 300 },
 });
 
 //example 3
-yd3.sortableBar(data, {
-    size: { width: 350, height: 300 }, 
-    margin: { left: 40, top: 20, right: 60, bottom: 40 }, 
-    location: 'body',
+yd3.sortableBar(data2, {
+  size: { width: 350, height: 300 },
+  margin: { left: 40, top: 20, right: 60, bottom: 40 },
+  location: 'body',
 });
 ```
 ![sortableBar](readmePic/sortableBar.png)
@@ -109,12 +112,13 @@ This function draws a histogram graph (y represents frequency) using d3 and svg.
 
 #### Example
 ```
+//generate a sudo normal distributed dataset
 let data = [];
-for (i = 0; i < 300; i++) {
-    let element = {
-        "age": Math.floor(Math.random()*100)
-        }
-    data.push(element)
+for (let i = 0; i < 900; i++) {
+  let element = {
+    "age": (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5
+  }
+  data.push(element)
 }
 
 // example 1  
@@ -137,7 +141,6 @@ yd3.histogram(data, {
 ![histogram](readmePic/histogram.png)
 
 
-
 ### lineDot(data, options = {})
 This function draws a line with dot graph (y represents continuous value) using d3 and svg.
 * @param {object} data     
@@ -147,15 +150,16 @@ This function draws a line with dot graph (y represents continuous value) using 
     size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
     margin, describing the margin inside the svg in the format of `margin: { left: 50, 80, right: 20, bottom: 50 }`.  
     location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+    dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.   
     colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
 * @return {} append a graph to html.  
 
 #### Example
 ```
-let data = [{"group":1,"score":50},{"group":2,"score":80},{"group":3,"score":30}];
+let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 },{ "group": 4, "score": 40 }, { "group": 5, "score": 20 }];
 
 // example 1  
-yd3.lineDot(data);
+yd3.lineDot(data, { dotRadius: 1 });
 
 // example 2 
 yd3.lineDot(data, {
@@ -163,33 +167,41 @@ yd3.lineDot(data, {
 });
 
 // example 3 
-let data2 = [
-    {"group":1,"score1":20,"score2":120,"score3":220},
-    {"group":2,"score1":40,"score2":140,"score3":240},
-    {"group":3,"score1":90,"score2":190,"score3":290}
-    ];
+    data2 = [];
+    for (i = 0; i < 18; i++) {
+      let element = {
+        "age": i+18,
+        "score1": Math.floor(Math.random() * 100),
+        "score2": Math.floor(Math.random() * 100 + 200),
+        "score3": Math.floor(Math.random() * 100 + 400),
+        "score4": Math.floor(Math.random() * 100 + 600),
+        "score5": Math.floor(Math.random() * 100 + 800),
+        "score6": Math.floor(Math.random() * 100 + 1000),
+      }
+      data2.push(element)
+    }
 
 yd3.lineDot(data2, {
     size: { width: 350, height: 300 }, 
     margin: { left: 40, top: 80, right: 40, bottom: 40 }, 
     location: 'body',
+    dotRadius: 4,
     colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']
 });
 ```
 ![lineDot](readmePic/lineDot.png)
-
-
  
 
 ### scatter(data, options = {}) 
 This function draws a scatter plot (x, y represents continuous value) using d3 and svg.
 * @param {object} data     
     A data object array in the format of `[{columnX: n1, columnY: n2},{columnX: n3, columnY: n4}]`.  
-* @param {object=} options 
-    An optional object contains the following objects.
+* @param {object=} options  
+    An optional object contains the following objects.  
     size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
     margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 40, right: 20, bottom: 50 }`.  
-    location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`  
+    location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+    dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.   
     colors: describing the colors used for different lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
 * @return {} appends a graph to html.
 
@@ -198,7 +210,7 @@ This function draws a scatter plot (x, y represents continuous value) using d3 a
 let data = [];
 for (i = 0; i < 50; i++) {
     let element = {
-        "age":i,
+        "age":i+18,
         "score1": Math.floor(Math.random()*100)
         }
     data.push(element)
@@ -216,7 +228,7 @@ yd3.scatter(data, {
 let data2 = [];
 for (i = 0; i < 50; i++) {
     let element = {
-        "age":i,
+        "age":i+18,
         "score1": Math.floor(Math.random()*100),
         "score2": Math.floor(Math.random()*100+200),
         "score3": Math.floor(Math.random()*100+400),
@@ -229,6 +241,7 @@ yd3.scatter(data2, {
     size: { width: 350, height: 300 }, 
     margin: { left: 40, top: 80, right: 40, bottom: 40 }, 
     location: 'body',
+    dotRadius: 3,
     colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']
 });
 ```

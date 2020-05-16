@@ -1,38 +1,29 @@
 import * as d3 from 'd3';
+import { getOption } from './helper.js';
+
 /**
  * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of [{columnX: n1, columnY: n2},{columnX: n3, columnY: n4}].
  * @param {object=} options An optional object contains the following objects.
  *                          size, describing the svg size in the format of size: { width: 400, height: 300 }.
  *                          margin, describing the margin inside the svg in the format of margin: { left: 50, top: 40, right: 20, bottom: 50 }.
- *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'
+ *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.
+ *                          dotRadius, dot radius describing the radius of the dot in the format of dotRadius: 4
  *                          colors: describing the colors used for different lines in the format of colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']
  * @return {} appends a graph to html.
  */
 export function scatter(data, options = {}) {
-
-  //set up individual optional options so no need to feed options in a way non or all
-  options.size ? true : options.size = { width: 400, height: 300 };
-  options.margin ? true : options.margin = { left: 50, top: 40, right: 20, bottom: 50 };
-  options.location ? true : options.location = 'body';
+  //set up graph specific option
   options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+  options.dotRadius ? true : options.dotRadius = 4;
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.size !== 'object'
-    || typeof options.margin !== 'object' || typeof options.location !== 'string' || typeof options.colors !== 'object') {
-    throw 'options format error!'
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.colors !== 'object' || typeof options.dotRadius !== 'number') {
+    throw 'Parameter format error!';      // throw error terminates function
   }
 
-  //parse float just in case and get parameters
-  let width = +options.size.width;
-  let height = +options.size.height;
-  let top = +options.margin.top;
-  let left = +options.margin.left;
-  let bottom = +options.margin.bottom;
-  let right = +options.margin.right;
-
-  let innerWidth = width - left - right;
-  let innerHeight = height - top - bottom;
+  // set all the common options
+  let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
 
   // take first column name as x name label, second column name as y name label, of the first object
   let xDataName = Object.keys(data[0])[0];
@@ -45,7 +36,7 @@ export function scatter(data, options = {}) {
   // generate a highly likely unique ID, can be optimized
   let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
 
-  d3.select(options.location)
+  d3.select(location)
     .append('span')       //non-block container
     .attr('id', graphID);
 
@@ -84,6 +75,21 @@ export function scatter(data, options = {}) {
     .domain(yDataNames)
     .range(options.colors);
 
+  // initialize legend position
+  let legendx = 0;
+  let legendy = 12;
+
+  // add mouse over text
+  let dataPoint = d3.select('body')
+    .append('div')
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("padding-left", "5px")  //somehow padding only cause blinking
+    .style("padding-right", "5px")
+    .style("border-radius", "6px")
+    .style("display", "none")
+    .attr('font-size', '1.5em')
+
   // draw each y
   for (let i = 0; i < yDataNames.length; i++) {
 
@@ -96,16 +102,47 @@ export function scatter(data, options = {}) {
       .append("circle")
       .attr("cx", function (element) { return xScale(element[xDataName]) })
       .attr("cy", function (element) { return yScale(element[yDataNames[i]]) })
+      .attr("r", options.dotRadius)
+      .attr("fill", colorScale(yDataNames[i]))
+      .on('mouseover', (element) => {
+        dataPoint
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+      })
+      .on('mousemove', (element) => {
+        dataPoint
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+      })
+      .on('mouseout', () => dataPoint.style('display', 'none'));
+
+    // Add legend
+    // if add current legend spill over innerWidth
+    if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
+      legendy += 16;    // start a new line
+      legendx = 0;
+    }
+
+    svg
+      .append("circle")
+      .attr("cx", legendx + 3)
+      .attr("cy", -legendy)
       .attr("r", 3)
       .attr("fill", colorScale(yDataNames[i]));
 
-    // Add legend
     svg
       .append('text')
-      .datum(data)
-      .attr("transform", "translate(" + innerWidth / yDataNames.length * i + "," + -top / 3 + ")")  // evenly across inner width, at margin top 2/3
+      .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
+      .attr("transform", "translate(" + (legendx + 10) + "," + -legendy + ")")  // evenly across inner width, at margin top 2/3
       .attr('fill', colorScale(yDataNames[i]))
       .text(yDataNames[i]);
+
+    // set up next legend x and y
+    legendx += yDataNames[i].length * 8 + 18;
   }
 
   //x axis

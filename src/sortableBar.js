@@ -1,4 +1,6 @@
 import * as d3 from 'd3';
+import { getOption } from './helper.js';
+
 /**
  * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of e.g., [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
@@ -9,34 +11,23 @@ import * as d3 from 'd3';
  * @return {} append a sortable bar graph to html.
  */
 export function sortableBar(data, options = {}) {
-  //set up individual optional options so no need to feed options in a way non or all
-  options.size ? true : options.size = { width: 400, height: 300 };
-  options.margin ? true : options.margin = { left: 50, top: 20, right: 20, bottom: 50 };
-  options.location ? true : options.location = 'body';
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.size !== 'object' || typeof options.margin !== 'object' || typeof options.location !== 'string') {
-    throw 'options format error!';
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') ) {
+    throw 'Data format error!';      // throw error terminates function
   }
 
-  //parse float just in case and get parameters
-  let width = +options.size.width;
-  let height = +options.size.height;
-  let top = +options.margin.top;
-  let left = +options.margin.left;
-  let bottom = +options.margin.bottom;
-  let right = +options.margin.right;
-
-  let innerWidth = width - left - right;
-  let innerHeight = height - top - bottom;
+  // set all the common options
+  let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
 
   // take first column as x name label, second column as y name label, of the first object
   let xDataName = Object.keys(data[0])[0];
   let yDataName = Object.keys(data[0])[1];
+
   // generate a highly likely unique ID
   let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
 
-  let selection = d3.select(options.location)
+  let selection = d3.select(location)
     .append('span')       //non-block container
     .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
     .attr('id', graphID)
@@ -75,6 +66,17 @@ export function sortableBar(data, options = {}) {
         innerData = data;
     }
 
+    // when all data are negative, choose 0 as max data
+    let yMax = Math.max(d3.max(innerData, element => element[yDataName]), 0);
+
+    // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+    let dataMin = d3.min(innerData, element => element[yDataName]);
+    let yMin = 0;
+    if (dataMin < 0) {
+      let ySetback = (yMax - dataMin) * 0.15;
+      yMin = dataMin - ySetback;
+    }
+
     //x and y scale inside function for purpose of update (general purpose)
     let xScale = d3.scaleBand()
       .domain(innerData.map((element) => element[xDataName]))
@@ -82,8 +84,19 @@ export function sortableBar(data, options = {}) {
       .padding(0.1);
 
     let yScale = d3.scaleLinear()
-      .domain([0, d3.max(innerData.map((element) => element[yDataName]))])
+      .domain([yMin, yMax])
       .range([innerHeight, 0]);
+
+  // add mouse over text
+  let dataPoint = d3.select('body')
+    .append('div')
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("padding-left", "5px")  //somehow padding only cause blinking
+    .style("padding-right", "5px")
+    .style("border-radius", "6px")
+    .style("display", "none")
+    .attr('font-size', '1.5em')
 
     //draw graph, update works with select rect
     let rect = svg
@@ -95,9 +108,24 @@ export function sortableBar(data, options = {}) {
       )
       .attr('x', element => xScale(element[xDataName]))
       .attr('width', xScale.bandwidth())
-      .attr('y', element => yScale(element[yDataName]))
-      .attr('height', element => innerHeight - yScale(element[yDataName]))
-      .attr('fill', 'steelblue');
+      .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
+      .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
+      .attr('fill', element => element[yDataName] < 0 ? '#CC2529' : 'steelblue')
+      .on('mouseover', (element) => {
+        dataPoint
+        .style('display', null)
+        .style('top', (d3.event.pageY - 20) + 'px')
+        .style('left', (d3.event.pageX + 'px'))
+        .text(element[xDataName] + ': ' + element[yDataName]);
+      })
+      .on('mousemove', (element) => {
+        dataPoint
+        .style('display', null)
+        .style('top', (d3.event.pageY - 20) + 'px')
+        .style('left', (d3.event.pageX + 'px'))
+        .text(element[xDataName] + ': ' + element[yDataName]);
+       })
+      .on('mouseout', () => dataPoint.style('display', 'none'));
 
     svg
       .append('g')
@@ -114,6 +142,13 @@ export function sortableBar(data, options = {}) {
 
     d3.select('#' + graphID + 'y')
       .call(d3.axisLeft(yScale));
+
+    // add line at y = 0 when there is negative data
+    if (dataMin < 0) {
+      svg.append("path")
+        .attr("stroke", 'black')
+        .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
+    }
   }
 
   //initialize

@@ -1,4 +1,6 @@
 import * as d3 from 'd3';
+import { getOption } from './helper.js';
+
 /**
  * This function draws a histogram graph (y represents frequency) using d3 and svg.
  * @param {object} data     A data object array in the format of [{ columnX: n1 },{columnX: n2 }].
@@ -10,35 +12,23 @@ import * as d3 from 'd3';
  * @return {} append a graph to html.
  */
 export function histogram(data, options = {}) {
-  //set up individual optional options so no need to feed options in a way non or all
-  options.size ? true : options.size = { width: 400, height: 300 };
-  options.margin ? true : options.margin = { left: 50, top: 20, right: 20, bottom: 50 };
-  options.location ? true : options.location = 'body';
+  //set up graph specific option
   options.nBins ? true : options.nBins = 50;
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.size !== 'object'
-    || typeof options.margin !== 'object' || typeof options.location !== 'string' || typeof options.nBins !== 'number') {
-    throw 'options format error!'
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.nBins !== 'number') {
+    throw 'Parameter format error!';     // throw error terminates function
   }
 
-  //parse float just in case and get parameters
-  let width = +options.size.width;
-  let height = +options.size.height;
-  let top = +options.margin.top;
-  let left = +options.margin.left;
-  let bottom = +options.margin.bottom;
-  let right = +options.margin.right;
-
-  let innerWidth = width - left - right;
-  let innerHeight = height - top - bottom;
+  // set all the common options
+  let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
 
   let xDataName = Object.keys(data[0])[0];
 
   // generate a highly likely unique ID
   let graphID = xDataName + 'Histogram' + Math.floor(Math.random() * 100000).toString();
 
-  d3.select(options.location)
+  d3.select(location)
     .append('span')       //non-block container
     .attr('id', graphID);
 
@@ -72,12 +62,20 @@ export function histogram(data, options = {}) {
   // to get the bins
   let bins = histogram(data);
 
-  //write the data to the console for the user to verify
-  console.log('bins: ', bins);
-
   let yScale = d3.scaleLinear()
     .range([innerHeight, 0])
     .domain([0, d3.max(bins, d => d.length)]);
+
+  // add mouse over text
+  let dataPoint = d3.select('body')
+    .append('div')
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("padding-left", "5px")  //somehow padding only cause blinking
+    .style("padding-right", "5px")
+    .style("border-radius", "6px")
+    .style("display", "none")
+    .attr('font-size', '1.5em')
 
   // append the bar rectangles to the svg element
   svg.selectAll("rect")
@@ -88,7 +86,22 @@ export function histogram(data, options = {}) {
     .attr("y", d => yScale(d.length))
     .attr("width", d => xScale(d.x1) - xScale(d.x0) - 1)
     .attr("height", d => innerHeight - yScale(d.length))
-    .style("fill", "steelblue");
+    .style("fill", "steelblue")
+    .on('mouseover', (d) => {
+      dataPoint
+      .style('display', null)
+      .style('top', (d3.event.pageY - 20) + 'px')
+      .style('left', (d3.event.pageX + 'px'))
+      .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
+    })
+    .on('mousemove', (d) => {
+      dataPoint
+      .style('display', null)
+      .style('top', (d3.event.pageY - 20) + 'px')
+      .style('left', (d3.event.pageX + 'px'))
+      .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
+     })
+    .on('mouseout', () => dataPoint.style('display', 'none'));
 
   svg.append("g")
     .attr("transform", "translate(0," + innerHeight + ")")
