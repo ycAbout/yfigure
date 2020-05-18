@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { getOption } from './helper.js';
+import { setDataPoint } from './helper.js';
 
 /**
  * This function draws a histogram graph (y represents frequency) using d3 and svg.
@@ -14,10 +15,12 @@ import { getOption } from './helper.js';
 export function histogram(data, options = {}) {
   //set up graph specific option
   options.nBins ? true : options.nBins = 50;
+  //validate format
+  if (typeof options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.nBins !== 'number') {
-    throw 'Parameter format error!';     // throw error terminates function
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+    throw new Error('data need to be an array of objects!')
   }
 
   // set all the common options
@@ -66,16 +69,8 @@ export function histogram(data, options = {}) {
     .range([innerHeight, 0])
     .domain([0, d3.max(bins, d => d.length)]);
 
-  // add mouse over text
-  let dataPoint = d3.select('body')
-    .append('div')
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("padding-left", "5px")  //somehow padding only cause blinking
-    .style("padding-right", "5px")
-    .style("border-radius", "6px")
-    .style("display", "none")
-    .attr('font-size', '1.5em')
+  // add dataPoint object to be shown on mouseover
+  let dataPoint = setDataPoint()
 
   // append the bar rectangles to the svg element
   svg.selectAll("rect")
@@ -89,18 +84,18 @@ export function histogram(data, options = {}) {
     .style("fill", "steelblue")
     .on('mouseover', (d) => {
       dataPoint
-      .style('display', null)
-      .style('top', (d3.event.pageY - 20) + 'px')
-      .style('left', (d3.event.pageX + 'px'))
-      .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
+        .style('display', null)
+        .style('top', (d3.event.pageY - 20) + 'px')
+        .style('left', (d3.event.pageX + 'px'))
+        .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
     })
     .on('mousemove', (d) => {
       dataPoint
-      .style('display', null)
-      .style('top', (d3.event.pageY - 20) + 'px')
-      .style('left', (d3.event.pageX + 'px'))
-      .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
-     })
+        .style('display', null)
+        .style('top', (d3.event.pageY - 20) + 'px')
+        .style('left', (d3.event.pageX + 'px'))
+        .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+    })
     .on('mouseout', () => dataPoint.style('display', 'none'));
 
   svg.append("g")

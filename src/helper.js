@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 
 /**
  * This function parses the command options for a graph.
@@ -10,10 +11,14 @@ export function getOption(options = {}) {
   options.margin ? true : options.margin = { left: 50, top: 30, right: 20, bottom: 50 };
   options.location ? true : options.location = 'body';
 
-  //validate format
-  if (typeof options.size !== 'object' || typeof options.margin !== 'object' || typeof options.location !== 'string') {
-    throw 'Graph options format error!';    // throw error terminates function
+  function makeError(msg) {
+    throw new Error(msg)
   }
+
+  //validate format
+  typeof options.size !== 'object' ? makeError('Option size need to be an object!'): true;
+  typeof options.margin !== 'object' ? makeError('Option margin need to be an object!'): true;
+  typeof options.location !== 'string' ? makeError('Option location need to be a string!'): true;
 
   //parse float just in case and get parameters
   let width = +options.size.width;
@@ -30,3 +35,21 @@ export function getOption(options = {}) {
 }
 
 
+/**
+ * This function set the data point object to be shown on mouseover for a graph.
+ * @return {} an object of the dataPoints to be shown on mouseover.
+ */
+export function setDataPoint() {
+  // add mouse over text
+  let dataPoint = d3.select('body')
+    .append('div')
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("padding-left", "5px")  //somehow padding only cause blinking
+    .style("padding-right", "5px")
+    .style("border-radius", "6px")
+    .style("display", "none")
+    .attr('font-size', '1.5em')
+
+  return dataPoint
+}

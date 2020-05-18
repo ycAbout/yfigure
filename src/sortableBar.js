@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { getOption } from './helper.js';
+import { setDataPoint } from './helper.js';
 
 /**
  * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.
@@ -7,14 +8,19 @@ import { getOption } from './helper.js';
  * @param {object=} options An optional object contains following objects. 
  *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
  *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
- *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'
+ *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
+ *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
  * @return {} append a sortable bar graph to html.
  */
 export function sortableBar(data, options = {}) {
+  //set up graph specific option
+  options.colors ? true : options.colors = ['steelblue', '#CC2529'];
+  //validate format
+  if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') ) {
-    throw 'Data format error!';      // throw error terminates function
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+    throw new Error('data need to be an array of objects!')
   }
 
   // set all the common options
@@ -87,16 +93,8 @@ export function sortableBar(data, options = {}) {
       .domain([yMin, yMax])
       .range([innerHeight, 0]);
 
-  // add mouse over text
-  let dataPoint = d3.select('body')
-    .append('div')
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("padding-left", "5px")  //somehow padding only cause blinking
-    .style("padding-right", "5px")
-    .style("border-radius", "6px")
-    .style("display", "none")
-    .attr('font-size', '1.5em')
+  // add dataPoint object to be shown on mouseover
+  let dataPoint = setDataPoint()
 
     //draw graph, update works with select rect
     let rect = svg
@@ -110,7 +108,7 @@ export function sortableBar(data, options = {}) {
       .attr('width', xScale.bandwidth())
       .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
       .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-      .attr('fill', element => element[yDataName] < 0 ? '#CC2529' : 'steelblue')
+      .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
       .on('mouseover', (element) => {
         dataPoint
         .style('display', null)

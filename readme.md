@@ -38,6 +38,7 @@ This function draws a horizontal bar graph (y represents continuous value) using
     size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
     margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
     location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+    colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
 * @return {} append a bar graph to html.  
 * Automatcially handles negative data, plot downwards with a y = 0 grid.  
 
@@ -59,6 +60,7 @@ yd3.bar(data2, {
   size: { width: 350, height: 300 },
   margin: { left: 40, top: 20, right: 60, bottom: 40 },
   location: 'body',
+  colors: ['steelblue', '#CC2529']
 });
 ```
 ![bar](readmePic/bar.png)
@@ -73,6 +75,7 @@ This function draws a horizontal sortable bar graph (y represents continuous val
     size, describing the svg size in the format of `size: { width: 400, height: 300 }. `
     margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
     location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+    colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
 * @return {} append a sortable bar graph to html.
 
 #### Example
@@ -93,6 +96,7 @@ yd3.sortableBar(data2, {
   size: { width: 350, height: 300 },
   margin: { left: 40, top: 20, right: 60, bottom: 40 },
   location: 'body',
+  colors: ['steelblue', '#CC2529']
 });
 ```
 ![sortableBar](readmePic/sortableBar.png)

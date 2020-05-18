@@ -20,10 +20,14 @@ var yd3 = (function (exports, d3) {
     options.margin ? true : options.margin = { left: 50, top: 30, right: 20, bottom: 50 };
     options.location ? true : options.location = 'body';
 
-    //validate format
-    if (typeof options.size !== 'object' || typeof options.margin !== 'object' || typeof options.location !== 'string') {
-      throw 'Graph options format error!';    // throw error terminates function
+    function makeError(msg) {
+      throw new Error(msg)
     }
+
+    //validate format
+    typeof options.size !== 'object' ? makeError('Option size need to be an object!'): true;
+    typeof options.margin !== 'object' ? makeError('Option margin need to be an object!'): true;
+    typeof options.location !== 'string' ? makeError('Option location need to be a string!'): true;
 
     //parse float just in case and get parameters
     let width = +options.size.width;
@@ -39,41 +43,56 @@ var yd3 = (function (exports, d3) {
     return [width, height, top, left, bottom, right, innerWidth, innerHeight, location]
   }
 
+
+  /**
+   * This function set the data point object to be shown on mouseover for a graph.
+   * @return {} an object of the dataPoints to be shown on mouseover.
+   */
+  function setDataPoint() {
+    // add mouse over text
+    let dataPoint = d3.select('body')
+      .append('div')
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding-left", "5px")  //somehow padding only cause blinking
+      .style("padding-right", "5px")
+      .style("border-radius", "6px")
+      .style("display", "none")
+      .attr('font-size', '1.5em');
+
+    return dataPoint
+  }
+
   /**
    * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.
    * @param {object} data    A data object array in the format of [{ columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
    * @param {object=} options An optional object contains following objects. 
    *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
    *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'
+   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
+   *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
    * @return {} append a bar graph to html.
    */
   function bar(data, options = {}) {
+    //set up graph specific option
+    options.colors ? true : options.colors = ['steelblue', '#CC2529'];
+    //validate format
+    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+
     //validate data format
     if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw 'data format error!';    // throw error terminates function
+      throw new Error('data need to be an array of objects!')
     }
-   
+
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
-    
+
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = Object.keys(data[0])[0];
     let yDataName = Object.keys(data[0])[1];
 
     // generate a highly likely unique ID
     let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
-
-    // when all data are negative, choose 0 as max data
-    let yMax = Math.max(d3.max(data, element => element[yDataName]), 0);
-
-    // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
-    let dataMin = d3.min(data, element => element[yDataName]);
-    let yMin = 0;
-    if (dataMin < 0) {
-      let ySetback = (yMax - dataMin) * 0.15;
-      yMin = dataMin - ySetback;
-    }
 
     d3.select(location)
       .append('span')       //non-block container
@@ -91,20 +110,23 @@ var yd3 = (function (exports, d3) {
       .range([0, innerWidth])
       .padding(0.1);
 
+    // when all data are negative, choose 0 as max data
+    let yMax = Math.max(d3.max(data, element => element[yDataName]), 0);
+
+    // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+    let dataMin = d3.min(data, element => element[yDataName]);
+    let yMin = 0;
+    if (dataMin < 0) {
+      let ySetback = (yMax - dataMin) * 0.15;
+      yMin = dataMin - ySetback;
+    }
+
     let yScale = d3.scaleLinear()
       .domain([yMin, yMax])
       .range([innerHeight, 0]);
 
-    // add mouse over text
-    let dataPoint = d3.select('body')
-      .append('div')
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+    // add dataPoint object to be shown on mouseover
+    let dataPoint = setDataPoint();
 
     svg
       .append('g')
@@ -115,21 +137,21 @@ var yd3 = (function (exports, d3) {
       .attr('width', xScale.bandwidth())
       .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
       .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-      .attr('fill', element => element[yDataName] < 0 ? '#CC2529' : 'steelblue')
+      .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
       .on('mouseover', (element) => {
         dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataName]);
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataName]);
       })
       .on('mousemove', (element) => {
         dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataName]);
-       })
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataName]);
+      })
       .on('mouseout', () => dataPoint.style('display', 'none'));
 
     //x axis
@@ -178,10 +200,12 @@ var yd3 = (function (exports, d3) {
   function histogram(data, options = {}) {
     //set up graph specific option
     options.nBins ? true : options.nBins = 50;
+    //validate format
+    if (typeof options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.nBins !== 'number') {
-      throw 'Parameter format error!';     // throw error terminates function
+    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+      throw new Error('data need to be an array of objects!')
     }
 
     // set all the common options
@@ -230,16 +254,8 @@ var yd3 = (function (exports, d3) {
       .range([innerHeight, 0])
       .domain([0, d3.max(bins, d => d.length)]);
 
-    // add mouse over text
-    let dataPoint = d3.select('body')
-      .append('div')
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+    // add dataPoint object to be shown on mouseover
+    let dataPoint = setDataPoint();
 
     // append the bar rectangles to the svg element
     svg.selectAll("rect")
@@ -253,18 +269,18 @@ var yd3 = (function (exports, d3) {
       .style("fill", "steelblue")
       .on('mouseover', (d) => {
         dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
       })
       .on('mousemove', (d) => {
         dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text('['+ d.x0 + '-' + d.x1 + '] : ' + d.length);
-       })
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+      })
       .on('mouseout', () => dataPoint.style('display', 'none'));
 
     svg.append("g")
@@ -303,10 +319,13 @@ var yd3 = (function (exports, d3) {
     //set up graph specific option
     options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.dotRadius ? true : options.dotRadius = 4;
+    //validate format
+    if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
+    if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.colors !== 'object' || typeof options.dotRadius !== 'number') {
-      throw 'Parameter format error!';     // throw error terminates function
+    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+      throw new Error('data need to be an array of objects!')
     }
 
     // set all the common options
@@ -363,16 +382,8 @@ var yd3 = (function (exports, d3) {
     let legendx = 0;
     let legendy = 12;
 
-    // add mouse over text
-    let dataPoint = d3.select('body')
-      .append('div')
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+    // add dataPoint object to be shown on mouseover
+    let dataPoint = setDataPoint();
 
     // draw each y data
     for (let i = 0; i < yDataNames.length; i++) {
@@ -487,10 +498,13 @@ var yd3 = (function (exports, d3) {
     //set up graph specific option
     options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.dotRadius ? true : options.dotRadius = 4;
+    //validate format
+    if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
+    if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.colors !== 'object' || typeof options.dotRadius !== 'number') {
-      throw 'Parameter format error!';      // throw error terminates function
+    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+      throw new Error('data need to be an array of objects!')
     }
 
     // set all the common options
@@ -550,16 +564,8 @@ var yd3 = (function (exports, d3) {
     let legendx = 0;
     let legendy = 12;
 
-    // add mouse over text
-    let dataPoint = d3.select('body')
-      .append('div')
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+    // add dataPoint object to be shown on mouseover
+    let dataPoint = setDataPoint();
 
     // draw each y
     for (let i = 0; i < yDataNames.length; i++) {
@@ -648,14 +654,19 @@ var yd3 = (function (exports, d3) {
    * @param {object=} options An optional object contains following objects. 
    *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
    *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'
+   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
+   *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
    * @return {} append a sortable bar graph to html.
    */
   function sortableBar(data, options = {}) {
+    //set up graph specific option
+    options.colors ? true : options.colors = ['steelblue', '#CC2529'];
+    //validate format
+    if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') ) {
-      throw 'Data format error!';      // throw error terminates function
+    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+      throw new Error('data need to be an array of objects!')
     }
 
     // set all the common options
@@ -728,16 +739,8 @@ var yd3 = (function (exports, d3) {
         .domain([yMin, yMax])
         .range([innerHeight, 0]);
 
-    // add mouse over text
-    let dataPoint = d3.select('body')
-      .append('div')
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+    // add dataPoint object to be shown on mouseover
+    let dataPoint = setDataPoint();
 
       //draw graph, update works with select rect
       let rect = svg
@@ -751,7 +754,7 @@ var yd3 = (function (exports, d3) {
         .attr('width', xScale.bandwidth())
         .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
         .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-        .attr('fill', element => element[yDataName] < 0 ? '#CC2529' : 'steelblue')
+        .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
         .on('mouseover', (element) => {
           dataPoint
           .style('display', null)

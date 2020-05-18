@@ -1,5 +1,7 @@
 import * as d3 from 'd3';
 import { getOption } from './helper.js';
+import { setDataPoint } from './helper.js';
+
 /**
  * This function draws a line with dot graph (y represents continuous value) using d3 and svg.
  * @param {object} data     A data object array in the format of [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2}].
@@ -15,10 +17,13 @@ export function lineDot(data, options = {}) {
   //set up graph specific option
   options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
   options.dotRadius ? true : options.dotRadius = 4;
+  //validate format
+  if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
+  if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object') || typeof options.colors !== 'object' || typeof options.dotRadius !== 'number') {
-    throw 'Parameter format error!';     // throw error terminates function
+  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
+    throw new Error('data need to be an array of objects!')
   }
 
   // set all the common options
@@ -75,16 +80,8 @@ export function lineDot(data, options = {}) {
   let legendx = 0;
   let legendy = 12;
 
-  // add mouse over text
-  let dataPoint = d3.select('body')
-    .append('div')
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("padding-left", "5px")  //somehow padding only cause blinking
-    .style("padding-right", "5px")
-    .style("border-radius", "6px")
-    .style("display", "none")
-    .attr('font-size', '1.5em')
+  // add dataPoint object to be shown on mouseover
+  let dataPoint = setDataPoint()
 
   // draw each y data
   for (let i = 0; i < yDataNames.length; i++) {
