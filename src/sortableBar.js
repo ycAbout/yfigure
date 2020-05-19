@@ -16,7 +16,7 @@ export function sortableBar(data, options = {}) {
   //set up graph specific option
   options.colors ? true : options.colors = ['steelblue', '#CC2529'];
   //validate format
-  if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
+  if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
 
   //validate data format
   if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
@@ -44,8 +44,7 @@ export function sortableBar(data, options = {}) {
 
   selection.selectAll("option")
     .data(['default', 'descending', 'ascending'])
-    .enter()
-    .append("option")
+    .join("option")
     .attr("value", d => d)
     .text(d => d);
 
@@ -55,6 +54,9 @@ export function sortableBar(data, options = {}) {
     .attr('height', height)
     .append('g')
     .attr('transform', `translate(${left},${top})`);
+
+  // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+  let dataPointDisplayId = setDataPoint();
 
   function draw(data, svg, order) {
     let innerData;
@@ -83,7 +85,7 @@ export function sortableBar(data, options = {}) {
       yMin = dataMin - ySetback;
     }
 
-    //x and y scale inside function for purpose of update (general purpose)
+    //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
     let xScale = d3.scaleBand()
       .domain(innerData.map((element) => element[xDataName]))
       .range([0, innerWidth])
@@ -93,11 +95,8 @@ export function sortableBar(data, options = {}) {
       .domain([yMin, yMax])
       .range([innerHeight, 0]);
 
-  // add dataPoint object to be shown on mouseover
-  let dataPoint = setDataPoint()
-
     //draw graph, update works with select rect
-    let rect = svg
+    svg
       .selectAll('rect')
       .data(innerData)
       .join(
@@ -110,40 +109,44 @@ export function sortableBar(data, options = {}) {
       .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
       .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
       .on('mouseover', (element) => {
-        dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataName]);
+        d3.select('#' + dataPointDisplayId)
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataName]);
       })
       .on('mousemove', (element) => {
-        dataPoint
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataName]);
-       })
-      .on('mouseout', () => dataPoint.style('display', 'none'));
+        d3.select('#' + dataPointDisplayId)
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataName]);
+      })
+      .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+
+    // remove the x and y axis if exist
+    d3.select('#' + graphID + 'x')
+      .remove();
+    d3.select('#' + graphID + 'y')
+      .remove();
+    d3.select('#' + graphID + 'y0')
+      .remove();
 
     svg
       .append('g')
       .attr('id', graphID + 'x')
-      .attr('transform', `translate(0, ${innerHeight})`);
+      .attr('transform', `translate(0, ${innerHeight})`)
+      .call(d3.axisBottom(xScale));
 
     svg
       .append('g')
-      .attr('id', graphID + 'y');
-
-    //have to do this in case of update
-    d3.select('#' + graphID + 'x')
-      .call(d3.axisBottom(xScale));
-
-    d3.select('#' + graphID + 'y')
+      .attr('id', graphID + 'y')
       .call(d3.axisLeft(yScale));
 
     // add line at y = 0 when there is negative data
     if (dataMin < 0) {
       svg.append("path")
+        .attr('id', graphID + 'y0')
         .attr("stroke", 'black')
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
     }

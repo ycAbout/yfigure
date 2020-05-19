@@ -37,12 +37,17 @@ export function getOption(options = {}) {
 
 /**
  * This function set the data point object to be shown on mouseover for a graph.
- * @return {} an object of the dataPoints to be shown on mouseover.
+ * @return {string} a string format of dataPointDisplay object ID to be selected.
  */
 export function setDataPoint() {
+  let dataPointDisplayId = 'yd3DataPointDisplay999999'; 
+  //remove if there is one, so there is only one per page
+  d3.select('#' + dataPointDisplayId).remove()
+   
   // add mouse over text
-  let dataPoint = d3.select('body')
+  d3.select('body')
     .append('div')
+    .attr('id', dataPointDisplayId)
     .style("position", "absolute")
     .style("background", "white")
     .style("padding-left", "5px")  //somehow padding only cause blinking
@@ -51,5 +56,5 @@ export function setDataPoint() {
     .style("display", "none")
     .attr('font-size', '1.5em')
 
-  return dataPoint
+  return dataPointDisplayId
 }

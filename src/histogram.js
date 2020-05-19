@@ -31,12 +31,9 @@ export function histogram(data, options = {}) {
   // generate a highly likely unique ID
   let graphID = xDataName + 'Histogram' + Math.floor(Math.random() * 100000).toString();
 
-  d3.select(location)
-    .append('span')       //non-block container
-    .attr('id', graphID);
-
-  let svg = d3.select('#' + graphID)
+  let svg = d3.select(location)
     .append('svg')
+    .attr('id', graphID)
     .attr('width', width)
     .attr('height', height)
     .append('g')
@@ -69,8 +66,8 @@ export function histogram(data, options = {}) {
     .range([innerHeight, 0])
     .domain([0, d3.max(bins, d => d.length)]);
 
-  // add dataPoint object to be shown on mouseover
-  let dataPoint = setDataPoint()
+  // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+  let dataPointDisplayId = setDataPoint();
 
   // append the bar rectangles to the svg element
   svg.selectAll("rect")
@@ -83,20 +80,20 @@ export function histogram(data, options = {}) {
     .attr("height", d => innerHeight - yScale(d.length))
     .style("fill", "steelblue")
     .on('mouseover', (d) => {
-      dataPoint
+      d3.select('#' + dataPointDisplayId)
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
         .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
     })
     .on('mousemove', (d) => {
-      dataPoint
+      d3.select('#' + dataPointDisplayId)
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
         .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
     })
-    .on('mouseout', () => dataPoint.style('display', 'none'));
+    .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
   svg.append("g")
     .attr("transform", "translate(0," + innerHeight + ")")

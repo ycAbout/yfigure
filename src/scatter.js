@@ -41,12 +41,9 @@ export function scatter(data, options = {}) {
   // generate a highly likely unique ID, can be optimized
   let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
 
-  d3.select(location)
-    .append('span')       //non-block container
-    .attr('id', graphID);
-
-  let svg = d3.select('#' + graphID)
+  let svg = d3.select(location)
     .append('svg')
+    .attr('id', graphID)
     .attr('width', width)
     .attr('height', height)
     .append('g')
@@ -84,8 +81,8 @@ export function scatter(data, options = {}) {
   let legendx = 0;
   let legendy = 12;
 
-  // add dataPoint object to be shown on mouseover
-  let dataPoint = setDataPoint()
+  // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+  let dataPointDisplayId = setDataPoint();
 
   // draw each y
   for (let i = 0; i < yDataNames.length; i++) {
@@ -102,20 +99,20 @@ export function scatter(data, options = {}) {
       .attr("r", options.dotRadius)
       .attr("fill", colorScale(yDataNames[i]))
       .on('mouseover', (element) => {
-        dataPoint
+        d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
           .text(element[xDataName] + ': ' + element[yDataNames[i]]);
       })
       .on('mousemove', (element) => {
-        dataPoint
+        d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
           .text(element[xDataName] + ': ' + element[yDataNames[i]]);
       })
-      .on('mouseout', () => dataPoint.style('display', 'none'));
+      .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
     // Add legend
     // if add current legend spill over innerWidth

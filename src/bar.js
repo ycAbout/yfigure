@@ -33,12 +33,9 @@ export function bar(data, options = {}) {
   // generate a highly likely unique ID
   let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
 
-  d3.select(location)
-    .append('span')       //non-block container
-    .attr('id', graphID);
-
-  let svg = d3.select('#' + graphID)
+  let svg = d3.select(location)
     .append('svg')
+    .attr('id', graphID)
     .attr('width', width)
     .attr('height', height)
     .append('g')
@@ -64,8 +61,8 @@ export function bar(data, options = {}) {
     .domain([yMin, yMax])
     .range([innerHeight, 0]);
 
-  // add dataPoint object to be shown on mouseover
-  let dataPoint = setDataPoint()
+  // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+  let dataPointDisplayId = setDataPoint();
 
   svg
     .append('g')
@@ -78,20 +75,20 @@ export function bar(data, options = {}) {
     .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
     .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
     .on('mouseover', (element) => {
-      dataPoint
+      d3.select('#' + dataPointDisplayId)
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
         .text(element[xDataName] + ': ' + element[yDataName]);
     })
     .on('mousemove', (element) => {
-      dataPoint
+      d3.select('#' + dataPointDisplayId)
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
         .text(element[xDataName] + ': ' + element[yDataName]);
     })
-    .on('mouseout', () => dataPoint.style('display', 'none'));
+    .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
   //x axis
   svg
