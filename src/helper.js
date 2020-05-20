@@ -16,9 +16,9 @@ export function getOption(options = {}) {
   }
 
   //validate format
-  typeof options.size !== 'object' ? makeError('Option size need to be an object!'): true;
-  typeof options.margin !== 'object' ? makeError('Option margin need to be an object!'): true;
-  typeof options.location !== 'string' ? makeError('Option location need to be a string!'): true;
+  typeof options.size !== 'object' ? makeError('Option size need to be an object!') : true;
+  typeof options.margin !== 'object' ? makeError('Option margin need to be an object!') : true;
+  typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
 
   //parse float just in case and get parameters
   let width = +options.size.width;
@@ -40,21 +40,23 @@ export function getOption(options = {}) {
  * @return {string} a string format of dataPointDisplay object ID to be selected.
  */
 export function setDataPoint() {
-  let dataPointDisplayId = 'yd3DataPointDisplay999999'; 
-  //remove if there is one, so there is only one per page
-  d3.select('#' + dataPointDisplayId).remove()
-   
-  // add mouse over text
-  d3.select('body')
-    .append('div')
-    .attr('id', dataPointDisplayId)
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("padding-left", "5px")  //somehow padding only cause blinking
-    .style("padding-right", "5px")
-    .style("border-radius", "6px")
-    .style("display", "none")
-    .attr('font-size', '1.5em')
 
-  return dataPointDisplayId
+  let dataPointDisplayId = 'yd3DataPointDisplay999999';
+
+  //add it if there is no such element, so there is only one per page
+  if (!d3.select('#' + dataPointDisplayId).node()) {
+    // add mouse over text
+    d3.select('body')
+      .append('div')
+      .attr('id', dataPointDisplayId)
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding-left", "5px")  //somehow padding only cause blinking
+      .style("padding-right", "5px")
+      .style("border-radius", "6px")
+      .style("display", "none")
+      .attr('font-size', '1.5em')
+  }
+
+  return dataPointDisplayId;
 }

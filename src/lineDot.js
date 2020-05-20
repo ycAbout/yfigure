@@ -18,8 +18,8 @@ export function lineDot(data, options = {}) {
   options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
   options.dotRadius ? true : options.dotRadius = 4;
   //validate format
-  if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
-  if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
+  if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+  if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
   //validate data format
   if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
@@ -106,18 +106,18 @@ export function lineDot(data, options = {}) {
       .attr("fill", colorScale(yDataNames[i]))
       .on('mouseover', (element) => {
         d3.select('#' + dataPointDisplayId)
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
       })
       .on('mousemove', (element) => {
         d3.select('#' + dataPointDisplayId)
-        .style('display', null)
-        .style('top', (d3.event.pageY - 20) + 'px')
-        .style('left', (d3.event.pageX + 'px'))
-        .text(element[xDataName] + ': ' + element[yDataNames[i]]);
-       })
+          .style('display', null)
+          .style('top', (d3.event.pageY - 20) + 'px')
+          .style('left', (d3.event.pageX + 'px'))
+          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+      })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
     // Add legend
@@ -176,4 +176,6 @@ export function lineDot(data, options = {}) {
     .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
     .text('');
 
+  return graphID;
+  
 }

@@ -174,4 +174,5 @@ export function sortableBar(data, options = {}) {
       draw(data, svg, this.value)
     });
 
+  return graphID;
 }

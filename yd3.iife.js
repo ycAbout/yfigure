@@ -25,9 +25,9 @@ var yd3 = (function (exports, d3) {
     }
 
     //validate format
-    typeof options.size !== 'object' ? makeError('Option size need to be an object!'): true;
-    typeof options.margin !== 'object' ? makeError('Option margin need to be an object!'): true;
-    typeof options.location !== 'string' ? makeError('Option location need to be a string!'): true;
+    typeof options.size !== 'object' ? makeError('Option size need to be an object!') : true;
+    typeof options.margin !== 'object' ? makeError('Option margin need to be an object!') : true;
+    typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
 
     //parse float just in case and get parameters
     let width = +options.size.width;
@@ -49,21 +49,23 @@ var yd3 = (function (exports, d3) {
    * @return {string} a string format of dataPointDisplay object ID to be selected.
    */
   function setDataPoint() {
-    let dataPointDisplayId = 'yd3DataPointDisplay999999'; 
-    //remove if there is one, so there is only one per page
-    d3.select('#' + dataPointDisplayId).remove();
-     
-    // add mouse over text
-    d3.select('body')
-      .append('div')
-      .attr('id', dataPointDisplayId)
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding-left", "5px")  //somehow padding only cause blinking
-      .style("padding-right", "5px")
-      .style("border-radius", "6px")
-      .style("display", "none")
-      .attr('font-size', '1.5em');
+
+    let dataPointDisplayId = 'yd3DataPointDisplay999999';
+
+    //add it if there is no such element, so there is only one per page
+    if (!d3.select('#' + dataPointDisplayId).node()) {
+      // add mouse over text
+      d3.select('body')
+        .append('div')
+        .attr('id', dataPointDisplayId)
+        .style("position", "absolute")
+        .style("background", "white")
+        .style("padding-left", "5px")  //somehow padding only cause blinking
+        .style("padding-right", "5px")
+        .style("border-radius", "6px")
+        .style("display", "none")
+        .attr('font-size', '1.5em');
+    }
 
     return dataPointDisplayId
   }
@@ -187,6 +189,8 @@ var yd3 = (function (exports, d3) {
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
       .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
       .text(yDataName);
+
+    return graphID;
   }
 
   /**
@@ -301,6 +305,8 @@ var yd3 = (function (exports, d3) {
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
       .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
       .text('Frequency');
+
+    return graphID;
   }
 
   /**
@@ -319,8 +325,8 @@ var yd3 = (function (exports, d3) {
     options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.dotRadius ? true : options.dotRadius = 4;
     //validate format
-    if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
-    if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
+    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+    if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
     //validate data format
     if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
@@ -407,18 +413,18 @@ var yd3 = (function (exports, d3) {
         .attr("fill", colorScale(yDataNames[i]))
         .on('mouseover', (element) => {
           d3.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3.event.pageY - 20) + 'px')
-          .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+            .style('display', null)
+            .style('top', (d3.event.pageY - 20) + 'px')
+            .style('left', (d3.event.pageX + 'px'))
+            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
         })
         .on('mousemove', (element) => {
           d3.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3.event.pageY - 20) + 'px')
-          .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataNames[i]]);
-         })
+            .style('display', null)
+            .style('top', (d3.event.pageY - 20) + 'px')
+            .style('left', (d3.event.pageX + 'px'))
+            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+        })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
       // Add legend
@@ -477,6 +483,7 @@ var yd3 = (function (exports, d3) {
       .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
       .text('');
 
+    return graphID;
   }
 
   /**
@@ -495,8 +502,8 @@ var yd3 = (function (exports, d3) {
     options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.dotRadius ? true : options.dotRadius = 4;
     //validate format
-    if (typeof options.colors !== 'object') {throw new Error('Option colors need to be an array object!')}
-    if (typeof options.dotRadius !== 'number') {throw new Error('Option dotRadius need to be a number!')}
+    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+    if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
     //validate data format
     if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
@@ -639,6 +646,8 @@ var yd3 = (function (exports, d3) {
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
       .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
       .text('');
+
+    return graphID;
   }
 
   /**
@@ -813,6 +822,7 @@ var yd3 = (function (exports, d3) {
         draw(data, svg, this.value);
       });
 
+    return graphID;
   }
 
   exports.author = author;
