@@ -39,7 +39,7 @@ export function scatter(data, options = {}) {
   yDataNames.shift();
 
   // generate a highly likely unique ID, can be optimized
-  let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
+  let graphID = 'yd3linedot' + Math.floor(Math.random() * 1000000).toString();
 
   let svg = d3.select(location)
     .append('svg')

@@ -29,7 +29,7 @@ export function histogram(data, options = {}) {
   let xDataName = Object.keys(data[0])[0];
 
   // generate a highly likely unique ID
-  let graphID = xDataName + 'Histogram' + Math.floor(Math.random() * 100000).toString();
+  let graphID = 'yd3histogram' + Math.floor(Math.random() * 1000000).toString();
 
   let svg = d3.select(location)
     .append('svg')

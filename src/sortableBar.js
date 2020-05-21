@@ -31,7 +31,7 @@ export function sortableBar(data, options = {}) {
   let yDataName = Object.keys(data[0])[1];
 
   // generate a highly likely unique ID
-  let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
+  let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
 
   let selection = d3.select(location)
     .append('span')       //non-block container

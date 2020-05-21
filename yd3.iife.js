@@ -67,7 +67,7 @@ var yd3 = (function (exports, d3) {
         .attr('font-size', '1.5em');
     }
 
-    return dataPointDisplayId
+    return dataPointDisplayId;
   }
 
   /**
@@ -99,7 +99,7 @@ var yd3 = (function (exports, d3) {
     let yDataName = Object.keys(data[0])[1];
 
     // generate a highly likely unique ID
-    let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
+    let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
 
     let svg = d3.select(location)
       .append('svg')
@@ -191,6 +191,7 @@ var yd3 = (function (exports, d3) {
       .text(yDataName);
 
     return graphID;
+    
   }
 
   /**
@@ -220,7 +221,7 @@ var yd3 = (function (exports, d3) {
     let xDataName = Object.keys(data[0])[0];
 
     // generate a highly likely unique ID
-    let graphID = xDataName + 'Histogram' + Math.floor(Math.random() * 100000).toString();
+    let graphID = 'yd3histogram' + Math.floor(Math.random() * 1000000).toString();
 
     let svg = d3.select(location)
       .append('svg')
@@ -307,6 +308,7 @@ var yd3 = (function (exports, d3) {
       .text('Frequency');
 
     return graphID;
+    
   }
 
   /**
@@ -345,7 +347,7 @@ var yd3 = (function (exports, d3) {
     yDataNames.shift();
 
     // generate a highly likely unique ID
-    let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
+    let graphID = 'yd3linedot' + Math.floor(Math.random() * 1000000).toString();
 
     let svg = d3.select(location)
       .append('svg')
@@ -484,6 +486,7 @@ var yd3 = (function (exports, d3) {
       .text('');
 
     return graphID;
+    
   }
 
   /**
@@ -522,7 +525,7 @@ var yd3 = (function (exports, d3) {
     yDataNames.shift();
 
     // generate a highly likely unique ID, can be optimized
-    let graphID = xDataName + 'Line' + Math.floor(Math.random() * 100000).toString();
+    let graphID = 'yd3linedot' + Math.floor(Math.random() * 1000000).toString();
 
     let svg = d3.select(location)
       .append('svg')
@@ -648,6 +651,7 @@ var yd3 = (function (exports, d3) {
       .text('');
 
     return graphID;
+    
   }
 
   /**
@@ -679,7 +683,7 @@ var yd3 = (function (exports, d3) {
     let yDataName = Object.keys(data[0])[1];
 
     // generate a highly likely unique ID
-    let graphID = xDataName + yDataName + Math.floor(Math.random() * 100000).toString();
+    let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
 
     let selection = d3.select(location)
       .append('span')       //non-block container
