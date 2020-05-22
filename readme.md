@@ -11,8 +11,8 @@ d3 is so great but is so hard to use. yd3 makes it as simple as calling a functi
 2. Use it as normal javascript (write any line below above):
 ```
 <script>
-let data = [{"group":1,"score":50},{"group":2,"score":80},{"group":3,"score":30}];
-yd3.sortableBar(data);
+let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
+yd3.sortableBar(dataBar);
 </script>
 ```
 or add to your html file:  
@@ -20,8 +20,8 @@ or add to your html file:
 
 your js file: 
 ```
-let data = [{"group":1,"score":50},{"group":2,"score":80},{"group":3,"score":30}];
-yd3.sortableBar(data);
+let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
+yd3.sortableBar(dataBar);
 ```
 
 note: This library packed d3v5 (Copyright 2020 Mike Bostock) into it.

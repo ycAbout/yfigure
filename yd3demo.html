@@ -27,28 +27,75 @@
       document.body.appendChild(br);
     }
 
+
+    let dataBar1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 80], [5, 40]];
+    let dataBar2 = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
+    let dataBar3 = [["group", "score"]];
+    for (let i = 0; i < 80; i++) {
+      let element = [i + 1, Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)]
+      dataBar3.push(element)
+    }
+
+    //generate a sudo normal distributed dataset
+    let dataHistogram = [["age"]];
+    for (let i = 0; i < 900; i++) {
+      let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100]
+      dataHistogram.push(element)
+    }
+
+    let dataLineDot1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 40], [5, 20]];
+    let dataLineDot2 = [["group", "score1", "score2", "score3", "score4"],
+    [1, 50, 50 - 20, 50 + 20, 50 + 40],
+    [2, 160, 160 - 20, 160 + 20, 160 + 40],
+    [3, 30, 30 - 20, 30 + 20, 30 + 40],
+    [4, 80, 80 - 20, 80 + 20, 80 + 40],
+    [5, 20, 20 - 20, 20 + 20, 20 + 40]
+    ];
+
+    let dataLineDot3 = [["age", "score1", "score2", "score3", "score4", "score5", "score6"]];
+    for (i = 0; i < 80; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)]
+      dataLineDot3.push(element)
+    }
+
+    let dataScatter1 = [["age", "score1"]];
+    for (i = 0; i < 50; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100)]
+      dataScatter1.push(element)
+    }
+
+    let dataScatter2 = [["age", "score1", "score2", "score3", "score4"]];
+    for (i = 0; i < 60; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
+      dataScatter2.push(element)
+    }
+    let dataScatter3 = [["age", "score1", "score2", "score3", "score4", "score5", "score6"]];
+    for (i = 0; i < 300; i++) {
+      let element = [
+        i + 18,
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i))
+      ]
+      dataScatter3.push(element)
+    }
+
+
     createTitle("H1", "yd3 Demo");
     createTitle("H2", "bar");
 
-    let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
     // example 1
-    yd3.bar(data);
+    yd3.bar(dataBar1);
     // example 2
-    let data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-    yd3.bar(data2, {
+    yd3.bar(dataBar2, {
       size: size2,
     });
     br();
     // example 3
-    data3 = [];
-    for (let i = 0; i < 80; i++) {
-      let element = {
-        "group": i + 1,
-        "score": Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)
-      }
-      data3.push(element)
-    }
-    yd3.bar(data3, {
+    yd3.bar(dataBar3, {
       size: size3,
       margin: { left: 40, top: 20, right: 60, bottom: 40 },
       location: 'body',
@@ -57,25 +104,15 @@
 
     createTitle("H2", "sortableBar");
 
-    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
     // example 1
-    yd3.sortableBar(data);
+    yd3.sortableBar(dataBar1);
     // example 2
-    data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-    yd3.sortableBar(data2, {
+    yd3.sortableBar(dataBar2, {
       size: size2,
     });
     br();
     // example 3
-    data3 = [];
-    for (let i = 0; i < 80; i++) {
-      let element = {
-        "group": i + 1,
-        "score": Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)
-      }
-      data3.push(element)
-    }
-    yd3.sortableBar(data3, {
+    yd3.sortableBar(dataBar3, {
       size: size3,
       margin: { left: 40, top: 20, right: 60, bottom: 40 },
       location: 'body',
@@ -84,25 +121,16 @@
 
     createTitle("H2", "histogram");
 
-    //generate a sudo normal distributed dataset
-    data = [];
-    for (let i = 0; i < 900; i++) {
-      let element = {
-        "age": (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100
-      }
-      data.push(element)
-    }
-
     // example 1  
-    yd3.histogram(data);
+    yd3.histogram(dataHistogram);
     // example 2 
-    yd3.histogram(data, {
+    yd3.histogram(dataHistogram, {
       size: size2,
       nBins: 30
     });
     br();
     // example 3 
-    yd3.histogram(data, {
+    yd3.histogram(dataHistogram, {
       size: size3,
       margin: { left: 40, top: 80, right: 40, bottom: 40 },
       location: 'body',
@@ -111,37 +139,15 @@
 
     createTitle("H2", "lineDot");
 
-    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 40 }, { "group": 5, "score": 20 }];
     // example 1  
-    yd3.lineDot(data, { dotRadius: 1 });
+    yd3.lineDot(dataLineDot1, { dotRadius: 1 });
     // example 2
-    data2 = [
-      { "group": 1, "score1": 50, "score2": 50 - 20, "score3": 50 + 20, "score4": 50 + 40 },
-      { "group": 2, "score1": 160, "score2": 160 - 20, "score3": 160 + 20, "score4": 160 + 40 },
-      { "group": 3, "score1": 30, "score2": 30 - 20, "score3": 30 + 20, "score4": 30 + 40 },
-      { "group": 4, "score1": 80, "score2": 80 - 20, "score3": 80 + 20, "score4": 80 + 40 },
-      { "group": 5, "score1": 20, "score2": 20 - 20, "score3": 20 + 20, "score4": 20 + 40 }
-    ];
-    yd3.lineDot(data2, {
+    yd3.lineDot(dataLineDot2, {
       size: size2,
     });
     br();
     // example 3 
-    data3 = [];
-    for (i = 0; i < 80; i++) {
-      let element = {
-        "age": i + 18,
-        "score1": Math.floor(Math.random() * 100 * i),
-        "score2": Math.floor(Math.random() * 100 * i),
-        "score3": Math.floor(Math.random() * 100 * i),
-        "score4": Math.floor(Math.random() * 100 * i),
-        "score5": Math.floor(Math.random() * 100 * i),
-        "score6": Math.floor(Math.random() * 100 * i),
-      }
-      data3.push(element)
-    }
-
-    yd3.lineDot(data3, {
+    yd3.lineDot(dataLineDot3, {
       size: size3,
       margin: { left: 40, top: 80, right: 40, bottom: 40 },
       location: 'body',
@@ -151,53 +157,22 @@
 
     createTitle("H2", "scatter");
 
-    data = [];
-    for (i = 0; i < 50; i++) {
-      let element = {
-        "age": i + 18,
-        "score1": Math.floor(Math.random() * 100)
-      }
-      data.push(element)
-    }
     // example 1  
-    yd3.scatter(data);
+    yd3.scatter(dataScatter1);
     // example 2 
-    data2 = [];
-    for (i = 0; i < 60; i++) {
-      let element = {
-        "age": i + 18,
-        "score1": Math.floor(Math.random() * 100),
-        "score2": Math.floor(Math.random() * 100 + 200),
-        "score3": Math.floor(Math.random() * 100 + 400),
-        "score4": Math.floor(Math.random() * 100 + 600)
-      }
-      data2.push(element)
-    }
-    yd3.scatter(data2, {
+    yd3.scatter(dataScatter2, {
       size: size2,
     });
     br();
     // example 3 
-    data3 = [];
-    for (i = 0; i < 300; i++) {
-      let element = {
-        "age": i + 18,
-        "score1": Math.floor(Math.random() * 100 * (300 - i)),
-        "score2": Math.floor(Math.random() * 100 * (300 - i)),
-        "score3": Math.floor(Math.random() * 100 * (300 - i)),
-        "score4": Math.floor(Math.random() * 100 * (300 - i)),
-        "score5": Math.floor(Math.random() * 100 * (300 - i)),
-        "score6": Math.floor(Math.random() * 100 * (300 - i))
-      }
-      data3.push(element)
-    }
-    yd3.scatter(data3, {
+    yd3.scatter(dataScatter3, {
       size: size3,
       margin: { left: 40, top: 80, right: 40, bottom: 40 },
       location: 'body',
       dotRadius: 4,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
+
 
   </script>
 </body>

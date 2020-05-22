@@ -3,14 +3,14 @@ import { getOption } from './helper.js';
 import { setDataPoint } from './helper.js';
 
 /**
- * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.
- * @param {object} data     A data object array in the format of e.g., [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
- * @param {object=} options An optional object contains following objects. 
- *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
- *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
- *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
- *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
- * @return {} append a sortable bar graph to html.
+ * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
+ * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+ * @param {object=} options An optional object contains following objects:  
+ *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+ *                          margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
+ *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+ *                          colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+* @return {string}          append a graph to html and returns the graph id.  
  */
 export function sortableBar(data, options = {}) {
   //set up graph specific option
@@ -19,16 +19,23 @@ export function sortableBar(data, options = {}) {
   if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-    throw new Error('data need to be an array of objects!')
+  if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+    throw new Error('data need to be a 2d array!')
   }
 
   // set all the common options
   let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
 
   // take first column as x name label, second column as y name label, of the first object
-  let xDataName = Object.keys(data[0])[0];
-  let yDataName = Object.keys(data[0])[1];
+  let xDataName = data[0][0];
+  let yDataName = data[0][1];
+
+  // get ride of column name, does not modify origin array
+  let dataValue = data.slice(1)
+
+  // x y data positions
+  let xDataIndex = 0;
+  let yDataIndex = 1;
 
   // generate a highly likely unique ID
   let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
@@ -58,27 +65,27 @@ export function sortableBar(data, options = {}) {
   // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
   let dataPointDisplayId = setDataPoint();
 
-  function draw(data, svg, order) {
+  function draw(dataValue, svg, order) {
     let innerData;
     switch (order) {
       case 'descending':
         // this creates a deep copy of data so the original data can be preserved
-        innerData = JSON.parse(JSON.stringify(data));
-        innerData.sort((a, b) => b[yDataName] - a[yDataName]);
+        innerData = JSON.parse(JSON.stringify(dataValue));
+        innerData.sort((a, b) => b[yDataIndex] - a[yDataIndex]);
         break;
       case 'ascending':
-        innerData = JSON.parse(JSON.stringify(data));
-        innerData.sort((a, b) => a[yDataName] - b[yDataName]);
+        innerData = JSON.parse(JSON.stringify(dataValue));
+        innerData.sort((a, b) => a[yDataIndex] - b[yDataIndex]);
         break;
       default:
-        innerData = data;
+        innerData = dataValue;
     }
 
     // when all data are negative, choose 0 as max data
-    let yMax = Math.max(d3.max(innerData, element => element[yDataName]), 0);
+    let yMax = Math.max(d3.max(innerData, element => element[yDataIndex]), 0);
 
     // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
-    let dataMin = d3.min(innerData, element => element[yDataName]);
+    let dataMin = d3.min(innerData, element => element[yDataIndex]);
     let yMin = 0;
     if (dataMin < 0) {
       let ySetback = (yMax - dataMin) * 0.15;
@@ -87,7 +94,7 @@ export function sortableBar(data, options = {}) {
 
     //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
     let xScale = d3.scaleBand()
-      .domain(innerData.map((element) => element[xDataName]))
+      .domain(innerData.map((element) => element[xDataIndex]))
       .range([0, innerWidth])
       .padding(0.1);
 
@@ -103,24 +110,24 @@ export function sortableBar(data, options = {}) {
         enter => enter.append('rect'),
         update => update
       )
-      .attr('x', element => xScale(element[xDataName]))
+      .attr('x', element => xScale(element[xDataIndex]))
       .attr('width', xScale.bandwidth())
-      .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
-      .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-      .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
+      .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
+      .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
+      .attr('fill', element => element[yDataIndex] > 0 ? options.colors[0] : options.colors[1])
       .on('mouseover', (element) => {
         d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataName]);
+          .text(element[xDataIndex] + ': ' + element[yDataIndex]);
       })
       .on('mousemove', (element) => {
         d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataName]);
+          .text(element[xDataIndex] + ': ' + element[yDataIndex]);
       })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -153,7 +160,7 @@ export function sortableBar(data, options = {}) {
   }
 
   //initialize
-  draw(data, svg, 'default');
+  draw(dataValue, svg, 'default');
 
   //x axis title
   svg
@@ -171,7 +178,7 @@ export function sortableBar(data, options = {}) {
 
   selection
     .on('change', function () {
-      draw(data, svg, this.value)
+      draw(dataValue, svg, this.value)
     });
 
   return graphID;

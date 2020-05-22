@@ -2,6 +2,16 @@ var yd3 = (function (exports, d3) {
   'use strict';
 
   function author() {
+    /**
+   * This library aims to provide the simplest but very powerful and flexible way to draw a graph.
+   * One only needs to provide data in a 2d array format and an optional object contains all the figure options.
+   * Every single option was carefully thought to provide the best possible user experience.
+   * 
+   * This library uses 2d array as data input instead of array of objects for two reasons:
+   * 1. 2d array looks more structurized and easier to visually perceive.
+   * 2. The order of key value pair in objects is not reliable in Javascript.
+   */
+
     let copyright = 'Copyright ' + (new Date).getFullYear() + ' Yalin Chen';
     let info = `***yd3, an easy to use data visualization javascript library build on top of d3js
   @author Yalin Chen yc.about@gmail.com
@@ -71,14 +81,14 @@ var yd3 = (function (exports, d3) {
   }
 
   /**
-   * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.
-   * @param {object} data    A data object array in the format of [{ columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
-   * @param {object=} options An optional object contains following objects. 
-   *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
-   *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
-   *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
-   * @return {} append a bar graph to html.
+   * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
+   * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+   * @param {object=} options An optional object contains following objects:  
+   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *                          margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
+   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *                          colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+   * @return {string}         append a graph to html and returns the graph id.  
    */
   function bar(data, options = {}) {
     //set up graph specific option
@@ -87,16 +97,23 @@ var yd3 = (function (exports, d3) {
     if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw new Error('data need to be an array of objects!')
+    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+      throw new Error('data need to be a 2d array!')
     }
 
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
-    let xDataName = Object.keys(data[0])[0];
-    let yDataName = Object.keys(data[0])[1];
+    let xDataName = data[0][0];
+    let yDataName = data[0][1];
+
+    // get ride of column name, does not modify origin array
+    let dataValue = data.slice(1);
+    
+    // x y data positions
+    let xDataIndex = 0;
+    let yDataIndex = 1;
 
     // generate a highly likely unique ID
     let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
@@ -110,15 +127,15 @@ var yd3 = (function (exports, d3) {
       .attr('transform', `translate(${left},${top})`);
 
     let xScale = d3.scaleBand()
-      .domain(data.map((element) => element[xDataName]))
+      .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, innerWidth])
       .padding(0.1);
 
     // when all data are negative, choose 0 as max data
-    let yMax = Math.max(d3.max(data, element => element[yDataName]), 0);
+    let yMax = Math.max(d3.max(dataValue, element => element[yDataIndex]), 0);
 
     // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
-    let dataMin = d3.min(data, element => element[yDataName]);
+    let dataMin = d3.min(dataValue, element => element[yDataIndex]);
     let yMin = 0;
     if (dataMin < 0) {
       let ySetback = (yMax - dataMin) * 0.15;
@@ -135,26 +152,26 @@ var yd3 = (function (exports, d3) {
     svg
       .append('g')
       .selectAll('rect')
-      .data(data)
+      .data(dataValue)
       .join('rect')
-      .attr('x', element => xScale(element[xDataName]))
+      .attr('x', element => xScale(element[xDataIndex]))
       .attr('width', xScale.bandwidth())
-      .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
-      .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-      .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
+      .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
+      .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
+      .attr('fill', element => element[yDataIndex] > 0 ? options.colors[0] : options.colors[1])
       .on('mouseover', (element) => {
         d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataName]);
+          .text(element[xDataIndex] + ': ' + element[yDataIndex]);
       })
       .on('mousemove', (element) => {
         d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text(element[xDataName] + ': ' + element[yDataName]);
+          .text(element[xDataIndex] + ': ' + element[yDataIndex]);
       })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -195,14 +212,14 @@ var yd3 = (function (exports, d3) {
   }
 
   /**
-   * This function draws a histogram graph (y represents frequency) using d3 and svg.
-   * @param {object} data     A data object array in the format of [{ columnX: n1 },{columnX: n2 }].
-   * @param {object=} options An optional object contains four objects.
-   *                          size, describing the svg size in the format of size: { width: 400, height: 300 }.
-   *                          margin, describing the margin inside the svg in the format of margin: { left: 50, top: 20, right: 20, bottom: 50 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.
-   *                          nBins, describing how many bins to put the data in the format of nBins: 70.
-   * @return {} append a graph to html.
+   * This function draws a histogram graph (y represents frequency) using d3 and svg.  
+   * @param {array} data      A 2d array data in the format of `[['columnX'], [n1], [n2]]`.  
+   * @param {object=} options An optional object contains four objects:  
+   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *                          margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 20, right: 20, bottom: 50 }`.  
+   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *                          nBins, describing how many bins to put the data in the format of `nBins: 70`.  
+  * @return {string}          append a graph to html and returns the graph id.  
    */
   function histogram(data, options = {}) {
     //set up graph specific option
@@ -211,14 +228,20 @@ var yd3 = (function (exports, d3) {
     if (typeof options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw new Error('data need to be an array of objects!')
+    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+      throw new Error('data need to be a 2d array!')
     }
 
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
 
-    let xDataName = Object.keys(data[0])[0];
+    let xDataName = data[0][0];
+
+    // get ride of column name, does not modify origin array
+    let dataValue = data.slice(1);
+    
+    // x y data positions
+    let xDataIndex = 0;
 
     // generate a highly likely unique ID
     let graphID = 'yd3histogram' + Math.floor(Math.random() * 1000000).toString();
@@ -231,8 +254,8 @@ var yd3 = (function (exports, d3) {
       .append('g')
       .attr('transform', `translate(${left},${top})`);
 
-    let maxData = d3.max(data, d => d[xDataName]);
-    let minData = d3.min(data, d => d[xDataName]);
+    let maxData = d3.max(dataValue, d => d[xDataIndex]);
+    let minData = d3.min(dataValue, d => d[xDataIndex]);
     // X axis scale
     let xScale = d3.scaleLinear()
       .domain([minData, maxData])
@@ -247,12 +270,12 @@ var yd3 = (function (exports, d3) {
 
     // set the parameters for the histogram
     let histogram = d3.histogram()
-      .value(d => d[xDataName])
+      .value(d => d[xDataIndex])
       .domain(xScale.domain())
       .thresholds(thresholdArray); // split data into bins
 
     // to get the bins
-    let bins = histogram(data);
+    let bins = histogram(dataValue);
 
     let yScale = d3.scaleLinear()
       .range([innerHeight, 0])
@@ -312,15 +335,15 @@ var yd3 = (function (exports, d3) {
   }
 
   /**
-   * This function draws a line with dot graph (y represents continuous value) using d3 and svg.
-   * @param {object} data     A data object array in the format of [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2}].
-   * @param {object=} options An optional object contains following objects.
-   *                          size, describing the svg size in the format of size: { width: 400, height: 300 }.
-   *                          margin, describing the margin inside the svg in the format of margin: { left: 50, top: 40, right: 20, bottom: 50 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.
-   *                          dotRadius, dot radius describing the radius of the dot in the format of dotRadius: 4
-   *                          colors: describing the colors used for difference lines in the format of colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']
-   * @return {} append a graph to html.
+   * This function draws a line with dot graph (y represents continuous value) using d3 and svg.  
+   * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
+   * @param {object=} options An optional object contains following objects:  
+   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *                          margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 40, right: 20, bottom: 50 }`.  
+   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *                          dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
+   *                          colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+   * @return {string}         append a graph to html and returns the graph id.  
    */
   function lineDot(data, options = {}) {
     //set up graph specific option
@@ -331,20 +354,23 @@ var yd3 = (function (exports, d3) {
     if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw new Error('data need to be an array of objects!')
+    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+      throw new Error('data need to be a 2d array!')
     }
 
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
-    let xDataName = Object.keys(data[0])[0];
-
+    let xDataName = data[0][0];
     //more than one y data columns
-    let yDataNames = Object.keys(data[0]);
-    // has to do this separate, shift() returns the shifted element
-    yDataNames.shift();
+    let yDataNames = data[0].slice(1);
+
+    // get ride of column name, does not modify origin array
+    let dataValue = data.slice(1);
+
+    // x data positions
+    let xDataIndex = 0;
 
     // generate a highly likely unique ID
     let graphID = 'yd3linedot' + Math.floor(Math.random() * 1000000).toString();
@@ -359,7 +385,7 @@ var yd3 = (function (exports, d3) {
 
     //scalePoint can use padding but not scaleOrdinal
     let xScale = d3.scalePoint()
-      .domain(data.map((element) => element[xDataName]))
+      .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, innerWidth])
       .padding(0.2);
 
@@ -367,8 +393,8 @@ var yd3 = (function (exports, d3) {
     let maxYArray = [];
     let minYArray = [];
     for (let j = 0; j < yDataNames.length; j++) {
-      maxYArray.push(d3.max(data, d => +d[yDataNames[j]]));  //parse float
-      minYArray.push(d3.min(data, d => +d[yDataNames[j]]));  //parse float
+      maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+      minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
     }
 
     let ySetback = (d3.max(maxYArray) - d3.min(minYArray)) * 0.05;  //5% of data range
@@ -393,24 +419,24 @@ var yd3 = (function (exports, d3) {
     for (let i = 0; i < yDataNames.length; i++) {
       // draw a line
       svg.append("path")
-        .datum(data)
+        .datum(dataValue)
         .attr("fill", "none")
         .attr("stroke", colorScale(yDataNames[i]))
         .attr("stroke-width", 2)
         .attr("d", d3.line()
-          .x(function (element) { return xScale(element[xDataName]) })
-          .y(function (element) { return yScale(element[yDataNames[i]]) })
+          .x(function (element) { return xScale(element[xDataIndex]) })
+          .y(function (element) { return yScale(element[i + 1]) })
         );
 
       // Add the points
       svg
         .append("g")
         .selectAll("circle")
-        .data(data)
+        .data(dataValue)
         .enter()
         .append("circle")
-        .attr("cx", function (element) { return xScale(element[xDataName]) })
-        .attr("cy", function (element) { return yScale(element[yDataNames[i]]) })
+        .attr("cx", function (element) { return xScale(element[xDataIndex]) })
+        .attr("cy", function (element) { return yScale(element[i + 1]) })
         .attr("r", options.dotRadius)
         .attr("fill", colorScale(yDataNames[i]))
         .on('mouseover', (element) => {
@@ -418,14 +444,14 @@ var yd3 = (function (exports, d3) {
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+            .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mousemove', (element) => {
           d3.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+            .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -486,19 +512,19 @@ var yd3 = (function (exports, d3) {
       .text('');
 
     return graphID;
-    
+
   }
 
   /**
-   * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.
-   * @param {object} data     A data object array in the format of [{columnX: n1, columnY: n2},{columnX: n3, columnY: n4}].
-   * @param {object=} options An optional object contains the following objects.
-   *                          size, describing the svg size in the format of size: { width: 400, height: 300 }.
-   *                          margin, describing the margin inside the svg in the format of margin: { left: 50, top: 40, right: 20, bottom: 50 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.
-   *                          dotRadius, dot radius describing the radius of the dot in the format of dotRadius: 4
-   *                          colors: describing the colors used for different lines in the format of colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']
-   * @return {} appends a graph to html.
+   * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.  
+   * @param {array} data      A 2d array data in the format of `[['columnXName',  'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
+   * @param {object=} options An optional object contains the following objects:  
+   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *                          margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 40, right: 20, bottom: 50 }`.  
+   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *                          dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
+   *                          colors: describing the colors used for different lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+  * @return {string}          append a graph to html and returns the graph id.  
    */
   function scatter(data, options = {}) {
     //set up graph specific option
@@ -509,20 +535,23 @@ var yd3 = (function (exports, d3) {
     if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw new Error('data need to be an array of objects!')
+    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+      throw new Error('data need to be a 2d array!')
     }
 
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
 
-    // take first column name as x name label, second column name as y name label, of the first object
-    let xDataName = Object.keys(data[0])[0];
-
+    // take first column as x name label, second and after columns as y name label, of the first array
+    let xDataName = data[0][0];
     //more than one y data columns
-    let yDataNames = Object.keys(data[0]);
-    // has to do this separate from above, shift() returns the shifted element
-    yDataNames.shift();
+    let yDataNames = data[0].slice(1);
+
+    // get ride of column name, does not modify origin array
+    let dataValue = data.slice(1);
+
+    // x data positions
+    let xDataIndex = 0;
 
     // generate a highly likely unique ID, can be optimized
     let graphID = 'yd3linedot' + Math.floor(Math.random() * 1000000).toString();
@@ -536,8 +565,8 @@ var yd3 = (function (exports, d3) {
       .attr('transform', `translate(${left},${top})`);
 
     // set up x scale, make data points approximately 2% off axis
-    let xMax = d3.max(data, element => element[xDataName]);
-    let xMin = d3.min(data, element => element[xDataName]);
+    let xMax = d3.max(dataValue, element => element[xDataIndex]);
+    let xMin = d3.min(dataValue, element => element[xDataIndex]);
     let xSetback = (xMax - xMin) * 0.02;
 
     let xScale = d3.scaleLinear()
@@ -548,8 +577,8 @@ var yd3 = (function (exports, d3) {
     let maxYArray = [];
     let minYArray = [];
     for (let j = 0; j < yDataNames.length; j++) {
-      maxYArray.push(d3.max(data, d => +d[yDataNames[j]]));  //parse float
-      minYArray.push(d3.min(data, d => +d[yDataNames[j]]));  //parse float
+      maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+      minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
     }
 
     let ySetback = (d3.max(maxYArray) - d3.min(minYArray)) * 0.02;  //2% of data range
@@ -577,11 +606,11 @@ var yd3 = (function (exports, d3) {
       svg
         .append("g")
         .selectAll("circle")
-        .data(data)
+        .data(dataValue)
         .enter()
         .append("circle")
-        .attr("cx", function (element) { return xScale(element[xDataName]) })
-        .attr("cy", function (element) { return yScale(element[yDataNames[i]]) })
+        .attr("cx", function (element) { return xScale(element[xDataIndex]) })
+        .attr("cy", function (element) { return yScale(element[i + 1]) })
         .attr("r", options.dotRadius)
         .attr("fill", colorScale(yDataNames[i]))
         .on('mouseover', (element) => {
@@ -589,14 +618,14 @@ var yd3 = (function (exports, d3) {
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+            .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mousemove', (element) => {
           d3.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataNames[i]]);
+            .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -651,18 +680,18 @@ var yd3 = (function (exports, d3) {
       .text('');
 
     return graphID;
-    
+
   }
 
   /**
-   * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.
-   * @param {object} data     A data object array in the format of e.g., [{columnX: 'a', columnY: n1 },{columnX: 'b', columnY: n2 }].
-   * @param {object=} options An optional object contains following objects. 
-   *                          size, describing the svg size in the format of size: { width: 400, height: 300 }. 
-   *                          margin, describing the margin inside the svg in the format of margin: { left: 40, top: 40, right: 40, bottom: 40 }.
-   *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.  
-   *                          colors, describing the colors used for positive bars and negative bars in the format of colors: ['steelblue', '#CC2529'].  
-   * @return {} append a sortable bar graph to html.
+   * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
+   * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+   * @param {object=} options An optional object contains following objects:  
+   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *                          margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
+   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *                          colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+  * @return {string}          append a graph to html and returns the graph id.  
    */
   function sortableBar(data, options = {}) {
     //set up graph specific option
@@ -671,16 +700,23 @@ var yd3 = (function (exports, d3) {
     if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
 
     //validate data format
-    if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-      throw new Error('data need to be an array of objects!')
+    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+      throw new Error('data need to be a 2d array!')
     }
 
     // set all the common options
     let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
-    let xDataName = Object.keys(data[0])[0];
-    let yDataName = Object.keys(data[0])[1];
+    let xDataName = data[0][0];
+    let yDataName = data[0][1];
+
+    // get ride of column name, does not modify origin array
+    let dataValue = data.slice(1);
+
+    // x y data positions
+    let xDataIndex = 0;
+    let yDataIndex = 1;
 
     // generate a highly likely unique ID
     let graphID = 'yd3bar' + Math.floor(Math.random() * 1000000).toString();
@@ -710,27 +746,27 @@ var yd3 = (function (exports, d3) {
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = setDataPoint();
 
-    function draw(data, svg, order) {
+    function draw(dataValue, svg, order) {
       let innerData;
       switch (order) {
         case 'descending':
           // this creates a deep copy of data so the original data can be preserved
-          innerData = JSON.parse(JSON.stringify(data));
-          innerData.sort((a, b) => b[yDataName] - a[yDataName]);
+          innerData = JSON.parse(JSON.stringify(dataValue));
+          innerData.sort((a, b) => b[yDataIndex] - a[yDataIndex]);
           break;
         case 'ascending':
-          innerData = JSON.parse(JSON.stringify(data));
-          innerData.sort((a, b) => a[yDataName] - b[yDataName]);
+          innerData = JSON.parse(JSON.stringify(dataValue));
+          innerData.sort((a, b) => a[yDataIndex] - b[yDataIndex]);
           break;
         default:
-          innerData = data;
+          innerData = dataValue;
       }
 
       // when all data are negative, choose 0 as max data
-      let yMax = Math.max(d3.max(innerData, element => element[yDataName]), 0);
+      let yMax = Math.max(d3.max(innerData, element => element[yDataIndex]), 0);
 
       // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
-      let dataMin = d3.min(innerData, element => element[yDataName]);
+      let dataMin = d3.min(innerData, element => element[yDataIndex]);
       let yMin = 0;
       if (dataMin < 0) {
         let ySetback = (yMax - dataMin) * 0.15;
@@ -739,7 +775,7 @@ var yd3 = (function (exports, d3) {
 
       //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
       let xScale = d3.scaleBand()
-        .domain(innerData.map((element) => element[xDataName]))
+        .domain(innerData.map((element) => element[xDataIndex]))
         .range([0, innerWidth])
         .padding(0.1);
 
@@ -755,24 +791,24 @@ var yd3 = (function (exports, d3) {
           enter => enter.append('rect'),
           update => update
         )
-        .attr('x', element => xScale(element[xDataName]))
+        .attr('x', element => xScale(element[xDataIndex]))
         .attr('width', xScale.bandwidth())
-        .attr('y', element => yScale(Math.max(element[yDataName], 0)))       // if negative, use y(0) as starting point
-        .attr('height', element => Math.abs(yScale(element[yDataName]) - yScale(0)))  // height = distance to y(0)
-        .attr('fill', element => element[yDataName] > 0 ? options.colors[0] : options.colors[1])
+        .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
+        .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
+        .attr('fill', element => element[yDataIndex] > 0 ? options.colors[0] : options.colors[1])
         .on('mouseover', (element) => {
           d3.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataName]);
+            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
         })
         .on('mousemove', (element) => {
           d3.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3.event.pageY - 20) + 'px')
             .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataName] + ': ' + element[yDataName]);
+            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -805,7 +841,7 @@ var yd3 = (function (exports, d3) {
     }
 
     //initialize
-    draw(data, svg, 'default');
+    draw(dataValue, svg, 'default');
 
     //x axis title
     svg
@@ -823,7 +859,7 @@ var yd3 = (function (exports, d3) {
 
     selection
       .on('change', function () {
-        draw(data, svg, this.value);
+        draw(dataValue, svg, this.value);
       });
 
     return graphID;

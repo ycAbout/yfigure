@@ -3,14 +3,14 @@ import { getOption } from './helper.js';
 import { setDataPoint } from './helper.js';
 
 /**
- * This function draws a histogram graph (y represents frequency) using d3 and svg.
- * @param {object} data     A data object array in the format of [{ columnX: n1 },{columnX: n2 }].
- * @param {object=} options An optional object contains four objects.
- *                          size, describing the svg size in the format of size: { width: 400, height: 300 }.
- *                          margin, describing the margin inside the svg in the format of margin: { left: 50, top: 20, right: 20, bottom: 50 }.
- *                          location, describing where to put the graph in the format of location: 'body', or '#<ID>'.
- *                          nBins, describing how many bins to put the data in the format of nBins: 70.
- * @return {} append a graph to html.
+ * This function draws a histogram graph (y represents frequency) using d3 and svg.  
+ * @param {array} data      A 2d array data in the format of `[['columnX'], [n1], [n2]]`.  
+ * @param {object=} options An optional object contains four objects:  
+ *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+ *                          margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 20, right: 20, bottom: 50 }`.  
+ *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+ *                          nBins, describing how many bins to put the data in the format of `nBins: 70`.  
+* @return {string}          append a graph to html and returns the graph id.  
  */
 export function histogram(data, options = {}) {
   //set up graph specific option
@@ -19,14 +19,20 @@ export function histogram(data, options = {}) {
   if (typeof options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
 
   //validate data format
-  if (!Array.isArray(data) || !data.every((row) => typeof row === 'object')) {
-    throw new Error('data need to be an array of objects!')
+  if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
+    throw new Error('data need to be a 2d array!')
   }
 
   // set all the common options
   let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
 
-  let xDataName = Object.keys(data[0])[0];
+  let xDataName = data[0][0];
+
+  // get ride of column name, does not modify origin array
+  let dataValue = data.slice(1)
+  
+  // x y data positions
+  let xDataIndex = 0;
 
   // generate a highly likely unique ID
   let graphID = 'yd3histogram' + Math.floor(Math.random() * 1000000).toString();
@@ -39,8 +45,8 @@ export function histogram(data, options = {}) {
     .append('g')
     .attr('transform', `translate(${left},${top})`);
 
-  let maxData = d3.max(data, d => d[xDataName]);
-  let minData = d3.min(data, d => d[xDataName]);
+  let maxData = d3.max(dataValue, d => d[xDataIndex]);
+  let minData = d3.min(dataValue, d => d[xDataIndex]);
   // X axis scale
   let xScale = d3.scaleLinear()
     .domain([minData, maxData])
@@ -55,12 +61,12 @@ export function histogram(data, options = {}) {
 
   // set the parameters for the histogram
   let histogram = d3.histogram()
-    .value(d => d[xDataName])
+    .value(d => d[xDataIndex])
     .domain(xScale.domain())
     .thresholds(thresholdArray); // split data into bins
 
   // to get the bins
-  let bins = histogram(data);
+  let bins = histogram(dataValue);
 
   let yScale = d3.scaleLinear()
     .range([innerHeight, 0])
