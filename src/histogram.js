@@ -47,6 +47,7 @@ export function histogram(data, options = {}) {
 
   let maxData = d3.max(dataValue, d => d[xDataIndex]);
   let minData = d3.min(dataValue, d => d[xDataIndex]);
+
   // X axis scale
   let xScale = d3.scaleLinear()
     .domain([minData, maxData])
@@ -70,7 +71,7 @@ export function histogram(data, options = {}) {
 
   let yScale = d3.scaleLinear()
     .range([innerHeight, 0])
-    .domain([0, d3.max(bins, d => d.length)]);
+    .domain([0, d3.max(bins, d => d.length*1.1)]);
 
   // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
   let dataPointDisplayId = setDataPoint();

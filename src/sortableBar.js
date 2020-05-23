@@ -81,17 +81,27 @@ export function sortableBar(data, options = {}) {
         innerData = dataValue;
     }
 
-    // when all data are negative, choose 0 as max data
-    let yMax = Math.max(d3.max(innerData, element => element[yDataIndex]), 0);
-
-    // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+    let dataMax = d3.max(innerData, element => element[yDataIndex]);
     let dataMin = d3.min(innerData, element => element[yDataIndex]);
+  
+    // make tallest bar approximately 10% range off the range
+    let ySetback = (dataMax - dataMin) * 0.1;
+  
+    // choose 0 as default y min
     let yMin = 0;
+  
+    // if there is negative data, set y min
     if (dataMin < 0) {
-      let ySetback = (yMax - dataMin) * 0.15;
       yMin = dataMin - ySetback;
     }
-
+  
+    // choose 0 as default y max
+    let yMax = 0;
+    // when there is postive data, set y max
+    if (dataMax > 0) {
+      yMax = dataMax + ySetback;
+    }
+  
     //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
     let xScale = d3.scaleBand()
       .domain(innerData.map((element) => element[xDataIndex]))

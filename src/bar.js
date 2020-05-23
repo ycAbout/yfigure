@@ -53,15 +53,25 @@ export function bar(data, options = {}) {
     .range([0, innerWidth])
     .padding(0.1);
 
-  // when all data are negative, choose 0 as max data
-  let yMax = Math.max(d3.max(dataValue, element => element[yDataIndex]), 0);
-
-  // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+  let dataMax = d3.max(dataValue, element => element[yDataIndex]);
   let dataMin = d3.min(dataValue, element => element[yDataIndex]);
+
+  // make tallest bar approximately 10% range off the range
+  let ySetback = (dataMax - dataMin) * 0.1;
+
+  // choose 0 as default y min
   let yMin = 0;
+
+  // if there is negative data, set y min
   if (dataMin < 0) {
-    let ySetback = (yMax - dataMin) * 0.15;
     yMin = dataMin - ySetback;
+  }
+
+  // choose 0 as default y max
+  let yMax = 0;
+  // when there is postive data, set y max
+  if (dataMax > 0) {
+    yMax = dataMax + ySetback;
   }
 
   let yScale = d3.scaleLinear()
@@ -99,6 +109,8 @@ export function bar(data, options = {}) {
 
   //x axis
   for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+    // set default x axis to top if y max is 0
+    if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
     svg
       .append('g')
       .style("font", xAxisFont)
@@ -108,6 +120,8 @@ export function bar(data, options = {}) {
 
   //x axis title
   for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+    // set default x axis to top if y max is 0
+    if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
     svg
       .append("text")
       .style('font', xTitleFont)
@@ -136,7 +150,7 @@ export function bar(data, options = {}) {
   }
 
   // add line at y = 0 when there is negative data
-  if (dataMin < 0) {
+  if (dataMin < 0 && !yMax == 0) {
     svg.append("path")
       .attr("stroke", 'black')
       .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))

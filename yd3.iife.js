@@ -21,7 +21,16 @@ var yd3 = (function (exports, d3) {
 
   /**
    * This function parses the command options for a graph.
-   * @param {object=} options An option object contains options for a graph. 
+   * @param {object=} options An option object contains key value pair describing the options of a graph.
+   *         common options:
+   *         size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
+   *         margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
+   *         location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
+   *         layout, describing positions of axises and titles in the format of 
+   *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
+   *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
+   *         font, describing the font of axises and titles in the format of 
+   *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
    * @return [] an array of the options.
    */
   function getOption(options = {}) {
@@ -29,7 +38,7 @@ var yd3 = (function (exports, d3) {
     options.size ? true : options.size = { width: 400, height: 300 };
     options.margin ? true : options.margin = { left: 40, top: 40, right: 40, bottom: 40 };
     options.location ? true : options.location = 'body';
-    options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };    // for none or both { x: [], y: ['left', 'right']}
+    options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };   // for none or both { xPosition: [], yPosition: ['left', 'right']}
     options.font ? true : options.font = { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' };
 
     function makeError(msg) {
@@ -62,7 +71,7 @@ var yd3 = (function (exports, d3) {
     let xTitleFont = options.font.xTitleFont;
     let yTitleFont = options.font.yTitleFont;
 
-    return [width, height, top, left, bottom, right, innerWidth, innerHeight, location, xPosition, yPosition, 
+    return [width, height, top, left, bottom, right, innerWidth, innerHeight, location, xPosition, yPosition,
       xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
   }
 
@@ -94,11 +103,10 @@ var yd3 = (function (exports, d3) {
   /**
    * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
    * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-   * @param {object=} options An optional object contains following objects:  
-   *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
-   *                          margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
-   *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
-   *                          colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+   * @param {object=} options An optional object contains following key value pairs:
+   *                          common option key values pairs
+   *                          graph specific key value pairs:
+   *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
    * @return {string}         append a graph to html and returns the graph id.  
    */
   function bar(data, options = {}) {
@@ -143,15 +151,25 @@ var yd3 = (function (exports, d3) {
       .range([0, innerWidth])
       .padding(0.1);
 
-    // when all data are negative, choose 0 as max data
-    let yMax = Math.max(d3.max(dataValue, element => element[yDataIndex]), 0);
-
-    // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+    let dataMax = d3.max(dataValue, element => element[yDataIndex]);
     let dataMin = d3.min(dataValue, element => element[yDataIndex]);
+
+    // make tallest bar approximately 10% range off the range
+    let ySetback = (dataMax - dataMin) * 0.1;
+
+    // choose 0 as default y min
     let yMin = 0;
+
+    // if there is negative data, set y min
     if (dataMin < 0) {
-      let ySetback = (yMax - dataMin) * 0.15;
       yMin = dataMin - ySetback;
+    }
+
+    // choose 0 as default y max
+    let yMax = 0;
+    // when there is postive data, set y max
+    if (dataMax > 0) {
+      yMax = dataMax + ySetback;
     }
 
     let yScale = d3.scaleLinear()
@@ -189,6 +207,8 @@ var yd3 = (function (exports, d3) {
 
     //x axis
     for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
       svg
         .append('g')
         .style("font", xAxisFont)
@@ -198,6 +218,8 @@ var yd3 = (function (exports, d3) {
 
     //x axis title
     for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
       svg
         .append("text")
         .style('font', xTitleFont)
@@ -226,7 +248,7 @@ var yd3 = (function (exports, d3) {
     }
 
     // add line at y = 0 when there is negative data
-    if (dataMin < 0) {
+    if (dataMin < 0 && !yMax == 0) {
       svg.append("path")
         .attr("stroke", 'black')
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
@@ -281,6 +303,7 @@ var yd3 = (function (exports, d3) {
 
     let maxData = d3.max(dataValue, d => d[xDataIndex]);
     let minData = d3.min(dataValue, d => d[xDataIndex]);
+
     // X axis scale
     let xScale = d3.scaleLinear()
       .domain([minData, maxData])
@@ -304,7 +327,7 @@ var yd3 = (function (exports, d3) {
 
     let yScale = d3.scaleLinear()
       .range([innerHeight, 0])
-      .domain([0, d3.max(bins, d => d.length)]);
+      .domain([0, d3.max(bins, d => d.length*1.1)]);
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = setDataPoint();
@@ -787,17 +810,27 @@ var yd3 = (function (exports, d3) {
           innerData = dataValue;
       }
 
-      // when all data are negative, choose 0 as max data
-      let yMax = Math.max(d3.max(innerData, element => element[yDataIndex]), 0);
-
-      // for set up y domain when y is negative, make tallest bar approximately 15% range off x axis
+      let dataMax = d3.max(innerData, element => element[yDataIndex]);
       let dataMin = d3.min(innerData, element => element[yDataIndex]);
+    
+      // make tallest bar approximately 10% range off the range
+      let ySetback = (dataMax - dataMin) * 0.1;
+    
+      // choose 0 as default y min
       let yMin = 0;
+    
+      // if there is negative data, set y min
       if (dataMin < 0) {
-        let ySetback = (yMax - dataMin) * 0.15;
         yMin = dataMin - ySetback;
       }
-
+    
+      // choose 0 as default y max
+      let yMax = 0;
+      // when there is postive data, set y max
+      if (dataMax > 0) {
+        yMax = dataMax + ySetback;
+      }
+    
       //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
       let xScale = d3.scaleBand()
         .domain(innerData.map((element) => element[xDataIndex]))
