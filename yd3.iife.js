@@ -3,12 +3,12 @@ var yd3 = (function (exports, d3) {
 
   function author() {
     /**
-   * This library aims to provide the simplest but very powerful and flexible way to draw a graph.
+   * This library aims to provide the simplest but very powerful and flexible way to draw a graph on a web page.
    * One only needs to provide data in a 2d array format and an optional object contains all the figure options.
    * Every single option was carefully thought to provide the best possible user experience.
    * 
-   * This library uses 2d array as data input instead of array of objects for two reasons:
-   * 1. 2d array looks more structurized and easier to visually perceive.
+   * This library uses 2d array as data format instead of an array of objects for two reasons:
+   * 1. 2d array looks more structurized and easier for visual perception.
    * 2. The order of key value pair in objects is not reliable in Javascript.
    */
 
@@ -27,8 +27,10 @@ var yd3 = (function (exports, d3) {
   function getOption(options = {}) {
     //set up individual optional options so no need to feed options in a way none or all
     options.size ? true : options.size = { width: 400, height: 300 };
-    options.margin ? true : options.margin = { left: 50, top: 30, right: 20, bottom: 50 };
+    options.margin ? true : options.margin = { left: 40, top: 40, right: 40, bottom: 40 };
     options.location ? true : options.location = 'body';
+    options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };    // for none or both { x: [], y: ['left', 'right']}
+    options.font ? true : options.font = { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' };
 
     function makeError(msg) {
       throw new Error(msg)
@@ -38,6 +40,8 @@ var yd3 = (function (exports, d3) {
     typeof options.size !== 'object' ? makeError('Option size need to be an object!') : true;
     typeof options.margin !== 'object' ? makeError('Option margin need to be an object!') : true;
     typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
+    typeof options.layout !== 'object' ? makeError('Option font need to be an object!') : true;
+    typeof options.font !== 'object' ? makeError('Option font need to be an object!') : true;
 
     //parse float just in case and get parameters
     let width = +options.size.width;
@@ -49,10 +53,18 @@ var yd3 = (function (exports, d3) {
     let innerWidth = width - left - right;
     let innerHeight = height - top - bottom;
     let location = options.location;
+    let xPosition = options.layout.xPosition;
+    let yPosition = options.layout.yPosition;
+    let xTitlePosition = options.layout.xTitlePosition;
+    let yTitlePosition = options.layout.yTitlePosition;
+    let xAxisFont = options.font.xAxisFont;
+    let yAxisFont = options.font.yAxisFont;
+    let xTitleFont = options.font.xTitleFont;
+    let yTitleFont = options.font.yTitleFont;
 
-    return [width, height, top, left, bottom, right, innerWidth, innerHeight, location]
+    return [width, height, top, left, bottom, right, innerWidth, innerHeight, location, xPosition, yPosition, 
+      xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
   }
-
 
   /**
    * This function set the data point object to be shown on mouseover for a graph.
@@ -66,15 +78,14 @@ var yd3 = (function (exports, d3) {
     if (!d3.select('#' + dataPointDisplayId).node()) {
       // add mouse over text
       d3.select('body')
-        .append('div')
+        .append('p')
         .attr('id', dataPointDisplayId)
         .style("position", "absolute")
         .style("background", "white")
-        .style("padding-left", "5px")  //somehow padding only cause blinking
-        .style("padding-right", "5px")
+        .style("padding", "5px")
         .style("border-radius", "6px")
         .style("display", "none")
-        .attr('font-size', '1.5em');
+        .style('font-size', '1.5em');
     }
 
     return dataPointDisplayId;
@@ -102,7 +113,8 @@ var yd3 = (function (exports, d3) {
     }
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options);
+    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, xPosition, yPosition,
+      xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = data[0][0];
@@ -110,7 +122,7 @@ var yd3 = (function (exports, d3) {
 
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1);
-    
+
     // x y data positions
     let xDataIndex = 0;
     let yDataIndex = 1;
@@ -176,15 +188,42 @@ var yd3 = (function (exports, d3) {
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
     //x axis
-    svg
-      .append('g')
-      .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3.axisBottom(xScale));
+    for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+      svg
+        .append('g')
+        .style("font", xAxisFont)
+        .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+        .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
+    }
+
+    //x axis title
+    for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+      svg
+        .append("text")
+        .style('font', xTitleFont)
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+        .text(xDataName);
+    }
 
     //y axis
-    svg
-      .append('g')
-      .call(d3.axisLeft(yScale));
+    for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+      svg
+        .append('g')
+        .style("font", yAxisFont)
+        .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+        .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
+    }
+
+    //y axis title
+    for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+      svg
+        .append("text")
+        .style('font', yTitleFont)
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right 1/4
+        .text(yDataName);
+    }
 
     // add line at y = 0 when there is negative data
     if (dataMin < 0) {
@@ -193,22 +232,8 @@ var yd3 = (function (exports, d3) {
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
     }
 
-    //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
-
-    //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
-      .text(yDataName);
-
     return graphID;
-    
+
   }
 
   /**
@@ -239,7 +264,7 @@ var yd3 = (function (exports, d3) {
 
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1);
-    
+
     // x y data positions
     let xDataIndex = 0;
 
@@ -299,14 +324,14 @@ var yd3 = (function (exports, d3) {
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
       })
       .on('mousemove', (d) => {
         d3.select('#' + dataPointDisplayId)
           .style('display', null)
           .style('top', (d3.event.pageY - 20) + 'px')
           .style('left', (d3.event.pageX + 'px'))
-          .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
       })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -327,11 +352,11 @@ var yd3 = (function (exports, d3) {
     svg
       .append("text")
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
+      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/4
       .text('Frequency');
 
     return graphID;
-    
+
   }
 
   /**
@@ -676,7 +701,7 @@ var yd3 = (function (exports, d3) {
     svg
       .append("text")
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
+      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/4
       .text('');
 
     return graphID;
@@ -854,7 +879,7 @@ var yd3 = (function (exports, d3) {
     svg
       .append("text")
       .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
+      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/4
       .text(yDataName);
 
     selection

@@ -173,7 +173,7 @@ export function sortableBar(data, options = {}) {
   svg
     .append("text")
     .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-    .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
+    .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/4
     .text(yDataName);
 
   selection

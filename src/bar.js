@@ -5,11 +5,10 @@ import { setDataPoint } from './helper.js';
 /**
  * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
  * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
- * @param {object=} options An optional object contains following objects:  
- *                          size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
- *                          margin, describing the margin inside the svg in the format of `margin: { left: 40, top: 40, right: 40, bottom: 40 }`.  
- *                          location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
- *                          colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+ * @param {object=} options An optional object contains following key value pairs:
+ *                          common option key values pairs
+ *                          graph specific key value pairs:
+ *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
  * @return {string}         append a graph to html and returns the graph id.  
  */
 export function bar(data, options = {}) {
@@ -24,7 +23,8 @@ export function bar(data, options = {}) {
   }
 
   // set all the common options
-  let [width, height, top, left, bottom, right, innerWidth, innerHeight, location] = getOption(options)
+  let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, xPosition, yPosition,
+    xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getOption(options);
 
   // take first column as x name label, second column as y name label, of the first object
   let xDataName = data[0][0];
@@ -32,7 +32,7 @@ export function bar(data, options = {}) {
 
   // get ride of column name, does not modify origin array
   let dataValue = data.slice(1)
-  
+
   // x y data positions
   let xDataIndex = 0;
   let yDataIndex = 1;
@@ -98,15 +98,42 @@ export function bar(data, options = {}) {
     .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
   //x axis
-  svg
-    .append('g')
-    .attr('transform', `translate(0, ${innerHeight})`)
-    .call(d3.axisBottom(xScale));
+  for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+    svg
+      .append('g')
+      .style("font", xAxisFont)
+      .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+      .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
+  }
+
+  //x axis title
+  for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+    svg
+      .append("text")
+      .style('font', xTitleFont)
+      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+      .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+      .text(xDataName);
+  }
 
   //y axis
-  svg
-    .append('g')
-    .call(d3.axisLeft(yScale));
+  for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+    svg
+      .append('g')
+      .style("font", yAxisFont)
+      .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+      .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
+  }
+
+  //y axis title
+  for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+    svg
+      .append("text")
+      .style('font', yTitleFont)
+      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+      .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right 1/4
+      .text(yDataName);
+  }
 
   // add line at y = 0 when there is negative data
   if (dataMin < 0) {
@@ -115,20 +142,6 @@ export function bar(data, options = {}) {
       .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
   }
 
-  //x axis title
-  svg
-    .append("text")
-    .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-    .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-    .text(xDataName);
-
-  //y axis title
-  svg
-    .append("text")
-    .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-    .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
-    .text(yDataName);
-
   return graphID;
-  
+
 }

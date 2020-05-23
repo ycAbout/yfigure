@@ -12,9 +12,9 @@
   <script src='./dist/yd3.min.js'> </script>
   <script>
 
-    size1 = { width: 400, height: 300 };
-    size2 = { width: 600, height: 300 };
-    size3 = { width: 1080, height: 400 };
+    let size1 = { width: 400, height: 300 };
+    let size2 = { width: 600, height: 300 };
+    let size3 = { width: 1080, height: 400 };
 
     function createTitle(level, head) {
       let h = document.createElement(level); // Create the H1 element 
@@ -97,8 +97,9 @@
     // example 3
     yd3.bar(dataBar3, {
       size: size3,
-      margin: { left: 40, top: 20, right: 60, bottom: 40 },
+      margin: { left: 40, top: 40, right: 60, bottom: 40 },
       location: 'body',
+      layout: {xPosition:['top', 'bottom'], yPosition:['left', 'right'], xTitlePosition:['top', 'bottom'], yTitlePosition:['left', 'right']},
       colors: ['steelblue', '#CC2529']
     });
 

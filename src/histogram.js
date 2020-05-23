@@ -30,7 +30,7 @@ export function histogram(data, options = {}) {
 
   // get ride of column name, does not modify origin array
   let dataValue = data.slice(1)
-  
+
   // x y data positions
   let xDataIndex = 0;
 
@@ -90,14 +90,14 @@ export function histogram(data, options = {}) {
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
-        .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+        .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
     })
     .on('mousemove', (d) => {
       d3.select('#' + dataPointDisplayId)
         .style('display', null)
         .style('top', (d3.event.pageY - 20) + 'px')
         .style('left', (d3.event.pageX + 'px'))
-        .text('[' + d.x0 + '-' + d.x1 + '] : ' + d.length);
+        .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
     })
     .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
@@ -118,9 +118,9 @@ export function histogram(data, options = {}) {
   svg
     .append("text")
     .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-    .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/3
+    .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(-90)")  // centre at margin left 1/4
     .text('Frequency');
 
   return graphID;
-  
+
 }
