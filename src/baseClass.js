@@ -1,12 +1,12 @@
 class BaseSimpleGroupAxis {
-  constructor(data, options = {}) {
-    this._options = options;
+  constructor(data, options) {
+    this._options = options;    //_ does not have any real effect, just visually indicate private variables.
     this._data = data;
   }
 
   /**
    * This function parses the command options for a graph.
-   * @param {object=} options An option object contains key value pair describing the options of a graph.
+   * @param {object} options An option object contains key value pair describing the options of a graph.
    *         common options:
    *         size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
    *         margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 50, right: 50, bottom: 50 }`.  
@@ -50,7 +50,7 @@ class BaseSimpleGroupAxis {
 
   /**
  * This function parses the axis options for a graph.
- * @param {object=} options An option object contains key value pair describing the axis options of a graph.
+ * @param {object} options An option object contains key value pair describing the axis options of a graph.
  *         layout, describing positions of axises and titles in the format of 
  *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
  *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  

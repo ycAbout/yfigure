@@ -28,7 +28,8 @@ class Bar extends BaseSimpleGroupAxis {
 * @param {object=} options An optional object contains following key value pairs:
 *                          common option key values pairs
 *                          graph specific key value pairs:
-*                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+*                            colors, describing the colors used for different bars in the format of `colors: ['steelblue', '#CC2529']`.  
+*                            If there is only one bar per x group, the second element represents negative values.
 * @return {string}         append a graph to html and returns the graph id.  
 */
   plot() {
