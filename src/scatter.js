@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 /**
- * A Scatter class for a scatter graph (x and y represent continuous values).  
+ * A Scatter class for a single or multiple scatter graph (x and y represent continuous values).  
  */
 class Scatter extends BaseSimpleGroupAxis {
   /**

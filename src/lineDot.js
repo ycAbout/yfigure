@@ -27,7 +27,7 @@ class LineDot extends BaseSimpleGroupAxis {
   }
 
   /**
-   * This function draws a line with dot graph (y represents continuous value) using d3 and svg.  
+   * This function draws a single or multiple line with dot graph (y represents continuous value) using d3 and svg.  
    * @return {string}         append a graph to html and returns the graph id.  
    */
   plot() {

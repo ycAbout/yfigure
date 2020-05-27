@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 /**
-* A Bar class for a horizontal bar graph (y represents continuous value).
+* A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
 */
 class Bar extends BaseSimpleGroupAxis {
   /**
