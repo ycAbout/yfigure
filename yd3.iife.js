@@ -19,21 +19,31 @@ var yd3 = (function (exports, d3$1) {
     return info
   }
 
+  /**
+   * A base class used for simple and grouped graph with axises, such as bar, line, and scatter.
+   */
   class BaseSimpleGroupAxis {
-    constructor(data, options = {}) {
-      this._options = options;
+    /**
+     * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+     * @param {object=} options  An optional object contains following key value pairs:
+     *                              common option key values pairs
+     *                              graph specific key value pairs:
+     *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
+     */
+    constructor(data, options) {
+      this._options = options;    //_ does not have any real effect, just visually indicate private variables.
       this._data = data;
     }
 
     /**
      * This function parses the command options for a graph.
-     * @param {object=} options An option object contains key value pair describing the options of a graph.
+     * @param {object} options An option object contains key value pair describing the options of a graph.
      *         common options:
      *         size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
      *         margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 50, right: 50, bottom: 50 }`.  
      *         location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
      *         id, describing id of the graph in the format of `id: 'graph123456'`. 
-     * @return [] an array of each individual option.
+     * @return {array} an array of each individual option.
      */
     _getCommonOption(options) {
       //set up individual optional options so no need to feed options in a way none or all
@@ -52,7 +62,6 @@ var yd3 = (function (exports, d3$1) {
       typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
       typeof options.id !== 'string' ? makeError('Option id need to be a string!') : true;
 
-
       //parse float just in case and get parameters
       let width = +options.size.width;
       let height = +options.size.height;
@@ -70,15 +79,15 @@ var yd3 = (function (exports, d3$1) {
 
 
     /**
-   * This function parses the axis options for a graph.
-   * @param {object=} options An option object contains key value pair describing the axis options of a graph.
-   *         layout, describing positions of axises and titles in the format of 
-   *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
-   *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
-   *         font, describing the font of axises and titles in the format of 
-   *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
-   * @return [] an array of each individual axis option.
-   */
+     * This function parses the axis options for a graph.
+     * @param {object} options An option object contains key value pair describing the axis options of a graph.
+     *         layout, describing positions of axises and titles in the format of 
+     *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
+     *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
+     *         font, describing the font of axises and titles in the format of 
+     *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
+     * @return {array} an array of each individual axis option.
+     */
     _getAxisOption(options) {
       //set up individual optional options so no need to feed options in a way none or all
       options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };   // for none or both { xPosition: [], yPosition: ['left', 'right']}
@@ -105,6 +114,10 @@ var yd3 = (function (exports, d3$1) {
       return [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
     }
 
+    /**
+     * This function validates 2d array data format
+     * @param {2darray} data  A 2d array data for the graph, in the format of `[['xName', 'y1Name', 'y2Name'...],['xValue', 'y1Value', 'y2Value'...]]`.  
+     */
     _validate2dArray(data) {
       //validate 2d array data format
       if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
@@ -112,6 +125,11 @@ var yd3 = (function (exports, d3$1) {
       }
     }
 
+    /**
+     * This function parses the data parameters for a graph.
+     * @param {2darray} data A 2d array data for the graph, such as [['xName', 'y1Name', 'y2Name'...],['xValue', 'y1Value', 'y2Value'...]].
+     * @return {array} an array of each individual parameter.
+     */
     _setDataParameters(data) {
       // take first column as x name label, of the first object
       let xDataName = data[0][0];
@@ -166,15 +184,16 @@ var yd3 = (function (exports, d3$1) {
   }
 
   /**
-  * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
-  * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-  * @param {object=} options An optional object contains following key value pairs:
-  *                          common option key values pairs
-  *                          graph specific key value pairs:
-  *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
-  * @return {string}         append a graph to html and returns the graph id.  
+  * A Bar class for a horizontal bar graph (y represents continuous value).
   */
   class Bar extends BaseSimpleGroupAxis {
+    /**
+     * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+     * @param {object=} options  An optional object contains following key value pairs:
+     *                              common option key values pairs
+     *                              graph specific key value pairs:
+     *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
+     */
     constructor(data, options = {}) {
       super(data, options);
 
@@ -188,11 +207,6 @@ var yd3 = (function (exports, d3$1) {
 
     /**
   * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
-  * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-  * @param {object=} options An optional object contains following key value pairs:
-  *                          common option key values pairs
-  *                          graph specific key value pairs:
-  *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
   * @return {string}         append a graph to html and returns the graph id.  
   */
     plot() {
@@ -369,804 +383,718 @@ var yd3 = (function (exports, d3$1) {
   }
 
   /**
-   * This function parses the command options for a graph.
-   * @param {object=} options An option object contains key value pair describing the options of a graph.
-   *         common options:
-   *         size, describing the svg size in the format of `size: { width: 400, height: 300 }`.  
-   *         margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 50, right: 50, bottom: 50 }`.  
-   *         location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
-   * @return [] an array of each individual option.
-   */
-  function getCommonOption(options = {}) {
-    //set up individual optional options so no need to feed options in a way none or all
-    options.size ? true : options.size = { width: 400, height: 300 };
-    options.margin ? true : options.margin = { left: 50, top: 50, right: 50, bottom: 50 };
-    options.location ? true : options.location = 'body';
-    options.id ? true : options.id = 'yd3' + Math.floor(Math.random() * 1000000).toString();
+  * A Histogram class for a histogram graph (y represents frequency).  
+  */
+  class Histogram extends BaseSimpleGroupAxis {
+    /**
+     * 
+     * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+     * @param {object=} options  An optional object contains following key value pairs:
+     *                          common option key values pairs
+     *                          graph specific key value pairs:
+     *                            nBins, describing how many bins to put the data in the format of `nBins: 70`.  
+     *                            color, describing the colors used for bars in the format of `color: 'steelblue'`.  
+     */
+    constructor(data, options = {}) {
+      super(data, options);
+      //set up graph specific option
+      this._options.nBins ? true : this._options.nBins = 50;
+      this._options.color ? true : this._options.color = 'steelblue';
 
-    function makeError(msg) {
-      throw new Error(msg)
+      //validate format
+      if (typeof this._options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
+      if (typeof this._options.color !== 'string') { throw new Error('Option color need to be a string!') }
+
+      this._validate2dArray(this._data);
     }
 
-    //validate format
-    typeof options.size !== 'object' ? makeError('Option size need to be an object!') : true;
-    typeof options.margin !== 'object' ? makeError('Option margin need to be an object!') : true;
-    typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
-    typeof options.id !== 'string' ? makeError('Option id need to be a string!') : true;
-
-    //parse float just in case and get parameters
-    let width = +options.size.width;
-    let height = +options.size.height;
-    let top = +options.margin.top;
-    let left = +options.margin.left;
-    let bottom = +options.margin.bottom;
-    let right = +options.margin.right;
-    let innerWidth = width - left - right;
-    let innerHeight = height - top - bottom;
-    let location = options.location;
-    let id = options.id;
-
-    return [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id]
-  }
-
-  /**
-   * This function parses the axis options for a graph.
-   * @param {object=} options An option object contains key value pair describing the axis options of a graph.
-   *         layout, describing positions of axises and titles in the format of 
-   *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
-   *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
-   *         font, describing the font of axises and titles in the format of 
-   *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
-   * @return [] an array of each individual axis option.
-   */
-  function getAxisOption(options = {}) {
-    //set up individual optional options so no need to feed options in a way none or all
-    options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };   // for none or both { xPosition: [], yPosition: ['left', 'right']}
-    options.font ? true : options.font = { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' };
-
-    function makeError(msg) {
-      throw new Error(msg)
-    }
-
-    //validate format
-    typeof options.layout !== 'object' ? makeError('Option font need to be an object!') : true;
-    typeof options.font !== 'object' ? makeError('Option font need to be an object!') : true;
-
-    //parse float just in case and get parameters
-    let xPosition = options.layout.xPosition;
-    let yPosition = options.layout.yPosition;
-    let xTitlePosition = options.layout.xTitlePosition;
-    let yTitlePosition = options.layout.yTitlePosition;
-    let xAxisFont = options.font.xAxisFont;
-    let yAxisFont = options.font.yAxisFont;
-    let xTitleFont = options.font.xTitleFont;
-    let yTitleFont = options.font.yTitleFont;
-
-    return [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
-  }
-
-
-  function validate2dArray(data) {
-    //validate 2d array data format
-    if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
-      throw new Error('data need to be a 2d array!')
-    }
-  }
-
-
-  function setDataParameters(data) {
-    // take first column as x name label, of the first object
-    let xDataName = data[0][0];
-    let xDataIndex = 0;
-
-    //more than one y data columns
-    let yDataNames = data[0].slice(1);
-
-    let yDataName = (yDataNames.length == 1 ? data[0][1] : '');
-
-    // get ride of column name, does not modify origin array
-    let dataValue = data.slice(1);
-
-    //get max and min data for each y columns
-    let maxYArray = [];
-    let minYArray = [];
-    for (let j = 0; j < yDataNames.length; j++) {
-      maxYArray.push(d3$1.max(dataValue, d => +d[j + 1]));  //parse float
-      minYArray.push(d3$1.min(dataValue, d => +d[j + 1]));  //parse float
-    }
-
-    let dataMax = d3$1.max(maxYArray);
-    let dataMin = d3$1.min(minYArray);
-
-    return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin]
-  }
-
-
-  /**
-   * This function set the data point object to be shown on mouseover for a graph.
-   * @return {string} a string format of dataPointDisplay object ID to be selected.
-   */
-  function setDataPoint() {
-
-    let dataPointDisplayId = 'yd3DataPointDisplay999999';
-
-    //add it if there is no such element, so there is only one per page
-    if (!d3$1.select('#' + dataPointDisplayId).node()) {
-      // add mouse over text
-      d3$1.select('body')
-        .append('p')
-        .attr('id', dataPointDisplayId)
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("padding", "5px")
-        .style("border-radius", "6px")
-        .style("display", "none")
-        .style('font-size', '1.2em');
-    }
-
-    return dataPointDisplayId;
-  }
-
-  /**
-   * This function draws a histogram graph (y represents frequency) using d3 and svg.  
-   * @param {array} data      A 2d array data in the format of `[['columnX'], [n1], [n2]]`.  
-   * @param {object=} options An optional object contains following key value pairs:
-   *                          common option key values pairs
-   *                          graph specific key value pairs:
-   *                            nBins, describing how many bins to put the data in the format of `nBins: 70`.  
+    /**
    * @return {string}          append a graph to html and returns the graph id.  
    */
-  function histogram(data, options = {}) {
-    //set up graph specific option
-    options.nBins ? true : options.nBins = 50;
-    //validate format
-    if (typeof options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
+    plot() {
 
-    let nBins = options.nBins;
+      // set all the common options
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
 
-    validate2dArray(data);
+      // set all the axis options
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
 
-    // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = getCommonOption(options);
+      let nBins = this._options.nBins;
+      let color = this._options.color;
 
-    // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getAxisOption(options);
+      let xDataName = this._data[0][0];
+      let xDataIndex = 0;
+      let yDataName = 'Frequency';
 
-    let xDataName = data[0][0];
-    let xDataIndex = 0;
-    let yDataName = 'Frequency';
+      // get ride of column name, does not modify origin array
+      let dataValue = this._data.slice(1);
 
-    // get ride of column name, does not modify origin array
-    let dataValue = data.slice(1);
+      let dataMax = d3$1.max(dataValue, d => d[xDataIndex]);
+      let dataMin = d3$1.min(dataValue, d => d[xDataIndex]);
 
-    let dataMax = d3$1.max(dataValue, d => d[xDataIndex]);
-    let dataMin = d3$1.min(dataValue, d => d[xDataIndex]);
-
-    let svg = d3$1.select(location)
-      .append('svg')
-      .attr('id', id)
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', `translate(${left},${top})`);
-
-    // X axis scale
-    let xScale = d3$1.scaleLinear()
-      .domain([dataMin, dataMax])
-      .range([0, innerWidth]);
-
-    //evenly generate an array of thresholds, each value = min + nthPortion*(max-min)/nBins
-    let portion = (dataMax - dataMin) / nBins;
-    let thresholdArray = [];
-    for (let i = 0; i < nBins; i++) {
-      thresholdArray.push(dataMin + i * portion);
-    }
-
-    // set the parameters for the histogram
-    let histogram = d3$1.histogram()
-      .value(d => d[xDataIndex])
-      .domain(xScale.domain())
-      .thresholds(thresholdArray); // split data into bins
-
-    // to get the bins
-    let bins = histogram(dataValue);
-
-    let yScale = d3$1.scaleLinear()
-      .range([innerHeight, 0])
-      .domain([0, d3$1.max(bins, d => d.length * 1.1)]);
-
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = setDataPoint();
-
-    // append the bar rectangles to the svg element
-    svg.selectAll("rect")
-      .data(bins)
-      .enter()
-      .append("rect")
-      .attr("x", d => xScale(d.x0))
-      .attr("y", d => yScale(d.length))
-      .attr("width", d => xScale(d.x1) - xScale(d.x0) - 1)
-      .attr("height", d => innerHeight - yScale(d.length))
-      .style("fill", "steelblue")
-      .on('mouseover', (d) => {
-        d3$1.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3$1.event.pageY - 20) + 'px')
-          .style('left', (d3$1.event.pageX + 'px'))
-          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-      })
-      .on('mousemove', (d) => {
-        d3$1.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3$1.event.pageY - 20) + 'px')
-          .style('left', (d3$1.event.pageX + 'px'))
-          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-      })
-      .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
-
-    //x axis
-    for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
-      svg
+      let svg = d3$1.select(location)
+        .append('svg')
+        .attr('id', id)
+        .attr('width', width)
+        .attr('height', height)
         .append('g')
-        .style("font", xAxisFont)
-        .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
-        .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
-    }
-
-    //x axis title
-    for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
-      svg
-        .append("text")
-        .style('font', xTitleFont)
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
-        .text(xDataName);
-    }
-
-    //y axis
-    for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
-      svg
-        .append('g')
-        .style("font", yAxisFont)
-        .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
-        .call(yPosition[i] == 'right' ? d3$1.axisRight(yScale) : d3$1.axisLeft(yScale));
-    }
-
-    //y axis title
-    for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
-      svg
-        .append("text")
-        .style('font', yTitleFont)
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
-        .text(yDataName);
-    }
-
-    return id;
-
-  }
-
-  /**
-   * This function draws a line with dot graph (y represents continuous value) using d3 and svg.  
-   * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
-   * @param {object=} options An optional object contains following key value pairs:
-   *                          common option key values pairs
-   *                          graph specific key value pairs:
-   *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
-   *                            colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
-   * @return {string}         append a graph to html and returns the graph id.  
-   */
-  function lineDot(data, options = {}) {
-
-    //set up graph specific option
-    options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-    options.dotRadius ? true : options.dotRadius = 4;
-    //validate format
-    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-    if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
-
-    let colors = options.colors;
-    let dotRadius = options.dotRadius;
-    validate2dArray(data);
-
-    // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = getCommonOption(options);
-
-    // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getAxisOption(options);
-
-    // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = setDataParameters(data);
-
-    // make highest number approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
-
-    let yMin = dataMin - ySetback;
-    let yMax = dataMax + ySetback;
-
-    let svg = d3$1.select(location)
-      .append('svg')
-      .attr('id', id)
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', `translate(${left},${top})`);
-
-    //scalePoint can use padding but not scaleOrdinal
-    let xScale = d3$1.scalePoint()
-      .domain(dataValue.map((element) => element[xDataIndex]))
-      .range([0, innerWidth])
-      .padding(0.2);
-
-    let yScale = d3$1.scaleLinear()
-      .domain([yMin, yMax])  // data points off axis
-      .range([innerHeight, 0]);
-
-    //colors for difference lines
-    let colorScale = d3$1.scaleOrdinal()
-      .domain(yDataNames)
-      .range(colors);
-
-    // initialize legend position
-    let legendx = 8;
-    let legendy = 8;
-
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = setDataPoint();
-
-    // draw each y data
-    for (let i = 0; i < yDataNames.length; i++) {
-      // draw a line
-      svg.append("path")
-        .datum(dataValue)
-        .attr("fill", "none")
-        .attr("stroke", colorScale(yDataNames[i]))
-        .attr("stroke-width", 2)
-        .attr("d", d3$1.line()
-          .x(function (element) { return xScale(element[xDataIndex]) })
-          .y(function (element) { return yScale(element[i + 1]) })
-        );
-
-      // Add the points
-      svg
-        .append("g")
-        .selectAll("circle")
-        .data(dataValue)
-        .join("circle")
-        .attr("cx", function (element) { return xScale(element[xDataIndex]) })
-        .attr("cy", function (element) { return yScale(element[i + 1]) })
-        .attr("r", dotRadius)
-        .attr("fill", colorScale(yDataNames[i]))
-        .on('mouseover', (element) => {
-          d3$1.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3$1.event.pageY - 20) + 'px')
-            .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mousemove', (element) => {
-          d3$1.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3$1.event.pageY - 20) + 'px')
-            .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
-
-      if (yDataNames.length > 1) {
-        // Add legend
-        // if add current legend spill over innerWidth
-        if (legendx + yDataNames[i].length * 8 + 24 > innerWidth) {
-          legendy += 16;    // start a new line
-          legendx = 0;
-        }
-
-        svg
-          .append('path')
-          .attr("stroke", colorScale(yDataNames[i]))
-          .attr("stroke-width", 2)
-          .attr("d", d3$1.line()([[legendx, legendy], [legendx + 20, legendy]]));
-
-        svg
-          .append("circle")
-          .attr("cx", legendx + 10)
-          .attr("cy", legendy)
-          .attr("r", 3)
-          .attr("fill", colorScale(yDataNames[i]));
-
-        svg
-          .append('text')
-          .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-          .attr("transform", "translate(" + (legendx + 24) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
-          .attr('fill', colorScale(yDataNames[i]))
-          .text(yDataNames[i]);
-
-        // set up next legend x and y
-        legendx += yDataNames[i].length * 8 + 32;
-      }
-    }
-
-    //x axis
-    svg
-      .append('g')
-      .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3$1.axisBottom(xScale));
-
-    //y axis
-    svg
-      .append('g')
-      .call(d3$1.axisLeft(yScale));
-
-    //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
-
-    //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/3
-      .text(yDataName);
-
-    return id;
-
-  }
-
-  /**
-   * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.  
-   * @param {array} data      A 2d array data in the format of `[['columnXName',  'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
-   * @param {object=} options An optional object contains following key value pairs:
-   *                          common option key values pairs
-   *                          graph specific key value pairs:
-   *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
-   *                            colors: describing the colors used for different lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
-   * @return {string}         append a graph to html and returns the graph id.  
-   */
-  function scatter(data, options = {}) {
-    //set up graph specific option
-    options.colors ? true : options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-    options.dotRadius ? true : options.dotRadius = 4;
-    //validate format
-    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-    if (typeof options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
-
-    let colors = options.colors;
-    let dotRadius = options.dotRadius;
-
-    validate2dArray(data);
-
-    // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = getCommonOption(options);
-
-    // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getAxisOption(options);
-
-    // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = setDataParameters(data);
-
-    // make highest number approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
-
-    let yMin = dataMin - ySetback;
-    let yMax = dataMax + ySetback;
-
-    // set up x scale, make data points approximately 2% off axis
-    let xMax = d3$1.max(dataValue, element => element[xDataIndex]);
-    let xMin = d3$1.min(dataValue, element => element[xDataIndex]);
-    let xSetback = (xMax - xMin) * 0.02;
-
-    let svg = d3$1.select(location)
-      .append('svg')
-      .attr('id', id)
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', `translate(${left},${top})`);
-
-    let xScale = d3$1.scaleLinear()
-      .domain([xMin - xSetback, xMax])  // data points off axis
-      .range([0, innerWidth]);
-
-    let yScale = d3$1.scaleLinear()
-      .domain([yMin, yMax])  // data points off axis
-      .range([innerHeight, 0]);
-
-    //colors for difference lines
-    let colorScale = d3$1.scaleOrdinal()
-      .domain(yDataNames)
-      .range(colors);
-
-    // initialize legend position
-    let legendx = 8;
-    let legendy = 8;
-
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = setDataPoint();
-
-    // draw each y
-    for (let i = 0; i < yDataNames.length; i++) {
-
-      // Add the points
-      svg
-        .append("g")
-        .selectAll("circle")
-        .data(dataValue)
-        .enter()
-        .append("circle")
-        .attr("cx", function (element) { return xScale(element[xDataIndex]) })
-        .attr("cy", function (element) { return yScale(element[i + 1]) })
-        .attr("r", dotRadius)
-        .attr("fill", colorScale(yDataNames[i]))
-        .on('mouseover', (element) => {
-          d3$1.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3$1.event.pageY - 20) + 'px')
-            .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mousemove', (element) => {
-          d3$1.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3$1.event.pageY - 20) + 'px')
-            .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
-
-      if (yDataNames.length > 1) {
-        // Add legend
-        // if add current legend spill over innerWidth
-        if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
-          legendy += 16;    // start a new line
-          legendx = 0;
-        }
-
-        svg
-          .append("circle")
-          .attr("cx", legendx + 3)
-          .attr("cy", legendy)
-          .attr("r", 3)
-          .attr("fill", colorScale(yDataNames[i]));
-
-        svg
-          .append('text')
-          .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-          .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
-          .attr('fill', colorScale(yDataNames[i]))
-          .text(yDataNames[i]);
-
-        // set up next legend x and y
-        legendx += yDataNames[i].length * 8 + 18;
-      }
-    }
-
-    //x axis
-    svg
-      .append('g')
-      .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3$1.axisBottom(xScale));
-
-    //y axis
-    svg
-      .append('g')
-      .call(d3$1.axisLeft(yScale));
-
-    //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
-
-    //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
-      .text(yDataName);
-
-    return id;
-
-  }
-
-  /**
-   * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
-   * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-   * @param {object=} options An optional object contains following key value pairs:
-   *                          common option key values pairs
-   *                          graph specific key value pairs:
-   *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
-   * @return {string}         append a graph to html and returns the graph id.  
-   */
-  function sortableBar(data, options = {}) {
-    //set up graph specific option
-    options.colors ? true : options.colors = ['steelblue', '#CC2529'];
-    //validate format
-    if (typeof options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-
-    let colors = options.colors;
-
-    validate2dArray(data);
-
-    // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = getCommonOption(options);
-
-    // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = getAxisOption(options);
-
-    // take first column as x name label, second column as y name label, of the first object
-    let xDataName = data[0][0];
-    let yDataName = data[0][1];
-    // x y data positions
-    let xDataIndex = 0;
-    let yDataIndex = 1;
-
-    // get ride of column name, does not modify origin array
-    let dataValue = data.slice(1);
-
-    let selection = d3$1.select(location)
-      .append('span')       //non-block container
-      .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
-      .attr('id', id)
-      .append('div')   // make it on top of figure
-      .attr('style', `margin: ${top}px 0 0 ${left}px; width: ${width - left}px`)        //px need to be specified, otherwise not working
-      .text('Sort by: ')
-      .append('select');
-
-    selection.selectAll("option")
-      .data(['default', 'descending', 'ascending'])
-      .join("option")
-      .attr("value", d => d)
-      .text(d => d);
-
-    let svg = d3$1.select('#' + id)
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', `translate(${left},${top})`);
-
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = setDataPoint();
-
-    function draw(dataValue, svg, order) {
-      let innerData;
-      switch (order) {
-        case 'descending':
-          // this creates a deep copy of data so the original data can be preserved
-          innerData = JSON.parse(JSON.stringify(dataValue));
-          innerData.sort((a, b) => b[yDataIndex] - a[yDataIndex]);
-          break;
-        case 'ascending':
-          innerData = JSON.parse(JSON.stringify(dataValue));
-          innerData.sort((a, b) => a[yDataIndex] - b[yDataIndex]);
-          break;
-        default:
-          innerData = dataValue;
+        .attr('transform', `translate(${left},${top})`);
+
+      // X axis scale
+      let xScale = d3$1.scaleLinear()
+        .domain([dataMin, dataMax])
+        .range([0, innerWidth]);
+
+      //evenly generate an array of thresholds, each value = min + nthPortion*(max-min)/nBins
+      let portion = (dataMax - dataMin) / nBins;
+      let thresholdArray = [];
+      for (let i = 0; i < nBins; i++) {
+        thresholdArray.push(dataMin + i * portion);
       }
 
-      let dataMax = d3$1.max(innerData, element => element[yDataIndex]);
-      let dataMin = d3$1.min(innerData, element => element[yDataIndex]);
+      // set the parameters for the histogram
+      let histogram = d3$1.histogram()
+        .value(d => d[xDataIndex])
+        .domain(xScale.domain())
+        .thresholds(thresholdArray); // split data into bins
 
-      // make tallest bar approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * 0.1;
-
-      // choose 0 as default y min
-      let yMin = 0;
-
-      // if there is negative data, set y min
-      if (dataMin < 0) {
-        yMin = dataMin - ySetback;
-      }
-
-      // choose 0 as default y max
-      let yMax = 0;
-      // when there is postive data, set y max
-      if (dataMax > 0) {
-        yMax = dataMax + ySetback;
-      }
-
-      //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
-      let xScale = d3$1.scaleBand()
-        .domain(innerData.map((element) => element[xDataIndex]))
-        .range([0, innerWidth])
-        .padding(0.1);
+      // to get the bins
+      let bins = histogram(dataValue);
 
       let yScale = d3$1.scaleLinear()
-        .domain([yMin, yMax])
-        .range([innerHeight, 0]);
+        .range([innerHeight, 0])
+        .domain([0, d3$1.max(bins, d => d.length * 1.1)]);
 
-      //draw graph, update works with select rect
-      svg
-        .selectAll('rect')
-        .data(innerData)
-        .join(
-          enter => enter.append('rect'),
-          update => update
-        )
-        .attr('x', element => xScale(element[xDataIndex]))
-        .attr('width', xScale.bandwidth())
-        .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
-        .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
-        .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
-        .on('mouseover', (element) => {
+      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+      let dataPointDisplayId = this._setDataPoint();
+
+      // append the bar rectangles to the svg element
+      svg.selectAll("rect")
+        .data(bins)
+        .enter()
+        .append("rect")
+        .attr("x", d => xScale(d.x0))
+        .attr("y", d => yScale(d.length))
+        .attr("width", d => xScale(d.x1) - xScale(d.x0) - 1)
+        .attr("height", d => innerHeight - yScale(d.length))
+        .style("fill", color)
+        .on('mouseover', (d) => {
           d3$1.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3$1.event.pageY - 20) + 'px')
             .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+            .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
         })
-        .on('mousemove', (element) => {
+        .on('mousemove', (d) => {
           d3$1.select('#' + dataPointDisplayId)
             .style('display', null)
             .style('top', (d3$1.event.pageY - 20) + 'px')
             .style('left', (d3$1.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+            .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
         })
         .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
 
-      // remove the x and y axis if exist
-      d3$1.select('#' + id + 'x')
-        .remove();
-      d3$1.select('#' + id + 'y')
-        .remove();
-      d3$1.select('#' + id + 'y0')
-        .remove();
+      //x axis
+      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+        svg
+          .append('g')
+          .style("font", xAxisFont)
+          .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+          .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
+      }
 
+      //x axis title
+      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+        svg
+          .append("text")
+          .style('font', xTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+          .text(xDataName);
+      }
+
+      //y axis
+      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+        svg
+          .append('g')
+          .style("font", yAxisFont)
+          .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+          .call(yPosition[i] == 'right' ? d3$1.axisRight(yScale) : d3$1.axisLeft(yScale));
+      }
+
+      //y axis title
+      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+        svg
+          .append("text")
+          .style('font', yTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+          .text(yDataName);
+      }
+
+      return id;
+
+    }
+
+  }
+
+  /**
+   * A LineDot class for a line with dot graph (y represents continuous value).  
+   */
+  class LineDot extends BaseSimpleGroupAxis {
+    /**
+     * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
+     * @param {object=} options An optional object contains following key value pairs:
+     *                          common option key values pairs
+     *                          graph specific key value pairs:
+     *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
+     *                            colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+     */
+    constructor(data, options = {}) {
+      super(data, options);
+
+      //set up graph specific option
+      this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+      this._options.dotRadius ? true : this._options.dotRadius = 4;
+      //validate format
+      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+      if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
+
+      this._validate2dArray(this._data);
+    }
+
+    /**
+     * This function draws a line with dot graph (y represents continuous value) using d3 and svg.  
+     * @return {string}         append a graph to html and returns the graph id.  
+     */
+    plot() {
+
+      let colors = this._options.colors;
+      let dotRadius = this._options.dotRadius;
+
+      // set all the common options
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+
+      // set all the axis options
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+
+      // set data parameters
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+
+      // make highest number approximately 10% range off the range
+      let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+
+      let yMin = dataMin - ySetback;
+      let yMax = dataMax + ySetback;
+
+      let svg = d3$1.select(location)
+        .append('svg')
+        .attr('id', id)
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${left},${top})`);
+
+      //scalePoint can use padding but not scaleOrdinal
+      let xScale = d3$1.scalePoint()
+        .domain(dataValue.map((element) => element[xDataIndex]))
+        .range([0, innerWidth])
+        .padding(0.2);
+
+      let yScale = d3$1.scaleLinear()
+        .domain([yMin, yMax])  // data points off axis
+        .range([innerHeight, 0]);
+
+      //colors for difference lines
+      let colorScale = d3$1.scaleOrdinal()
+        .domain(yDataNames)
+        .range(colors);
+
+      // initialize legend position
+      let legendx = 8;
+      let legendy = 8;
+
+      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+      let dataPointDisplayId = this._setDataPoint();
+
+      // draw each y data
+      for (let i = 0; i < yDataNames.length; i++) {
+        // draw a line
+        svg.append("path")
+          .datum(dataValue)
+          .attr("fill", "none")
+          .attr("stroke", colorScale(yDataNames[i]))
+          .attr("stroke-width", 2)
+          .attr("d", d3$1.line()
+            .x(function (element) { return xScale(element[xDataIndex]) })
+            .y(function (element) { return yScale(element[i + 1]) })
+          );
+
+        // Add the points
+        svg
+          .append("g")
+          .selectAll("circle")
+          .data(dataValue)
+          .join("circle")
+          .attr("cx", function (element) { return xScale(element[xDataIndex]) })
+          .attr("cy", function (element) { return yScale(element[i + 1]) })
+          .attr("r", dotRadius)
+          .attr("fill", colorScale(yDataNames[i]))
+          .on('mouseover', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[i + 1]);
+          })
+          .on('mousemove', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[i + 1]);
+          })
+          .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
+
+        if (yDataNames.length > 1) {
+          // Add legend
+          // if add current legend spill over innerWidth
+          if (legendx + yDataNames[i].length * 8 + 24 > innerWidth) {
+            legendy += 16;    // start a new line
+            legendx = 0;
+          }
+
+          svg
+            .append('path')
+            .attr("stroke", colorScale(yDataNames[i]))
+            .attr("stroke-width", 2)
+            .attr("d", d3$1.line()([[legendx, legendy], [legendx + 20, legendy]]));
+
+          svg
+            .append("circle")
+            .attr("cx", legendx + 10)
+            .attr("cy", legendy)
+            .attr("r", 3)
+            .attr("fill", colorScale(yDataNames[i]));
+
+          svg
+            .append('text')
+            .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
+            .attr("transform", "translate(" + (legendx + 24) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i]);
+
+          // set up next legend x and y
+          legendx += yDataNames[i].length * 8 + 32;
+        }
+      }
+
+      //x axis
       svg
         .append('g')
-        .attr('id', id + 'x')
         .attr('transform', `translate(0, ${innerHeight})`)
         .call(d3$1.axisBottom(xScale));
 
+      //y axis
       svg
         .append('g')
-        .attr('id', id + 'y')
         .call(d3$1.axisLeft(yScale));
 
-      // add line at y = 0 when there is negative data
-      if (dataMin < 0) {
-        svg.append("path")
-          .attr('id', id + 'y0')
-          .attr("stroke", 'black')
-          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
-      }
+      //x axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
+        .text(xDataName);
+
+      //y axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/3
+        .text(yDataName);
+
+      return id;
+
     }
-
-    //initialize
-    draw(dataValue, svg, 'default');
-
-    //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
-
-    //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
-      .text(yDataName);
-
-    selection
-      .on('change', function () {
-        draw(dataValue, svg, this.value);
-      });
-
-    return id;
   }
 
+  /**
+   * A Scatter class for a scatter graph (x and y represent continuous values).  
+   */
+  class Scatter extends BaseSimpleGroupAxis {
+    /**
+     * @param {array} data      A 2d array data in the format of `[['columnXName',  'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
+     * @param {object=} options An optional object contains following key value pairs:
+     *                          common option key values pairs
+     *                          graph specific key value pairs:
+     *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
+     *                            colors: describing the colors used for different lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+     */
+    constructor(data, options = {}) {
+      super(data, options);
+
+      //set up graph specific option
+      this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+      this._options.dotRadius ? true : this._options.dotRadius = 4;
+      //validate format
+      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+      if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
+
+      this._validate2dArray(this._data);
+    }
+
+    /**
+     * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.  
+     * @return {string}         append a graph to html and returns the graph id.  
+     */
+    plot() {
+
+      let colors = this._options.colors;
+      let dotRadius = this._options.dotRadius;
+
+      // set all the common options
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+
+      // set all the axis options
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+
+      // set data parameters
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+
+      // make highest number approximately 10% range off the range
+      let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+
+      let yMin = dataMin - ySetback;
+      let yMax = dataMax + ySetback;
+
+      // set up x scale, make data points approximately 2% off axis
+      let xMax = d3$1.max(dataValue, element => element[xDataIndex]);
+      let xMin = d3$1.min(dataValue, element => element[xDataIndex]);
+      let xSetback = (xMax - xMin) * 0.02;
+
+      let svg = d3$1.select(location)
+        .append('svg')
+        .attr('id', id)
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${left},${top})`);
+
+      let xScale = d3$1.scaleLinear()
+        .domain([xMin - xSetback, xMax])  // data points off axis
+        .range([0, innerWidth]);
+
+      let yScale = d3$1.scaleLinear()
+        .domain([yMin, yMax])  // data points off axis
+        .range([innerHeight, 0]);
+
+      //colors for difference lines
+      let colorScale = d3$1.scaleOrdinal()
+        .domain(yDataNames)
+        .range(colors);
+
+      // initialize legend position
+      let legendx = 8;
+      let legendy = 8;
+
+      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+      let dataPointDisplayId = this._setDataPoint();
+
+      // draw each y
+      for (let i = 0; i < yDataNames.length; i++) {
+
+        // Add the points
+        svg
+          .append("g")
+          .selectAll("circle")
+          .data(dataValue)
+          .enter()
+          .append("circle")
+          .attr("cx", function (element) { return xScale(element[xDataIndex]) })
+          .attr("cy", function (element) { return yScale(element[i + 1]) })
+          .attr("r", dotRadius)
+          .attr("fill", colorScale(yDataNames[i]))
+          .on('mouseover', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[i + 1]);
+          })
+          .on('mousemove', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[i + 1]);
+          })
+          .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
+
+        if (yDataNames.length > 1) {
+          // Add legend
+          // if add current legend spill over innerWidth
+          if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
+            legendy += 16;    // start a new line
+            legendx = 0;
+          }
+
+          svg
+            .append("circle")
+            .attr("cx", legendx + 3)
+            .attr("cy", legendy)
+            .attr("r", 3)
+            .attr("fill", colorScale(yDataNames[i]));
+
+          svg
+            .append('text')
+            .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
+            .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i]);
+
+          // set up next legend x and y
+          legendx += yDataNames[i].length * 8 + 18;
+        }
+      }
+
+      //x axis
+      svg
+        .append('g')
+        .attr('transform', `translate(0, ${innerHeight})`)
+        .call(d3$1.axisBottom(xScale));
+
+      //y axis
+      svg
+        .append('g')
+        .call(d3$1.axisLeft(yScale));
+
+      //x axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
+        .text(xDataName);
+
+      //y axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
+        .text(yDataName);
+
+      return id;
+
+    }
+  }
+
+  /**
+   * A SortableBar class for a sortable bar graph (y represent continuous values).  
+   */
+  class SortableBar extends BaseSimpleGroupAxis {
+    /**
+     * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+     * @param {object=} options An optional object contains following key value pairs:
+     *                          common option key values pairs
+     *                          graph specific key value pairs:
+     *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+     */
+    constructor(data, options = {}) {
+      super(data, options);
+
+      //set up graph specific option
+      this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
+      //validate format
+      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+
+      this._validate2dArray(this._data);
+    }
+
+    /**
+     * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
+     * @return {string}         append a graph to html and returns the graph id.  
+     */
+    plot() {
+
+      let colors = this._options.colors;
+
+      // set all the common options
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+
+      // set all the axis options
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+
+      // take first column as x name label, second column as y name label, of the first object
+      let xDataName = this._data[0][0];
+      let yDataName = this._data[0][1];
+      // x y data positions
+      let xDataIndex = 0;
+      let yDataIndex = 1;
+
+      // get ride of column name, does not modify origin array
+      let dataValue = this._data.slice(1);
+
+      let selection = d3$1.select(location)
+        .append('span')       //non-block container
+        .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
+        .attr('id', id)
+        .append('div')   // make it on top of figure
+        .attr('style', `margin: ${top}px 0 0 ${left}px; width: ${width - left}px`)        //px need to be specified, otherwise not working
+        .text('Sort by: ')
+        .append('select');
+
+      selection.selectAll("option")
+        .data(['default', 'descending', 'ascending'])
+        .join("option")
+        .attr("value", d => d)
+        .text(d => d);
+
+      let svg = d3$1.select('#' + id)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${left},${top})`);
+
+      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
+      let dataPointDisplayId = this._setDataPoint();
+
+      function draw(dataValue, svg, order) {
+        let innerData;
+        switch (order) {
+          case 'descending':
+            // this creates a deep copy of data so the original data can be preserved
+            innerData = JSON.parse(JSON.stringify(dataValue));
+            innerData.sort((a, b) => b[yDataIndex] - a[yDataIndex]);
+            break;
+          case 'ascending':
+            innerData = JSON.parse(JSON.stringify(dataValue));
+            innerData.sort((a, b) => a[yDataIndex] - b[yDataIndex]);
+            break;
+          default:
+            innerData = dataValue;
+        }
+
+        let dataMax = d3$1.max(innerData, element => element[yDataIndex]);
+        let dataMin = d3$1.min(innerData, element => element[yDataIndex]);
+
+        // make tallest bar approximately 10% range off the range
+        let ySetback = (dataMax - dataMin) * 0.1;
+
+        // choose 0 as default y min
+        let yMin = 0;
+
+        // if there is negative data, set y min
+        if (dataMin < 0) {
+          yMin = dataMin - ySetback;
+        }
+
+        // choose 0 as default y max
+        let yMax = 0;
+        // when there is postive data, set y max
+        if (dataMax > 0) {
+          yMax = dataMax + ySetback;
+        }
+
+        //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
+        let xScale = d3$1.scaleBand()
+          .domain(innerData.map((element) => element[xDataIndex]))
+          .range([0, innerWidth])
+          .padding(0.1);
+
+        let yScale = d3$1.scaleLinear()
+          .domain([yMin, yMax])
+          .range([innerHeight, 0]);
+
+        //draw graph, update works with select rect
+        svg
+          .selectAll('rect')
+          .data(innerData)
+          .join(
+            enter => enter.append('rect'),
+            update => update
+          )
+          .attr('x', element => xScale(element[xDataIndex]))
+          .attr('width', xScale.bandwidth())
+          .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
+          .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
+          .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
+          .on('mouseover', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+          })
+          .on('mousemove', (element) => {
+            d3$1.select('#' + dataPointDisplayId)
+              .style('display', null)
+              .style('top', (d3$1.event.pageY - 20) + 'px')
+              .style('left', (d3$1.event.pageX + 'px'))
+              .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+          })
+          .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
+
+        // remove the x and y axis if exist
+        d3$1.select('#' + id + 'x')
+          .remove();
+        d3$1.select('#' + id + 'y')
+          .remove();
+        d3$1.select('#' + id + 'y0')
+          .remove();
+
+        svg
+          .append('g')
+          .attr('id', id + 'x')
+          .attr('transform', `translate(0, ${innerHeight})`)
+          .call(d3$1.axisBottom(xScale));
+
+        svg
+          .append('g')
+          .attr('id', id + 'y')
+          .call(d3$1.axisLeft(yScale));
+
+        // add line at y = 0 when there is negative data
+        if (dataMin < 0) {
+          svg.append("path")
+            .attr('id', id + 'y0')
+            .attr("stroke", 'black')
+            .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
+        }
+      }
+
+      //initialize
+      draw(dataValue, svg, 'default');
+
+      //x axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
+        .text(xDataName);
+
+      //y axis title
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
+        .text(yDataName);
+
+      selection
+        .on('change', function () {
+          draw(dataValue, svg, this.value);
+        });
+
+      return id;
+    }
+  }
+
+  exports.Bar = Bar;
+  exports.Histogram = Histogram;
+  exports.LineDot = LineDot;
+  exports.Scatter = Scatter;
+  exports.SortableBar = SortableBar;
   exports.author = author;
-  exports.bar = Bar;
-  exports.histogram = histogram;
-  exports.lineDot = lineDot;
-  exports.scatter = scatter;
-  exports.sortableBar = sortableBar;
 
   return exports;
 

@@ -2,15 +2,16 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 /**
-* This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
-* @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-* @param {object=} options An optional object contains following key value pairs:
-*                          common option key values pairs
-*                          graph specific key value pairs:
-*                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
-* @return {string}         append a graph to html and returns the graph id.  
+* A Bar class for a horizontal bar graph (y represents continuous value).
 */
 class Bar extends BaseSimpleGroupAxis {
+  /**
+   * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+   * @param {object=} options  An optional object contains following key value pairs:
+   *                              common option key values pairs
+   *                              graph specific key value pairs:
+   *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
+   */
   constructor(data, options = {}) {
     super(data, options);
 
@@ -24,13 +25,6 @@ class Bar extends BaseSimpleGroupAxis {
 
   /**
 * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
-* @param {array} data      A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
-* @param {object=} options An optional object contains following key value pairs:
-*                          common option key values pairs
-*                          graph specific key value pairs:
-*                            colors, describing the colors used for different bars in the format of 
-*                            `colors: ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D']`.  
-*                            If there is only one bar per x group, the second element represent negative values.  
 * @return {string}         append a graph to html and returns the graph id.  
 */
   plot() {

@@ -111,21 +111,21 @@
     createTitle("H2", "bar");
 
     // example 1
-    let bar1 = new yd3.bar(dataBar1);
+    let bar1 = new yd3.Bar(dataBar1);
     // example 2
-    let bar2 = new yd3.bar(dataBar2, {
+    let bar2 = new yd3.Bar(dataBar2, {
       size: size2,
     });
     br();
     // example 3
-    let bar3 = new yd3.bar(dataBar3, {
+    let bar3 = new yd3.Bar(dataBar3, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
       layout: { xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] },
       colors: ['steelblue', '#CC2529']
     });
-    
+
     bar1.plot();
     bar2.plot();
     bar3.plot();
@@ -134,14 +134,14 @@
     createTitle("H2", "group bar");
 
     // example 1
-    let bar4 = new yd3.bar(dataBar4);
+    let bar4 = new yd3.Bar(dataBar4);
     // example 2
-    let bar5 = new yd3.bar(dataBar5, {
+    let bar5 = new yd3.Bar(dataBar5, {
       size: size2,
     });
     br();
     // example 3
-    let bar6 = new yd3.bar(dataBar6, {
+    let bar6 = new yd3.Bar(dataBar6, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
@@ -157,50 +157,64 @@
     createTitle("H2", "sortableBar");
 
     // example 1
-    yd3.sortableBar(dataBar1);
+    let sortableBar1 = new yd3.SortableBar(dataBar1);
     // example 2
-    yd3.sortableBar(dataBar2, {
+    let sortableBar2 = new yd3.SortableBar(dataBar2, {
       size: size2,
     });
     br();
     // example 3
-    yd3.sortableBar(dataBar3, {
+    let sortableBar3 = new yd3.SortableBar(dataBar3, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
       colors: ['steelblue', '#CC2529']
     });
 
+    sortableBar1.plot();
+    sortableBar2.plot();
+    sortableBar3.plot();
+
+
+
     createTitle("H2", "histogram");
 
+
     // example 1  
-    yd3.histogram(dataHistogram);
+    let histogram1 = new yd3.Histogram(dataHistogram);
     // example 2 
-    yd3.histogram(dataHistogram, {
+    let histogram2 = new yd3.Histogram(dataHistogram, {
       size: size2,
       nBins: 30
     });
     br();
     // example 3 
-    yd3.histogram(dataHistogram, {
+    let histogram3 = new yd3.Histogram(dataHistogram, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
       nBins: 100
     });
 
+    histogram1.plot();
+    histogram2.plot();
+    histogram3.plot();
+
+
+
+
     createTitle("H2", "line");
 
     // example 1  
-    yd3.lineDot(dataLineDot1, { dotRadius: 1 });
+    let linedot1 = new yd3.LineDot(dataLineDot1, { dotRadius: 1 });
     // example 2
-    yd3.lineDot(dataLineDot2, {
+    let linedot2 = new yd3.LineDot(dataLineDot2, {
       size: size2,
       dotRadius: 1
     });
     br();
     // example 3 
-    yd3.lineDot(dataLineDot3, {
+    let linedot3 = new yd3.LineDot(dataLineDot3, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
@@ -212,14 +226,14 @@
     createTitle("H2", "lineDot");
 
     // example 1  
-    yd3.lineDot(dataLineDot1, { dotRadius: 5 });
+    let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5 });
     // example 2
-    yd3.lineDot(dataLineDot2, {
+    let linedot5 = new yd3.LineDot(dataLineDot2, {
       size: size2,
     });
     br();
     // example 3 
-    yd3.lineDot(dataLineDot3, {
+    let linedot6 = new yd3.LineDot(dataLineDot3, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
@@ -228,23 +242,34 @@
     });
 
 
+    linedot1.plot();
+    linedot2.plot();
+    linedot3.plot();
+    linedot4.plot();
+    linedot5.plot();
+    linedot6.plot();
+
     createTitle("H2", "scatter");
 
     // example 1  
-    yd3.scatter(dataScatter1);
+    let scatter1 = new yd3.Scatter(dataScatter1);
     // example 2 
-    yd3.scatter(dataScatter2, {
+    let scatter2 = new yd3.Scatter(dataScatter2, {
       size: size2,
     });
     br();
     // example 3 
-    yd3.scatter(dataScatter3, {
+    let scatter3 = new yd3.Scatter(dataScatter3, {
       size: size3,
       margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
       dotRadius: 4,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
+
+    scatter1.plot();
+    scatter2.plot();
+    scatter3.plot();
 
   </script>
 </body>

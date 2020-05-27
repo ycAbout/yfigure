@@ -2,8 +2,8 @@
 
 export { author } from './src/author.js';
 export { Bar } from './src/bar.js';
-export { histogram } from './src/histogram.js';
-export { lineDot } from './src/lineDot.js';
-export { scatter } from './src/scatter.js';
-export { sortableBar } from './src/sortableBar.js';
+export { Histogram } from './src/histogram.js';
+export { LineDot } from './src/lineDot.js';
+export { Scatter } from './src/scatter.js';
+export { SortableBar } from './src/sortableBar.js';
 

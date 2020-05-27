@@ -1,4 +1,14 @@
+/**
+ * A base class used for simple and grouped graph with axises, such as bar, line, and scatter.
+ */
 class BaseSimpleGroupAxis {
+  /**
+   * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
+   * @param {object=} options  An optional object contains following key value pairs:
+   *                              common option key values pairs
+   *                              graph specific key value pairs:
+   *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
+   */
   constructor(data, options) {
     this._options = options;    //_ does not have any real effect, just visually indicate private variables.
     this._data = data;
@@ -12,7 +22,7 @@ class BaseSimpleGroupAxis {
    *         margin, describing the margin inside the svg in the format of `margin: { left: 50, top: 50, right: 50, bottom: 50 }`.  
    *         location, describing where to put the graph in the format of `location: 'body', or '#<ID>'`.  
    *         id, describing id of the graph in the format of `id: 'graph123456'`. 
-   * @return [] an array of each individual option.
+   * @return {array} an array of each individual option.
    */
   _getCommonOption(options) {
     //set up individual optional options so no need to feed options in a way none or all
@@ -31,7 +41,6 @@ class BaseSimpleGroupAxis {
     typeof options.location !== 'string' ? makeError('Option location need to be a string!') : true;
     typeof options.id !== 'string' ? makeError('Option id need to be a string!') : true;
 
-
     //parse float just in case and get parameters
     let width = +options.size.width;
     let height = +options.size.height;
@@ -49,15 +58,15 @@ class BaseSimpleGroupAxis {
 
 
   /**
- * This function parses the axis options for a graph.
- * @param {object} options An option object contains key value pair describing the axis options of a graph.
- *         layout, describing positions of axises and titles in the format of 
- *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
- *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
- *         font, describing the font of axises and titles in the format of 
- *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
- * @return [] an array of each individual axis option.
- */
+   * This function parses the axis options for a graph.
+   * @param {object} options An option object contains key value pair describing the axis options of a graph.
+   *         layout, describing positions of axises and titles in the format of 
+   *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
+   *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
+   *         font, describing the font of axises and titles in the format of 
+   *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
+   * @return {array} an array of each individual axis option.
+   */
   _getAxisOption(options) {
     //set up individual optional options so no need to feed options in a way none or all
     options.layout ? true : options.layout = { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] };   // for none or both { xPosition: [], yPosition: ['left', 'right']}
@@ -84,6 +93,10 @@ class BaseSimpleGroupAxis {
     return [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
   }
 
+  /**
+   * This function validates 2d array data format
+   * @param {2darray} data  A 2d array data for the graph, in the format of `[['xName', 'y1Name', 'y2Name'...],['xValue', 'y1Value', 'y2Value'...]]`.  
+   */
   _validate2dArray(data) {
     //validate 2d array data format
     if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
@@ -91,6 +104,11 @@ class BaseSimpleGroupAxis {
     }
   }
 
+  /**
+   * This function parses the data parameters for a graph.
+   * @param {2darray} data A 2d array data for the graph, such as [['xName', 'y1Name', 'y2Name'...],['xValue', 'y1Value', 'y2Value'...]].
+   * @return {array} an array of each individual parameter.
+   */
   _setDataParameters(data) {
     // take first column as x name label, of the first object
     let xDataName = data[0][0];
@@ -142,6 +160,6 @@ class BaseSimpleGroupAxis {
 
     return dataPointDisplayId;
   }
-}  
+}
 
 export { BaseSimpleGroupAxis }
