@@ -153,29 +153,53 @@ class LineDot extends BaseSimpleGroupAxis {
     }
 
     //x axis
-    svg
-      .append('g')
-      .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3.axisBottom(xScale));
-
-    //y axis
-    svg
-      .append('g')
-      .call(d3.axisLeft(yScale));
+    for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
+      svg
+        .append('g')
+        .style("font", xAxisFont)
+        .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+        .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
+    }
 
     //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
+    for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
+      svg
+        .append("text")
+        .style('font', xTitleFont)
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+        .text(xDataName);
+    }
+
+    //y axis
+    for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+      svg
+        .append('g')
+        .style("font", yAxisFont)
+        .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+        .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
+    }
 
     //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/3
-      .text(yDataName);
+    for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+      svg
+        .append("text")
+        .style('font', yTitleFont)
+        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+        .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+        .text(yDataName);
+    }
+
+    // add line at y = 0 when there is negative data
+    if (yMin <= 0 && yMax >= 0) {
+      svg.append("path")
+        .attr("stroke", 'black')
+        .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
+    }
 
     return id;
 

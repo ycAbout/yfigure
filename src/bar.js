@@ -46,7 +46,7 @@ class Bar extends BaseSimpleGroupAxis {
     // if there is negative data, set y min. Otherwise choose 0 as default y min
     let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
     // when there is postive data, set y max. Otherwsie choose 0 as default y max
-    let yMax = dataMax > 0 ? dataMax + ySetback : 0;
+    let yMax = (dataMax > 0 ? dataMax + ySetback : 0);
 
     let svg = d3.select(location)
       .append('svg')
@@ -56,14 +56,14 @@ class Bar extends BaseSimpleGroupAxis {
       .append('g')
       .attr('transform', `translate(${left},${top})`);
 
-    let xGroupScale = d3.scaleBand()
+    let xScale = d3.scaleBand()
       .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, innerWidth])
       .padding(0.1);
 
-    let xScale = d3.scaleBand()
+    let xSubScale = d3.scaleBand()
       .domain(yDataNames)
-      .range([0, xGroupScale.bandwidth()])
+      .range([0, xScale.bandwidth()])
       .padding(0.03);
 
     let yScale = d3.scaleLinear()
@@ -90,9 +90,9 @@ class Bar extends BaseSimpleGroupAxis {
         .selectAll('rect')
         .data(dataValue)
         .join('rect')
-        .attr("transform", element => `translate(${xGroupScale(element[xDataIndex])}, 0)`)
-        .attr('x', xScale(yDataNames[i]))
-        .attr('width', xScale.bandwidth())
+        .attr("transform", element => `translate(${xScale(element[xDataIndex])}, 0)`)
+        .attr('x', xSubScale(yDataNames[i]))
+        .attr('width', xSubScale.bandwidth())
         .attr('y', element => yScale(Math.max(element[i + 1], 0)))       // if negative, use y(0) as starting point
         .attr('height', element => Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0)
         .attr('fill', element => {
@@ -154,7 +154,7 @@ class Bar extends BaseSimpleGroupAxis {
         .append('g')
         .style("font", xAxisFont)
         .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
-        .call(xPosition[i] == 'top' ? d3.axisTop(xGroupScale) : d3.axisBottom(xGroupScale));
+        .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
     }
 
     //x axis title
@@ -189,7 +189,7 @@ class Bar extends BaseSimpleGroupAxis {
     }
 
     // add line at y = 0 when there is negative data
-    if (!yMin == 0 && !yMax == 0) {
+    if (yMin != 0 && yMax != 0) {
       svg.append("path")
         .attr("stroke", 'black')
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))

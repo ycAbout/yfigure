@@ -94,20 +94,10 @@ class SortableBar extends BaseSimpleGroupAxis {
       // make tallest bar approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * 0.1;
 
-      // choose 0 as default y min
-      let yMin = 0;
-
-      // if there is negative data, set y min
-      if (dataMin < 0) {
-        yMin = dataMin - ySetback;
-      }
-
-      // choose 0 as default y max
-      let yMax = 0;
-      // when there is postive data, set y max
-      if (dataMax > 0) {
-        yMax = dataMax + ySetback;
-      }
+      // if there is negative data, set y min. Otherwise choose 0 as default y min
+      let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
+      // when there is postive data, set y max. Otherwsie choose 0 as default y max
+      let yMax = (dataMax > 0 ? dataMax + ySetback : 0);
 
       //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
       let xScale = d3.scaleBand()
@@ -148,50 +138,86 @@ class SortableBar extends BaseSimpleGroupAxis {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
+
       // remove the x and y axis if exist
-      d3.select('#' + id + 'x')
-        .remove();
-      d3.select('#' + id + 'y')
-        .remove();
+      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+        d3.select('#' + id + 'x' + i)
+          .remove();
+      }
+      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+        d3.select('#' + id + 'xl' + i)
+          .remove();
+      }
+      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+        d3.select('#' + id + 'y' + i)
+          .remove();
+      }
+      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+        d3.select('#' + id + 'yl' + i)
+          .remove();
+      }
+
       d3.select('#' + id + 'y0')
         .remove();
 
-      svg
-        .append('g')
-        .attr('id', id + 'x')
-        .attr('transform', `translate(0, ${innerHeight})`)
-        .call(d3.axisBottom(xScale));
+      //x axis
+      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
+        svg
+          .append('g')
+          .attr('id', id + 'x' + i)
+          .style("font", xAxisFont)
+          .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+          .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
+      }
 
-      svg
-        .append('g')
-        .attr('id', id + 'y')
-        .call(d3.axisLeft(yScale));
+      //x axis title
+      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
+        svg
+          .append("text")
+          .attr('id', id + 'xl' + i)
+          .style('font', xTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+          .text(xDataName);
+      }
+
+      //y axis
+      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+        svg
+          .append('g')
+          .attr('id', id + 'y' + i)
+          .style("font", yAxisFont)
+          .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+          .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
+      }
+
+      //y axis title
+      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+        svg
+          .append("text")
+          .attr('id', id + 'yl' + i)
+          .style('font', yTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+          .text(yDataName);
+      }
 
       // add line at y = 0 when there is negative data
-      if (dataMin < 0) {
+      if (yMin != 0 && yMax != 0) {
         svg.append("path")
           .attr('id', id + 'y0')
           .attr("stroke", 'black')
           .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
       }
+
     }
 
     //initialize
     draw(dataValue, svg, 'default');
-
-    //x axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-      .text(xDataName);
-
-    //y axis title
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-      .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
-      .text(yDataName);
 
     selection
       .on('change', function () {

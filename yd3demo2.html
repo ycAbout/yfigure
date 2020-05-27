@@ -15,8 +15,8 @@
   <script>
 
     let size1 = { width: 400, height: 300 };
-    let size2 = { width: 600, height: 300 };
-    let size3 = { width: 1080, height: 400 };
+    let size2 = { width: 500, height: 300 };
+    let size3 = { width: 900, height: 400 };
 
     function createTitle(level, head) {
       let h = document.createElement(level); // Create the H1 element 
@@ -29,15 +29,13 @@
       document.body.appendChild(br);
     }
 
-
     let dataBar1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 70], [5, 40]];
     let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];
     let dataBar3 = [["group", "score"]];
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 50; i++) {
       let element = [i + 1, Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)]
       dataBar3.push(element)
     }
-
 
     let dataBar4 = [["group", "score1", "score2"],
     [1, 50, 50 + 20],
@@ -61,12 +59,13 @@
 
     //generate a sudo normal distributed dataset
     let dataHistogram = [["age"]];
-    for (let i = 0; i < 900; i++) {
+    for (let i = 0; i < 600; i++) {
       let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100]
       dataHistogram.push(element)
     }
 
-    let dataLineDot1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 40], [5, 20]];
+    //let dataLineDot1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 40], [5, 20]];
+    let dataLineDot1 = [["group", "score"], [1, 50], [2, -80], [3, 30], [4, 40], [5, 20]];
     let dataLineDot2 = [["group", "score1", "score2", "score3", "score4"],
     [1, 50, 50 - 20, 50 + 20, 50 + 40],
     [2, 160, 160 - 20, 160 + 20, 160 + 40],
@@ -76,11 +75,12 @@
     ];
 
     let dataLineDot3 = [["age", "score1", "score2", "score3", "score4", "score5", "score6"]];
-    for (i = 0; i < 80; i++) {
+    for (i = 0; i < 50; i++) {
       let element = [i + 18, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)]
       dataLineDot3.push(element)
     }
 
+    
     let dataScatter1 = [["age", "score1"]];
     for (i = 0; i < 50; i++) {
       let element = [i + 18, Math.floor(Math.random() * 100)]
@@ -111,11 +111,20 @@
     createTitle("H2", "bar");
 
     // example 1
-    let bar1 = new yd3.Bar(dataBar1);
+    let bar1a = new yd3.Bar(dataBar1);
+    let bar1b = new yd3.Bar(dataBar1, {
+      layout: { xPosition: ['bottom', 'top'], yPosition: ['left', 'right'], xTitlePosition: ['bottom', 'top'], yTitlePosition: ['left', 'right'] },
+    });
+
     // example 2
-    let bar2 = new yd3.Bar(dataBar2, {
+    let bar2a = new yd3.Bar(dataBar2, {
       size: size2,
     });
+    let bar2b = new yd3.Bar(dataBar2, {
+      size: size2,
+      colors:['#CC2529', '#DA7C30'] // second for negative value
+    });
+
     br();
     // example 3
     let bar3 = new yd3.Bar(dataBar3, {
@@ -126,8 +135,10 @@
       colors: ['steelblue', '#CC2529']
     });
 
-    bar1.plot();
-    bar2.plot();
+    bar1a.plot();
+    bar2a.plot();
+    bar1b.plot();
+    bar2b.plot();
     bar3.plot();
 
 

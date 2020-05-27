@@ -228,7 +228,7 @@ var yd3 = (function (exports, d3$1) {
       // if there is negative data, set y min. Otherwise choose 0 as default y min
       let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
       // when there is postive data, set y max. Otherwsie choose 0 as default y max
-      let yMax = dataMax > 0 ? dataMax + ySetback : 0;
+      let yMax = (dataMax > 0 ? dataMax + ySetback : 0);
 
       let svg = d3$1.select(location)
         .append('svg')
@@ -238,14 +238,14 @@ var yd3 = (function (exports, d3$1) {
         .append('g')
         .attr('transform', `translate(${left},${top})`);
 
-      let xGroupScale = d3$1.scaleBand()
+      let xScale = d3$1.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, innerWidth])
         .padding(0.1);
 
-      let xScale = d3$1.scaleBand()
+      let xSubScale = d3$1.scaleBand()
         .domain(yDataNames)
-        .range([0, xGroupScale.bandwidth()])
+        .range([0, xScale.bandwidth()])
         .padding(0.03);
 
       let yScale = d3$1.scaleLinear()
@@ -272,9 +272,9 @@ var yd3 = (function (exports, d3$1) {
           .selectAll('rect')
           .data(dataValue)
           .join('rect')
-          .attr("transform", element => `translate(${xGroupScale(element[xDataIndex])}, 0)`)
-          .attr('x', xScale(yDataNames[i]))
-          .attr('width', xScale.bandwidth())
+          .attr("transform", element => `translate(${xScale(element[xDataIndex])}, 0)`)
+          .attr('x', xSubScale(yDataNames[i]))
+          .attr('width', xSubScale.bandwidth())
           .attr('y', element => yScale(Math.max(element[i + 1], 0)))       // if negative, use y(0) as starting point
           .attr('height', element => Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0)
           .attr('fill', element => {
@@ -336,7 +336,7 @@ var yd3 = (function (exports, d3$1) {
           .append('g')
           .style("font", xAxisFont)
           .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
-          .call(xPosition[i] == 'top' ? d3$1.axisTop(xGroupScale) : d3$1.axisBottom(xGroupScale));
+          .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
       }
 
       //x axis title
@@ -371,7 +371,7 @@ var yd3 = (function (exports, d3$1) {
       }
 
       // add line at y = 0 when there is negative data
-      if (!yMin == 0 && !yMax == 0) {
+      if (yMin != 0 && yMax != 0) {
         svg.append("path")
           .attr("stroke", 'black')
           .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
@@ -690,29 +690,53 @@ var yd3 = (function (exports, d3$1) {
       }
 
       //x axis
-      svg
-        .append('g')
-        .attr('transform', `translate(0, ${innerHeight})`)
-        .call(d3$1.axisBottom(xScale));
-
-      //y axis
-      svg
-        .append('g')
-        .call(d3$1.axisLeft(yScale));
+      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
+        svg
+          .append('g')
+          .style("font", xAxisFont)
+          .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+          .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
+      }
 
       //x axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-        .text(xDataName);
+      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
+        svg
+          .append("text")
+          .style('font', xTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+          .text(xDataName);
+      }
+
+      //y axis
+      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+        svg
+          .append('g')
+          .style("font", yAxisFont)
+          .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+          .call(yPosition[i] == 'right' ? d3$1.axisRight(yScale) : d3$1.axisLeft(yScale));
+      }
 
       //y axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + -left / 3 * 2 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/3
-        .text(yDataName);
+      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+        svg
+          .append("text")
+          .style('font', yTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+          .text(yDataName);
+      }
+
+      // add line at y = 0 when there is negative data
+      if (yMin <= 0 && yMax >= 0) {
+        svg.append("path")
+          .attr("stroke", 'black')
+          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
+      }
 
       return id;
 
@@ -859,29 +883,53 @@ var yd3 = (function (exports, d3$1) {
       }
 
       //x axis
-      svg
-        .append('g')
-        .attr('transform', `translate(0, ${innerHeight})`)
-        .call(d3$1.axisBottom(xScale));
-
-      //y axis
-      svg
-        .append('g')
-        .call(d3$1.axisLeft(yScale));
+      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
+        svg
+          .append('g')
+          .style("font", xAxisFont)
+          .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+          .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
+      }
 
       //x axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-        .text(xDataName);
+      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
+        svg
+          .append("text")
+          .style('font', xTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+          .text(xDataName);
+      }
+
+      //y axis
+      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+        svg
+          .append('g')
+          .style("font", yAxisFont)
+          .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+          .call(yPosition[i] == 'right' ? d3$1.axisRight(yScale) : d3$1.axisLeft(yScale));
+      }
 
       //y axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
-        .text(yDataName);
+      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+        svg
+          .append("text")
+          .style('font', yTitleFont)
+          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+          .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+          .text(yDataName);
+      }
+
+      // add line at y = 0 when there is negative data
+      if (yMin <= 0 && yMax >= 0) {
+        svg.append("path")
+          .attr("stroke", 'black')
+          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
+      }
 
       return id;
 
@@ -981,20 +1029,10 @@ var yd3 = (function (exports, d3$1) {
         // make tallest bar approximately 10% range off the range
         let ySetback = (dataMax - dataMin) * 0.1;
 
-        // choose 0 as default y min
-        let yMin = 0;
-
-        // if there is negative data, set y min
-        if (dataMin < 0) {
-          yMin = dataMin - ySetback;
-        }
-
-        // choose 0 as default y max
-        let yMax = 0;
-        // when there is postive data, set y max
-        if (dataMax > 0) {
-          yMax = dataMax + ySetback;
-        }
+        // if there is negative data, set y min. Otherwise choose 0 as default y min
+        let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
+        // when there is postive data, set y max. Otherwsie choose 0 as default y max
+        let yMax = (dataMax > 0 ? dataMax + ySetback : 0);
 
         //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
         let xScale = d3$1.scaleBand()
@@ -1035,50 +1073,86 @@ var yd3 = (function (exports, d3$1) {
           })
           .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
 
+
         // remove the x and y axis if exist
-        d3$1.select('#' + id + 'x')
-          .remove();
-        d3$1.select('#' + id + 'y')
-          .remove();
+        for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+          d3$1.select('#' + id + 'x' + i)
+            .remove();
+        }
+        for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+          d3$1.select('#' + id + 'xl' + i)
+            .remove();
+        }
+        for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+          d3$1.select('#' + id + 'y' + i)
+            .remove();
+        }
+        for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+          d3$1.select('#' + id + 'yl' + i)
+            .remove();
+        }
+
         d3$1.select('#' + id + 'y0')
           .remove();
 
-        svg
-          .append('g')
-          .attr('id', id + 'x')
-          .attr('transform', `translate(0, ${innerHeight})`)
-          .call(d3$1.axisBottom(xScale));
+        //x axis
+        for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
+          // set default x axis to top if y max is 0
+          if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
+          svg
+            .append('g')
+            .attr('id', id + 'x' + i)
+            .style("font", xAxisFont)
+            .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
+            .call(xPosition[i] == 'top' ? d3$1.axisTop(xScale) : d3$1.axisBottom(xScale));
+        }
 
-        svg
-          .append('g')
-          .attr('id', id + 'y')
-          .call(d3$1.axisLeft(yScale));
+        //x axis title
+        for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
+          // set default x axis to top if y max is 0
+          if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
+          svg
+            .append("text")
+            .attr('id', id + 'xl' + i)
+            .style('font', xTitleFont)
+            .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+            .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
+            .text(xDataName);
+        }
+
+        //y axis
+        for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
+          svg
+            .append('g')
+            .attr('id', id + 'y' + i)
+            .style("font", yAxisFont)
+            .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+            .call(yPosition[i] == 'right' ? d3$1.axisRight(yScale) : d3$1.axisLeft(yScale));
+        }
+
+        //y axis title
+        for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
+          svg
+            .append("text")
+            .attr('id', id + 'yl' + i)
+            .style('font', yTitleFont)
+            .attr("text-anchor", "middle")  // transform is applied to the middle anchor
+            .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
+            .text(yDataName);
+        }
 
         // add line at y = 0 when there is negative data
-        if (dataMin < 0) {
+        if (yMin != 0 && yMax != 0) {
           svg.append("path")
             .attr('id', id + 'y0')
             .attr("stroke", 'black')
             .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
         }
+
       }
 
       //initialize
       draw(dataValue, svg, 'default');
-
-      //x axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + innerWidth / 2 + "," + (innerHeight + (bottom / 4) * 3) + ")")  // centre at margin bottom 1/4
-        .text(xDataName);
-
-      //y axis title
-      svg
-        .append("text")
-        .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-        .attr("transform", "translate(" + -left / 4 * 3 + "," + innerHeight / 2 + ") rotate(270)")  // centre at margin left 1/4
-        .text(yDataName);
 
       selection
         .on('change', function () {
