@@ -1,6 +1,12 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
+
+
+//to do, axis label show, lable rotate, each bar each color, 0 bar no show, grid
+
+
+
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
 */
@@ -17,28 +23,33 @@ class Bar extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+    this._options.barPadding ? true : this._options.barPadding = 0.1;
+
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+    if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number!') }
 
     this._validate2dArray(this._data);
+    this._draw(this._data, this._options);
   }
 
   /**
 * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
 * @return {string}         append a graph to html and returns the graph id.  
 */
-  plot() {
+  _draw(data, options) {
 
-    let colors = this._options.colors;
+    let colors = options.colors;
+    let barPadding = options.barPadding;
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
     // make data plot approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * 0.1;
@@ -59,7 +70,7 @@ class Bar extends BaseSimpleGroupAxis {
     let xScale = d3.scaleBand()
       .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, innerWidth])
-      .padding(0.1);
+      .padding(barPadding);
 
     let xSubScale = d3.scaleBand()
       .domain(yDataNames)
@@ -194,9 +205,7 @@ class Bar extends BaseSimpleGroupAxis {
         .attr("stroke", 'black')
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
     }
-
     return id;
-
   }
 }
 

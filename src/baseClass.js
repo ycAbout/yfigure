@@ -12,6 +12,7 @@ class BaseSimpleGroupAxis {
   constructor(data, options) {
     this._options = options;    //_ does not have any real effect, just visually indicate private variables.
     this._data = data;
+    this._brand = 'yfigure';
   }
 
   /**
@@ -29,7 +30,7 @@ class BaseSimpleGroupAxis {
     options.size ? true : options.size = { width: 400, height: 300 };
     options.margin ? true : options.margin = { left: 50, top: 50, right: 50, bottom: 50 };
     options.location ? true : options.location = 'body';
-    options.id ? true : options.id = 'yd3graphid' + Math.floor(Math.random() * 1000000).toString();
+    options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
 
     function makeError(msg) {
       throw new Error(msg)
@@ -142,7 +143,7 @@ class BaseSimpleGroupAxis {
    */
   _setDataPoint() {
 
-    let dataPointDisplayId = 'yd3DataPointDisplay999999';
+    let dataPointDisplayId = this._brand + 'DataPointDisplay999sky999sky999sky';
 
     //add it if there is no such element, so there is only one per page
     if (!d3.select('#' + dataPointDisplayId).node()) {
@@ -160,6 +161,17 @@ class BaseSimpleGroupAxis {
 
     return dataPointDisplayId;
   }
+
+  // update the graph by drawing a new one
+  update(data, options = {}) {
+    //remove old graph
+    d3.select('#' + this._options.id).remove();
+    //merge new options with old
+    let newOptions = { ...this._options, ...options };
+    // totally re-draw a graph
+    this._draw(data, newOptions);
+  }
+
 }
 
 export { BaseSimpleGroupAxis }

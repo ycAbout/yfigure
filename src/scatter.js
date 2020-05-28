@@ -24,25 +24,26 @@ class Scatter extends BaseSimpleGroupAxis {
     if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
     this._validate2dArray(this._data);
+    this._draw(this._data, this._options);
   }
 
   /**
    * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.  
    * @return {string}         append a graph to html and returns the graph id.  
    */
-  plot() {
+  _draw(data, options) {
 
-    let colors = this._options.colors;
-    let dotRadius = this._options.dotRadius;
+    let colors = options.colors;
+    let dotRadius = options.dotRadius;
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
     // make highest number approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range

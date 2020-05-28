@@ -17,35 +17,39 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
+    this._options.barPadding ? true : this._options.barPadding = 0.1;
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+    if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number between 0 and 1!') }
 
     this._validate2dArray(this._data);
+    this._draw(this._data, this._options);
   }
 
   /**
    * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
    * @return {string}         append a graph to html and returns the graph id.  
    */
-  plot() {
+  _draw(data, options) {
 
-    let colors = this._options.colors;
+    let colors = options.colors;
+    let barPadding = options.barPadding;
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
-    let xDataName = this._data[0][0];
-    let yDataName = this._data[0][1];
+    let xDataName = data[0][0];
+    let yDataName = data[0][1];
     // x y data positions
     let xDataIndex = 0;
     let yDataIndex = 1;
 
     // get ride of column name, does not modify origin array
-    let dataValue = this._data.slice(1)
+    let dataValue = data.slice(1)
 
     let selection = d3.select(location)
       .append('span')       //non-block container
@@ -103,7 +107,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       let xScale = d3.scaleBand()
         .domain(innerData.map((element) => element[xDataIndex]))
         .range([0, innerWidth])
-        .padding(0.1);
+        .padding(barPadding);
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])

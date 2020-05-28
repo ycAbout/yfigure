@@ -33,6 +33,7 @@ var yd3 = (function (exports, d3$1) {
     constructor(data, options) {
       this._options = options;    //_ does not have any real effect, just visually indicate private variables.
       this._data = data;
+      this._brand = 'yfigure';
     }
 
     /**
@@ -50,7 +51,7 @@ var yd3 = (function (exports, d3$1) {
       options.size ? true : options.size = { width: 400, height: 300 };
       options.margin ? true : options.margin = { left: 50, top: 50, right: 50, bottom: 50 };
       options.location ? true : options.location = 'body';
-      options.id ? true : options.id = 'yd3graphid' + Math.floor(Math.random() * 1000000).toString();
+      options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
 
       function makeError(msg) {
         throw new Error(msg)
@@ -163,7 +164,7 @@ var yd3 = (function (exports, d3$1) {
      */
     _setDataPoint() {
 
-      let dataPointDisplayId = 'yd3DataPointDisplay999999';
+      let dataPointDisplayId = this._brand + 'DataPointDisplay999sky999sky999sky';
 
       //add it if there is no such element, so there is only one per page
       if (!d3.select('#' + dataPointDisplayId).node()) {
@@ -181,10 +182,23 @@ var yd3 = (function (exports, d3$1) {
 
       return dataPointDisplayId;
     }
+
+    // update the graph by drawing a new one
+    update(data, options = {}) {
+      //remove old graph
+      d3.select('#' + this._options.id).remove();
+      //merge new options with old
+      let newOptions = { ...this._options, ...options };
+      // totally re-draw a graph
+      this._draw(data, newOptions);
+    }
+
   }
 
+  //to do, axis label show, lable rotate, each bar each color,
+
   /**
-  * A Bar class for a horizontal bar graph (y represents continuous value).
+  * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
   */
   class Bar extends BaseSimpleGroupAxis {
     /**
@@ -199,28 +213,33 @@ var yd3 = (function (exports, d3$1) {
 
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+      this._options.barPadding ? true : this._options.barPadding = 0.1;
+
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+      if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number!') }
 
       this._validate2dArray(this._data);
+      this._draw(this._data, this._options);
     }
 
     /**
   * This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
   * @return {string}         append a graph to html and returns the graph id.  
   */
-    plot() {
+    _draw(data, options) {
 
-      let colors = this._options.colors;
+      let colors = options.colors;
+      let barPadding = options.barPadding;
 
       // set all the common options
-      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make data plot approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * 0.1;
@@ -241,7 +260,7 @@ var yd3 = (function (exports, d3$1) {
       let xScale = d3$1.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, innerWidth])
-        .padding(0.1);
+        .padding(barPadding);
 
       let xSubScale = d3$1.scaleBand()
         .domain(yDataNames)
@@ -376,9 +395,7 @@ var yd3 = (function (exports, d3$1) {
           .attr("stroke", 'black')
           .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
       }
-
       return id;
-
     }
   }
 
@@ -406,28 +423,29 @@ var yd3 = (function (exports, d3$1) {
       if (typeof this._options.color !== 'string') { throw new Error('Option color need to be a string!') }
 
       this._validate2dArray(this._data);
+      this._draw(this._data, this._options);
     }
 
     /**
    * @return {string}          append a graph to html and returns the graph id.  
    */
-    plot() {
+    _draw(data, options) {
 
       // set all the common options
-      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
-      let nBins = this._options.nBins;
-      let color = this._options.color;
+      let nBins = options.nBins;
+      let color = options.color;
 
-      let xDataName = this._data[0][0];
+      let xDataName = data[0][0];
       let xDataIndex = 0;
       let yDataName = 'Frequency';
 
       // get ride of column name, does not modify origin array
-      let dataValue = this._data.slice(1);
+      let dataValue = data.slice(1);
 
       let dataMax = d3$1.max(dataValue, d => d[xDataIndex]);
       let dataMin = d3$1.min(dataValue, d => d[xDataIndex]);
@@ -561,25 +579,26 @@ var yd3 = (function (exports, d3$1) {
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
       this._validate2dArray(this._data);
+      this._draw(this._data, this._options);
     }
 
     /**
-     * This function draws a line with dot graph (y represents continuous value) using d3 and svg.  
+     * This function draws a single or multiple line with dot graph (y represents continuous value) using d3 and svg.  
      * @return {string}         append a graph to html and returns the graph id.  
      */
-    plot() {
+    _draw(data, options) {
 
-      let colors = this._options.colors;
-      let dotRadius = this._options.dotRadius;
+      let colors = options.colors;
+      let dotRadius = options.dotRadius;
 
       // set all the common options
-      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
@@ -744,7 +763,7 @@ var yd3 = (function (exports, d3$1) {
   }
 
   /**
-   * A Scatter class for a scatter graph (x and y represent continuous values).  
+   * A Scatter class for a single or multiple scatter graph (x and y represent continuous values).  
    */
   class Scatter extends BaseSimpleGroupAxis {
     /**
@@ -766,25 +785,26 @@ var yd3 = (function (exports, d3$1) {
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
       this._validate2dArray(this._data);
+      this._draw(this._data, this._options);
     }
 
     /**
      * This function draws a scatter plot (x, y represents continuous value) using d3 and svg.  
      * @return {string}         append a graph to html and returns the graph id.  
      */
-    plot() {
+    _draw(data, options) {
 
-      let colors = this._options.colors;
-      let dotRadius = this._options.dotRadius;
+      let colors = options.colors;
+      let dotRadius = options.dotRadius;
 
       // set all the common options
-      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(this._data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
@@ -952,35 +972,39 @@ var yd3 = (function (exports, d3$1) {
 
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
+      this._options.barPadding ? true : this._options.barPadding = 0.1;
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
+      if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number between 0 and 1!') }
 
       this._validate2dArray(this._data);
+      this._draw(this._data, this._options);
     }
 
     /**
      * This function draws a horizontal sortable bar graph (y represents continuous value) using d3 and svg.  
      * @return {string}         append a graph to html and returns the graph id.  
      */
-    plot() {
+    _draw(data, options) {
 
-      let colors = this._options.colors;
+      let colors = options.colors;
+      let barPadding = options.barPadding;
 
       // set all the common options
-      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+      let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+      let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
       // take first column as x name label, second column as y name label, of the first object
-      let xDataName = this._data[0][0];
-      let yDataName = this._data[0][1];
+      let xDataName = data[0][0];
+      let yDataName = data[0][1];
       // x y data positions
       let xDataIndex = 0;
       let yDataIndex = 1;
 
       // get ride of column name, does not modify origin array
-      let dataValue = this._data.slice(1);
+      let dataValue = data.slice(1);
 
       let selection = d3$1.select(location)
         .append('span')       //non-block container
@@ -1038,7 +1062,7 @@ var yd3 = (function (exports, d3$1) {
         let xScale = d3$1.scaleBand()
           .domain(innerData.map((element) => element[xDataIndex]))
           .range([0, innerWidth])
-          .padding(0.1);
+          .padding(barPadding);
 
         let yScale = d3$1.scaleLinear()
           .domain([yMin, yMax])

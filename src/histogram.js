@@ -25,28 +25,29 @@ class Histogram extends BaseSimpleGroupAxis {
     if (typeof this._options.color !== 'string') { throw new Error('Option color need to be a string!') }
 
     this._validate2dArray(this._data);
+    this._draw(this._data, this._options);
   }
 
   /**
  * @return {string}          append a graph to html and returns the graph id.  
  */
-  plot() {
+  _draw(data, options) {
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(this._options);
+    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(this._options);
+    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
 
-    let nBins = this._options.nBins;
-    let color = this._options.color;
+    let nBins = options.nBins;
+    let color = options.color;
 
-    let xDataName = this._data[0][0];
+    let xDataName = data[0][0];
     let xDataIndex = 0;
     let yDataName = 'Frequency';
 
     // get ride of column name, does not modify origin array
-    let dataValue = this._data.slice(1)
+    let dataValue = data.slice(1)
 
     let dataMax = d3.max(dataValue, d => d[xDataIndex]);
     let dataMin = d3.min(dataValue, d => d[xDataIndex]);
