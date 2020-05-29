@@ -10,7 +10,8 @@ class SortableBar extends BaseSimpleGroupAxis {
    * @param {object=} options An optional object contains following key value pairs:
    *                          common option key values pairs
    *                          graph specific key value pairs:
-   *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+   *                             `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
+   *                             `barPadding: 0.1` Sets bar paddings between the bar, or bar group
    */
   constructor(data, options = {}) {
     super(data, options);

@@ -97,14 +97,14 @@ class BaseSimpleGroupAxis {
    * This function parses the axis options for a graph.
    * @param {object} options An option object contains key value pair describing the axis options of a graph.
    *         axis options:
-   *           `xAxisPosition = ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
-   *           `yAxisPosition = ['left']`  Sets axis location
-   *           `xTitlePosition = ['bottom']` Sets axis title location
-   *           `yTitlePosition = ['left']` Sets axis title location
-   *           `xAxisFont = '10px sans-serif'` Sets axis tick font
-   *           `yAxisFont = '10px sans-serif'` Sets axis tick font
-   *           `xTitleFont = '10px sans-serif'` Sets axis title font
-   *           `yTitleFont = '10px sans-serif'` Sets axis title font
+   *           `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
+   *           `yAxisPosition: ['left']`  Sets axis location
+   *           `xTitlePosition: ['bottom']` Sets axis title location
+   *           `yTitlePosition: ['left']` Sets axis title location
+   *           `xAxisFont: '10px sans-serif'` Sets axis tick font
+   *           `yAxisFont: '10px sans-serif'` Sets axis tick font
+   *           `xTitleFont: '10px sans-serif'` Sets axis title font
+   *           `yTitleFont: '10px sans-serif'` Sets axis title font
    * @return {array} an array of each individual axis option.
    */
   _getAxisOption(options) {

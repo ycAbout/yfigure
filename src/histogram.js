@@ -11,8 +11,8 @@ class Histogram extends BaseSimpleGroupAxis {
    * @param {object=} options  An optional object contains following key value pairs:
    *                          common option key values pairs
    *                          graph specific key value pairs:
-   *                            nBins, describing how many bins to put the data in the format of `nBins: 70`.  
-   *                            color, describing the colors used for bars in the format of `color: 'steelblue'`.  
+   *                            `nBins: 70` Sets how many bins to put the data in
+   *                            `color: 'steelblue'` Sets the colors used for bars 
    */
   constructor(data, options = {}) {
     super(data, options);

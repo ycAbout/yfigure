@@ -10,8 +10,8 @@ class LineDot extends BaseSimpleGroupAxis {
    * @param {object=} options An optional object contains following key value pairs:
    *                          common option key values pairs
    *                          graph specific key value pairs:
-   *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
-   *                            colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+   *                            `dotRadius: 4` Sets the radius of the dot, value `1` produce a line graph.
+   *                            `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`. Sets the colors for difference lines
    */
   constructor(data, options = {}) {
     super(data, options);
