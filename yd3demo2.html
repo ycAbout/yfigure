@@ -183,9 +183,10 @@
     // example 5, both positive and negative data
     Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
     let bar5 = new yd3.Bar(Saskatoon2010to2019, {
-      left: 50, top: 50, right: 50, bottom: 50,
+      width: 600,
+      margin: 50,
       location: 'body',
-      layout: { xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] },
+      xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
       colors: ['steelblue', '#CC2529']
     });
 
@@ -208,10 +209,10 @@
     br();
     // example 3
     let bar11 = new yd3.Bar(dataBar6, {
-      size: size3,
-      "margin-left": 100,
+      width: 600,
+      "margin-left": 60,
       location: 'body',
-      layout: { xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'] },
+      xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'],
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
 
@@ -219,6 +220,16 @@
     //bar5.update();
     //bar6.update();
 
+
+
+
+
+
+
+
+
+
+    
 
     createTitle("H2", "sortableBar");
 
@@ -240,7 +251,6 @@
     sortableBar1.update();
     sortableBar2.update();
     sortableBar3.update();
-
 
 
     createTitle("H2", "histogram");

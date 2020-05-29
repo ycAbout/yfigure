@@ -118,14 +118,14 @@ var yd3 = (function (exports, d3$1) {
      * This function parses the axis options for a graph.
      * @param {object} options An option object contains key value pair describing the axis options of a graph.
      *         axis options:
-     *           `xAxisPosition = ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
-     *           `yAxisPosition = ['left']`  Sets axis location
-     *           `xTitlePosition = ['bottom']` Sets axis title location
-     *           `yTitlePosition = ['left']` Sets axis title location
-     *           `xAxisFont = '10px sans-serif'` Sets axis tick font
-     *           `yAxisFont = '10px sans-serif'` Sets axis tick font
-     *           `xTitleFont = '10px sans-serif'` Sets axis title font
-     *           `yTitleFont = '10px sans-serif'` Sets axis title font
+     *           `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
+     *           `yAxisPosition: ['left']`  Sets axis location
+     *           `xTitlePosition: ['bottom']` Sets axis title location
+     *           `yTitlePosition: ['left']` Sets axis title location
+     *           `xAxisFont: '10px sans-serif'` Sets axis tick font
+     *           `yAxisFont: '10px sans-serif'` Sets axis tick font
+     *           `xTitleFont: '10px sans-serif'` Sets axis title font
+     *           `yTitleFont: '10px sans-serif'` Sets axis title font
      * @return {array} an array of each individual axis option.
      */
     _getAxisOption(options) {
@@ -261,7 +261,8 @@ var yd3 = (function (exports, d3$1) {
      * @param {object=} options  An optional object contains following key value pairs:
      *                              common option key values pairs
      *                              graph specific key value pairs:
-     *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
+     *                                `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
+     *                                `barPadding: 0.1` Sets bar paddings between the bar, or bar group
      */
     constructor(data, options = {}) {
       super(data, options);
@@ -464,8 +465,8 @@ var yd3 = (function (exports, d3$1) {
      * @param {object=} options  An optional object contains following key value pairs:
      *                          common option key values pairs
      *                          graph specific key value pairs:
-     *                            nBins, describing how many bins to put the data in the format of `nBins: 70`.  
-     *                            color, describing the colors used for bars in the format of `color: 'steelblue'`.  
+     *                            `nBins: 70` Sets how many bins to put the data in
+     *                            `color: 'steelblue'` Sets the colors used for bars 
      */
     constructor(data, options = {}) {
       super(data, options);
@@ -620,8 +621,8 @@ var yd3 = (function (exports, d3$1) {
      * @param {object=} options An optional object contains following key value pairs:
      *                          common option key values pairs
      *                          graph specific key value pairs:
-     *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
-     *                            colors: describing the colors used for difference lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+     *                            `dotRadius: 4` Sets the radius of the dot, value `1` produce a line graph.
+     *                            `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`. Sets the colors for difference lines
      */
     constructor(data, options = {}) {
       super(data, options);
@@ -826,8 +827,8 @@ var yd3 = (function (exports, d3$1) {
      * @param {object=} options An optional object contains following key value pairs:
      *                          common option key values pairs
      *                          graph specific key value pairs:
-     *                            dotRadius, dot radius describing the radius of the dot in the format of `dotRadius: 4`.  
-     *                            colors: describing the colors used for different lines in the format of `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`.  
+     *                            `dotRadius: 4` Sets the radius of the dot.
+     *                            `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`. Sets the colors for difference lines.
      */
     constructor(data, options = {}) {
       super(data, options);
@@ -1020,7 +1021,8 @@ var yd3 = (function (exports, d3$1) {
      * @param {object=} options An optional object contains following key value pairs:
      *                          common option key values pairs
      *                          graph specific key value pairs:
-     *                            colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.  
+     *                             `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
+     *                             `barPadding: 0.1` Sets bar paddings between the bar, or bar group
      */
     constructor(data, options = {}) {
       super(data, options);
