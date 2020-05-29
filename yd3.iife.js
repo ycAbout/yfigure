@@ -117,11 +117,15 @@ var yd3 = (function (exports, d3$1) {
     /**
      * This function parses the axis options for a graph.
      * @param {object} options An option object contains key value pair describing the axis options of a graph.
-     *         layout, describing positions of axises and titles in the format of 
-     *           `layout: { xPosition: ['bottom'], yPosition: ['left'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] }`  
-     *           // for none or both { xPosition: [], yPosition: ['left', 'right']}.  
-     *         font, describing the font of axises and titles in the format of 
-     *           `font: { xAxisFont: '10px sans-serif', yAxisFont: '10px sans-serif', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }`  
+     *         axis options:
+     *           `xAxisPosition = ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
+     *           `yAxisPosition = ['left']`  Sets axis location
+     *           `xTitlePosition = ['bottom']` Sets axis title location
+     *           `yTitlePosition = ['left']` Sets axis title location
+     *           `xAxisFont = '10px sans-serif'` Sets axis tick font
+     *           `yAxisFont = '10px sans-serif'` Sets axis tick font
+     *           `xTitleFont = '10px sans-serif'` Sets axis title font
+     *           `yTitleFont = '10px sans-serif'` Sets axis title font
      * @return {array} an array of each individual axis option.
      */
     _getAxisOption(options) {
