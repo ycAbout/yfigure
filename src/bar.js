@@ -1,10 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-
-
-//to do, axis label show, lable rotate, each bar each color, 0 bar no show, grid
-
+//to do, axis label show, lable rotate, each bar each color, 0 bar no show, grid, x title based on tick width
 
 
 /**
@@ -134,7 +131,7 @@ class Bar extends BaseSimpleGroupAxis {
         // if add current legend spill over innerWidth
         if (legendx + yDataNames[i].length * 8 + 12 > innerWidth) {
           legendy += 16;    // start a new line
-          legendx = 0;
+          legendx = 8;
         }
 
         svg

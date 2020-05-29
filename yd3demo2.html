@@ -156,7 +156,7 @@
     ['Saskatchewan', 45.0, -56.7]
     ]
 
-   let Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+    let Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
 
     // example 1
     population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
@@ -164,20 +164,18 @@
 
     // example 2 change layout, font
     let bar2 = new yd3.Bar(population, {
-      layout: { xPosition: ['bottom', 'top'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] },
-      font: { xAxisFont: '16px times', yAxisFont: '16px times', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif' }
+      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
+      xAxisFont: '16px times', yAxisFont: '16px times', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif'
     });
 
 
     Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
     let bar3 = new yd3.Bar(Saskatoon2010to2019, {
-      size: size1,
     });
-   
+
     // example 4 change color, bar padding
     let bar4 = new yd3.Bar(Saskatoon2010to2019, {
-      size: size1,
       colors: ['#CC2529', '#006994'], // second for negative value
       barPadding: 0.2
     });
@@ -185,8 +183,7 @@
     // example 5, both positive and negative data
     Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
     let bar5 = new yd3.Bar(Saskatoon2010to2019, {
-      size: size3,
-      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       layout: { xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'] },
       colors: ['steelblue', '#CC2529']
@@ -207,13 +204,12 @@
     let bar9 = new yd3.Bar(dataBar4);
     // example 2
     let bar10 = new yd3.Bar(dataBar5, {
-      size: size2,
     });
     br();
     // example 3
     let bar11 = new yd3.Bar(dataBar6, {
       size: size3,
-      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      "margin-left": 100,
       location: 'body',
       layout: { xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'] },
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']

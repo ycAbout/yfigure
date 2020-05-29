@@ -119,7 +119,7 @@ class Scatter extends BaseSimpleGroupAxis {
         // if add current legend spill over innerWidth
         if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
           legendy += 16;    // start a new line
-          legendx = 0;
+          legendx = 8;
         }
 
         svg
