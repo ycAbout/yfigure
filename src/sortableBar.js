@@ -37,7 +37,8 @@ class SortableBar extends BaseSimpleGroupAxis {
     let barPadding = options.barPadding;
 
     // set all the common options
-    let [width, height, top, left, bottom, right, innerWidth, innerHeight, location, id] = this._getCommonOption(options);
+    let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
+      innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
     let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
@@ -57,7 +58,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
       .attr('id', id)
       .append('div')   // make it on top of figure
-      .attr('style', `margin: ${top}px 0 0 ${left}px; width: ${width - left}px`)        //px need to be specified, otherwise not working
+      .attr('style', `margin: ${marginTop}px 0 0 ${marginLeft}px`)        //px need to be specified, otherwise not working
       .text('Sort by: ')
       .append('select');
 
@@ -72,12 +73,13 @@ class SortableBar extends BaseSimpleGroupAxis {
       .attr('width', width)
       .attr('height', height)
       .append('g')
-      .attr('transform', `translate(${left},${top})`);
+      .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
-
-    function draw(dataValue, svg, order) {
+    
+    // use arrow function to automatically bind this.
+    const draw = (dataValue, svg, order) => {
       let innerData;
       switch (order) {
         case 'descending':
@@ -144,77 +146,24 @@ class SortableBar extends BaseSimpleGroupAxis {
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
 
-      // remove the x and y axis if exist
-      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
-        d3.select('#' + id + 'x' + i)
-          .remove();
-      }
-      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
-        d3.select('#' + id + 'xl' + i)
-          .remove();
-      }
-      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
-        d3.select('#' + id + 'y' + i)
-          .remove();
-      }
-      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
-        d3.select('#' + id + 'yl' + i)
-          .remove();
-      }
+      d3.select('#' + id + 'xyl999').remove()
 
-      d3.select('#' + id + 'y0')
-        .remove();
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+      // set default x axisTitle to top if y max is 0
+      if (yMax == 0 && xPosition.length == 1 && xPosition[0] == 'bottom') xPosition = ['top'];
 
-      //x axis
-      for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
-        // set default x axis to top if y max is 0
-        if (yMax == 0 && xPosition.length == 1 && xPosition[i] == 'bottom') xPosition[i] = 'top';
-        svg
-          .append('g')
-          .attr('id', id + 'x' + i)
-          .style("font", xAxisFont)
-          .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
-          .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
-      }
+      //set the axis group
+      svg = svg
+        .append('g')
+        .attr('id', id + 'xyl999')
 
-      //x axis title
-      for (let i = 0; i < Math.min(xTitlePosition.length, 2); i++) {
-        // set default x axis to top if y max is 0
-        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[i] == 'bottom') xTitlePosition[i] = 'top';
-        svg
-          .append("text")
-          .attr('id', id + 'xl' + i)
-          .style('font', xTitleFont)
-          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-          .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -top / 4 * 3 : innerHeight + bottom / 4 * 3})`)  // centre at margin bottom/top 1/4
-          .text(xDataName);
-      }
-
-      //y axis
-      for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
-        svg
-          .append('g')
-          .attr('id', id + 'y' + i)
-          .style("font", yAxisFont)
-          .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
-          .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
-      }
-
-      //y axis title
-      for (let i = 0; i < Math.min(yTitlePosition.length, 2); i++) {
-        svg
-          .append("text")
-          .attr('id', id + 'yl' + i)
-          .style('font', yTitleFont)
-          .attr("text-anchor", "middle")  // transform is applied to the middle anchor
-          .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + right / 4 * 3 : -left / 4 * 3}, ${innerHeight / 2}) rotate(270)`)  // centre at margin left/right 1/4
-          .text(yDataName);
-      }
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]);
 
       // add line at y = 0 when there is negative data
       if (yMin != 0 && yMax != 0) {
         svg.append("path")
-          .attr('id', id + 'y0')
           .attr("stroke", 'black')
           .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
       }

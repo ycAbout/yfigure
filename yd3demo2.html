@@ -220,21 +220,12 @@
     //bar5.update();
     //bar6.update();
 
-
-
-
-
-
-
-
-
-
     
 
     createTitle("H2", "sortableBar");
 
     // example 1
-    let sortableBar1 = new yd3.SortableBar(dataBar1);
+    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019);
     // example 2
     let sortableBar2 = new yd3.SortableBar(dataBar2, {
       size: size2,
@@ -243,14 +234,14 @@
     // example 3
     let sortableBar3 = new yd3.SortableBar(dataBar3, {
       size: size3,
-      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       colors: ['steelblue', '#CC2529']
     });
 
-    sortableBar1.update();
-    sortableBar2.update();
-    sortableBar3.update();
+    //sortableBar1.update();
+    //sortableBar2.update();
+    //sortableBar3.update();
 
 
     createTitle("H2", "histogram");

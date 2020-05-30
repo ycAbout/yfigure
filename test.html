@@ -13,127 +13,372 @@
   <script> console.log(yd3)</script>
   <script>
 
-    let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
-    //example 1
-    yd3.bar(data);
-    //example 2
-    let data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-    yd3.bar(data2, {
-      size: { width: 300, height: 300 },
-    });
-    //example 3
-    yd3.bar(data2, {
-      size: { width: 350, height: 300 },
-      margin: { left: 40, top: 20, right: 60, bottom: 40 },
-      location: 'body',
-      colors: ['steelblue', '#CC2529']
-    });
+let size1 = { width: 400, height: 300 };
+    let size2 = { width: 500, height: 300 };
+    let size3 = { width: 600, height: 400 };
 
-    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
-    //example 1
-    yd3.sortableBar(data);
-    //example 2
-    data2 = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-    yd3.sortableBar(data2, {
-      size: { width: 300, height: 300 },
-    });
-    //example 3
-    yd3.sortableBar(data2, {
-      size: { width: 350, height: 300 },
-      margin: { left: 40, top: 20, right: 60, bottom: 40 },
-      location: 'body',
-      colors: ['steelblue', '#CC2529']
-    });
+    function createTitle(level, head) {
+      let h = document.createElement(level); // Create the H1 element 
+      let t = document.createTextNode(head); // Create a text element 
+      h.appendChild(t); // Append the text node to the H1 element 
+      document.body.appendChild(h); // Append the H1 element to the document
+    }
+    function br() {
+      let br = document.createElement("br");
+      document.body.appendChild(br);
+    }
 
 
     //generate a sudo normal distributed dataset
-    data = [];
-    for (let i = 0; i < 900; i++) {
-      let element = {
-        "age": (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5
-      }
-      data.push(element)
+    let dataHistogram = [["age"]];
+    for (let i = 0; i < 600; i++) {
+      let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100]
+      dataHistogram.push(element)
     }
 
-    // example 1  
-    yd3.histogram(data);
-    // example 2 
-    yd3.histogram(data, {
-      size: { width: 300, height: 300 },
-      nBins: 30
-    });
-    // example 3 
-    yd3.histogram(data, {
-      size: { width: 350, height: 300 },
-      margin: { left: 40, top: 80, right: 40, bottom: 40 },
-      location: 'body',
-      nBins: 30
-    });
+    //let dataLineDot1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 40], [5, 20]];
+    let dataLineDot1 = [["group", "score"], [1, 50], [2, -80], [3, 30], [4, 40], [5, 20]];
+    let dataLineDot2 = [["group", "score1", "score2", "score3", "score4"],
+    [1, 50, 50 - 20, 50 + 20, 50 + 40],
+    [2, 160, 160 - 20, 160 + 20, 160 + 40],
+    [3, 30, 30 - 20, 30 + 20, 30 + 40],
+    [4, 80, 80 - 20, 80 + 20, 80 + 40],
+    [5, 20, 20 - 20, 20 + 20, 20 + 40]
+    ];
 
-
-    data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 },{ "group": 4, "score": 40 }, { "group": 5, "score": 20 }];
-    // example 1  
-    yd3.lineDot(data, { dotRadius: 1 });
-    // example 2 
-    yd3.lineDot(data, {
-      size: { width: 300, height: 300 },
-    });
-    // example 3 
-    data2 = [];
-    for (i = 0; i < 18; i++) {
-      let element = {
-        "age": i+18,
-        "score1": Math.floor(Math.random() * 100),
-        "score2": Math.floor(Math.random() * 100 + 200),
-        "score3": Math.floor(Math.random() * 100 + 400),
-        "score4": Math.floor(Math.random() * 100 + 600),
-        "score5": Math.floor(Math.random() * 100 + 800),
-        "score6": Math.floor(Math.random() * 100 + 1000),
-      }
-      data2.push(element)
+    let dataLineDot3 = [["age", "score1", "score2", "score3", "score4", "score5", "score6"]];
+    for (i = 0; i < 50; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)]
+      dataLineDot3.push(element)
     }
 
-    yd3.lineDot(data2, {
-      size: { width: 350, height: 300 },
-      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+
+    let dataScatter1 = [["age", "score1"]];
+    for (i = 0; i < 50; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100)]
+      dataScatter1.push(element)
+    }
+
+    let dataScatter2 = [["age", "score1", "score2", "score3", "score4"]];
+    for (i = 0; i < 60; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
+      dataScatter2.push(element)
+    }
+    let dataScatter3 = [["age", "score1", "score2", "score3", "score4", "score5", "score6"]];
+    for (i = 0; i < 300; i++) {
+      let element = [
+        i + 18,
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i)),
+        Math.floor(Math.random() * 100 * (300 - i))
+      ]
+      dataScatter3.push(element)
+    }
+
+
+    createTitle("H1", "yd3 Demo");
+    createTitle("H2", "bar");
+
+
+    let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];
+    let dataBar3 = [["group", "score"]];
+    for (let i = 0; i < 50; i++) {
+      let element = [i + 1, Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)]
+      dataBar3.push(element)
+    }
+
+    let dataBar4 = [["group", "score1", "score2"],
+    [1, 50, 50 + 20],
+    [2, 16, 16 + 20],
+    [3, 30, 30 + 20],
+    [4, 80, 80 + 20],
+    ];
+
+    let dataBar5 = [["group", "score1", "score2", "score3", "score4"],
+    [1, 50, 50 - 20, -50 - 20, 50 + 40],
+    [2, 80, 80 - 20, -80 - 20, 80 + 40],
+    [3, 30, 30 - 20, -30 - 20, 30 + 40],
+    ];
+
+    let dataBar6 = [["group", "score1", "score2", "score3", "score4", "score5"]];
+    for (i = 0; i < 16; i++) {
+      let element = [i, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)];
+      dataBar6.push(element)
+    }
+
+    let worldPopulation2020 = [
+      ['Country', 'Population(million)'],
+      ['China', 1439],
+      ['India', 1380],
+      ['US', 331],
+      ['Indones', 274],
+      ['Pakist', 221],
+      ['Brazil', 213],
+      ['Nigeri', 206],
+      ['Bangladesh', 165],
+      ['Russia', 146],
+      ['Mexico', 129],
+      ["Japan", 126],
+      ["Ethiopia", 115],
+      ["Philippines", 110],
+      ["Egypt", 102],
+      ["Vietnam", 97],
+      ["DR Congo", 90],
+      ["Turkey", 84],
+      ["Iran", 84],
+      ["Germany", 84],
+      ["Thailand", 70],
+      ["UK", 68],
+      ["France", 65],
+      ["Italy", 60],
+      ["Tanzania", 60],
+      ["South Africa", 59],
+      ["Myanmar", 54],
+      ["Kenya", 54],
+      ["South Korea", 51],
+      ["Colombia", 51],
+      ["Spain", 47],
+    ]
+
+    let canadaTemprature = [['Provinces', 'Record high (°C)', 'Record low (°C)'],
+    ['Alberta', 43.3, -61.1],
+    ['British Columbia', 44.4, -58.9],
+    ['Manitoba', 44.4, -52.8],
+    ['New Brunswick', 39.4, -46.7],
+    ['Nova Scotia', 38.3, -41.1],
+    ['Ontario', 42.2, -58.3],
+    ['PEI', 36.7, -37.2],
+    ['Quebec', 40.0, -54.4],
+    ['Saskatchewan', 45.0, -56.7]
+    ]
+
+    let Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+
+
+
+
+
+
+  let optionItems = ["width: 400",
+  "height: 300",
+  "margin: 50",
+  "margin-left: 50",
+  "margin-top: 50",
+  "margin-right: 50",
+  "margin-bottom: 50",
+  "location: 'body'",
+  "id: 'graph123456'",
+  "xAxisPosition: ['bottom']",
+  "yAxisPosition: ['left']",
+  "xTitlePosition: ['bottom']",
+  "yTitlePosition: ['left']",
+  "xAxisFont: '10px sans-serif'",
+  "yAxisFont: '10px sans-serif'",
+  "xTitleFont: '10px sans-serif'",
+  "yTitleFont: '10px sans-serif'",
+  ]
+
+  let options = {} 
+
+  //for each option item, make a figure
+  for (let i = 0; i<items.length; i++) {
+
+  }
+
+
+    // example 1
+    population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar1 = new yd3.Bar(population, );
+
+
+
+    // example 2 change layout, font
+    let bar2 = new yd3.Bar(population, {
+      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
+      xAxisFont: '16px times', yAxisFont: '16px times', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif'
+    });
+
+
+    Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
+    // example 3 negative data
+    let bar3 = new yd3.Bar(Saskatoon2010to2019, {
+    });
+
+    // example 4 change color, bar padding
+    let bar4 = new yd3.Bar(Saskatoon2010to2019, {
+      colors: ['#CC2529', '#006994'], // second for negative value
+      barPadding: 0.2
+    });
+
+    // example 5, both positive and negative data
+    Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+    let bar5 = new yd3.Bar(Saskatoon2010to2019, {
+      width: 600,
+      margin: 50,
       location: 'body',
+      xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
+      colors: ['steelblue', '#CC2529']
+    });
+
+    br();
+
+    //bar1.update();
+    //bar2.update();
+    //bar3.update();
+    //bar4.update();
+    //bar5.update();
+
+
+    createTitle("H2", "group bar");
+
+    // example 1
+    let bar9 = new yd3.Bar(dataBar4);
+    // example 2
+    let bar10 = new yd3.Bar(dataBar5, {
+    });
+    br();
+    // example 3
+    let bar11 = new yd3.Bar(dataBar6, {
+      width: 600,
+      "margin-left": 60,
+      location: 'body',
+      xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'],
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+    //bar4.update();
+    //bar5.update();
+    //bar6.update();
+
+
+
+
+
+
+
+
+
+
+    
+
+    createTitle("H2", "sortableBar");
+
+    // example 1
+    let sortableBar1 = new yd3.SortableBar(dataBar1);
+    // example 2
+    let sortableBar2 = new yd3.SortableBar(dataBar2, {
+      size: size2,
+    });
+    br();
+    // example 3
+    let sortableBar3 = new yd3.SortableBar(dataBar3, {
+      size: size3,
+      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      location: 'body',
+      colors: ['steelblue', '#CC2529']
+    });
+
+    sortableBar1.update();
+    sortableBar2.update();
+    sortableBar3.update();
+
+
+    createTitle("H2", "histogram");
+
+
+    // example 1  
+    let histogram1 = new yd3.Histogram(dataHistogram);
+    // example 2 
+    let histogram2 = new yd3.Histogram(dataHistogram, {
+      size: size2,
+      nBins: 30
+    });
+    br();
+    // example 3 
+    let histogram3 = new yd3.Histogram(dataHistogram, {
+      size: size3,
+      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      location: 'body',
+      nBins: 100
+    });
+
+    histogram1.update();
+    histogram2.update();
+    histogram3.update();
+
+
+
+
+    createTitle("H2", "line");
+
+    // example 1  
+    let linedot1 = new yd3.LineDot(dataLineDot1, { dotRadius: 1 });
+    // example 2
+    let linedot2 = new yd3.LineDot(dataLineDot2, {
+      size: size2,
+      dotRadius: 1
+    });
+    br();
+    // example 3 
+    let linedot3 = new yd3.LineDot(dataLineDot3, {
+      size: size3,
+      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      location: 'body',
+      dotRadius: 1,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
 
 
-    data = [];
-    for (i = 0; i < 50; i++) {
-      let element = {
-        "age": i+18,
-        "score1": Math.floor(Math.random() * 100)
-      }
-      data.push(element)
-    }
+    createTitle("H2", "lineDot");
+
     // example 1  
-    yd3.scatter(data);
-    // example 2 
-    yd3.scatter(data, {
-      size: { width: 300, height: 300 },
+    let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5 });
+    // example 2
+    let linedot5 = new yd3.LineDot(dataLineDot2, {
+      size: size2,
     });
+    br();
     // example 3 
-    data2 = [];
-    for (i = 0; i < 50; i++) {
-      let element = {
-        "age": i+18,
-        "score1": Math.floor(Math.random() * 100),
-        "score2": Math.floor(Math.random() * 100 + 200),
-        "score3": Math.floor(Math.random() * 100 + 400),
-        "score4": Math.floor(Math.random() * 100 + 600)
-      }
-      data2.push(element)
-    }
-    yd3.scatter(data2, {
-      size: { width: 350, height: 300 },
-      margin: { left: 40, top: 80, right: 40, bottom: 40 },
+    let linedot6 = new yd3.LineDot(dataLineDot3, {
+      size: size3,
+      margin: { left: 50, top: 50, right: 50, bottom: 50 },
+      location: 'body',
+      dotRadius: 5,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+    });
+
+
+    linedot1.update();
+    linedot2.update();
+    linedot3.update();
+    linedot4.update();
+    linedot5.update();
+    linedot6.update();
+
+    createTitle("H2", "scatter");
+
+    // example 1  
+    let scatter1 = new yd3.Scatter(dataScatter1);
+    // example 2 
+    let scatter2 = new yd3.Scatter(dataScatter2, {
+      size: size2,
+    });
+    br();
+    // example 3 
+    let scatter3 = new yd3.Scatter(dataScatter3, {
+      size: size3,
+      margin: { left: 50, top: 50, right: 50, bottom: 50 },
       location: 'body',
       dotRadius: 4,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
+
+    scatter1.update();
+    scatter2.update();
+    scatter3.update();
 
   </script>
 </body>
