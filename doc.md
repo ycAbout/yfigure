@@ -23,3 +23,10 @@ common options:
   `yAxisFont: '10px sans-serif'` Sets axis tick font
   `xTitleFont: '10px sans-serif'` Sets axis title font
   `yTitleFont: '10px sans-serif'` Sets axis title font
+  `xTicks = null` Sets axis tick number  // approximate
+  `yTicks = null` Sets axis tick number  // approximate
+  `axisLineWidth: 1` Sets axis line width
+  `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
+  `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
+  `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
+  `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)

@@ -41,7 +41,8 @@ class SortableBar extends BaseSimpleGroupAxis {
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont] = this._getAxisOption(options);
+    let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
+      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = data[0][0];
@@ -151,15 +152,16 @@ class SortableBar extends BaseSimpleGroupAxis {
       // set default x axis to top if y max is 0
       if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
       // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xPosition.length == 1 && xPosition[0] == 'bottom') xPosition = ['top'];
+      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
 
       //set the axis group
       svg = svg
         .append('g')
         .attr('id', id + 'xyl999')
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-        xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]);
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
 
       // add line at y = 0 when there is negative data
       if (yMin != 0 && yMax != 0) {

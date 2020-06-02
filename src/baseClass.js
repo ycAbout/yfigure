@@ -43,22 +43,23 @@ class BaseSimpleGroupAxis {
     // make margin short cut for all margin
     if (options.margin) {
 
-      (typeof options.margin !== 'string' && typeof options.margin !== 'number') ? makeError('Option margin need to be an string or number!') : true;
+      (typeof options.margin !== 'string' && typeof options.margin !== 'number') ? makeError('Option margin needs to be a string or number!') : true;
 
       marginTop = marginLeft = marginBottom = marginRight = parseInt(options.margin);
 
       // any one of the margin is set
-    } else if (options['marginLeft'] || ['marginTop'] || options['marginRight'] || options['marginBottom']) {
+    } else if (options['marginLeft'] || options['marginTop'] || options['marginRight'] || options['marginBottom']) {
+
       options['marginLeft'] ? true : options['marginLeft'] = 25;
       options['marginTop'] ? true : options['marginTop'] = 25;
       options['marginRight'] ? true : options['marginRight'] = 25;
       options['marginBottom'] ? true : options['marginBottom'] = 25;
 
       //validate format
-      (typeof options['marginLeft'] !== 'string' && typeof options['marginLeft'] !== 'number') ? makeError('Option marginLeft need to be an string or number!') : true;
-      (typeof options['marginTop'] !== 'string' && typeof options['marginTop'] !== 'number') ? makeError('Option marginTop need to be an string or number!') : true;
-      (typeof options['marginRight'] !== 'string' && typeof options['marginRight'] !== 'number') ? makeError('Option marginRight need to be an string or number!') : true;
-      (typeof options['marginBottom'] !== 'string' && typeof options['marginBottom'] !== 'number') ? makeError('Option marginBottom need to be an string or number!') : true;
+      (typeof options['marginLeft'] !== 'string' && typeof options['marginLeft'] !== 'number') ? makeError('Option marginLeft needs to be a string or number!') : true;
+      (typeof options['marginTop'] !== 'string' && typeof options['marginTop'] !== 'number') ? makeError('Option marginTop needs to be a string or number!') : true;
+      (typeof options['marginRight'] !== 'string' && typeof options['marginRight'] !== 'number') ? makeError('Option marginRight needs to be a string or number!') : true;
+      (typeof options['marginBottom'] !== 'string' && typeof options['marginBottom'] !== 'number') ? makeError('Option marginBottom needs to be a string or number!') : true;
 
       marginLeft = parseInt(options['marginLeft']);
       marginTop = parseInt(options['marginTop']);
@@ -76,7 +77,7 @@ class BaseSimpleGroupAxis {
     // make margin short cut for all margin
     if (options.frame) {
 
-      (typeof options.frame !== 'string' && typeof options.frame !== 'number') ? makeError('Option frame need to be an string or number!') : true;
+      (typeof options.frame !== 'string' && typeof options.frame !== 'number') ? makeError('Option frame needs to be a string or number!') : true;
 
       frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
 
@@ -89,10 +90,10 @@ class BaseSimpleGroupAxis {
       options.frameBottom ? true : options.frameBottom = 30;
 
       //validate format
-      (typeof options.frameLeft !== 'string' && typeof options.frameLeft !== 'number') ? makeError('Option frameLeft need to be an string or number!') : true;
-      (typeof options.frameTop !== 'string' && typeof options.frameTop !== 'number') ? makeError('Option frameTop need to be an string or number!') : true;
-      (typeof options.frameRight !== 'string' && typeof options.frameRight !== 'number') ? makeError('Option frameRight need to be an string or number!') : true;
-      (typeof options.frameBottom !== 'string' && typeof options.frameBottom !== 'number') ? makeError('Option frameBottom need to be an string or number!') : true;
+      (typeof options.frameLeft !== 'string' && typeof options.frameLeft !== 'number') ? makeError('Option frameLeft needs to be a string or number!') : true;
+      (typeof options.frameTop !== 'string' && typeof options.frameTop !== 'number') ? makeError('Option frameTop needs to be a string or number!') : true;
+      (typeof options.frameRight !== 'string' && typeof options.frameRight !== 'number') ? makeError('Option frameRight needs to be a string or number!') : true;
+      (typeof options.frameBottom !== 'string' && typeof options.frameBottom !== 'number') ? makeError('Option frameBottom needs to be a string or number!') : true;
 
       frameLeft = parseInt(options.frameLeft);
       frameTop = parseInt(options.frameTop);
@@ -101,14 +102,14 @@ class BaseSimpleGroupAxis {
 
     } else {
       options.frame = 30;
-      frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
+      frameTop = frameLeft = frameBottom = frameRight = options.frame;
     }
 
     //validate format
-    (typeof options.width !== 'string' && typeof options.width !== 'number') ? makeError('Option width need to be an string or number!') : true;
-    (typeof options.height !== 'string' && typeof options.height !== 'number') ? makeError('Option height need to be an string or number!') : true;
-    typeof options.location !== 'string' ? makeError('Option location need to be an string or number!') : true;
-    typeof options.id !== 'string' ? makeError('Option id need to be an string or number!') : true;
+    (typeof options.width !== 'string' && typeof options.width !== 'number') ? makeError('Option width needs to be a string or number!') : true;
+    (typeof options.height !== 'string' && typeof options.height !== 'number') ? makeError('Option height needs to be a string or number!') : true;
+    typeof options.location !== 'string' ? makeError('Option location needs to be a string or number!') : true;
+    typeof options.id !== 'string' ? makeError('Option id needs to be a string or number!') : true;
 
     //parse float just in case and get parameters
     let innerWidth = width - marginLeft - marginRight - frameLeft - frameRight;
@@ -137,21 +138,39 @@ class BaseSimpleGroupAxis {
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
     options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
     options.yTitleFont ? true : options.yTitleFont = '14px sans-serif';
+    options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
+    options.xTicks ? true : options.xTicks = null;
+    options.yTicks ? true : options.yTicks = null;
+    options.axisLineWidth ? true : options.axisLineWidth = 1;
+    options.tickInward ? true : options.tickInward = [];
+    options.tickLabelRemove ? true : options.tickLabelRemove = [];
+    options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
 
     function makeError(msg) {
       throw new Error(msg)
     }
 
     //validate format
-    !Array.isArray(options.xAxisPosition) ? makeError('Option xAxisPosition need to be an array!') : true;
-    !Array.isArray(options.yAxisPosition) ? makeError('Option yAxisPosition need to be an array!') : true;
-    !Array.isArray(options.xTitlePosition) ? makeError('Option xTitlePosition need to be an array!') : true;
-    !Array.isArray(options.yTitlePosition) ? makeError('Option yTitlePosition need to be an array!') : true;
+    !Array.isArray(options.xAxisPosition) ? makeError('Option xAxisPosition needs to be an array!') : true;
+    !Array.isArray(options.yAxisPosition) ? makeError('Option yAxisPosition needs to be an array!') : true;
+    !Array.isArray(options.xTitlePosition) ? makeError('Option xTitlePosition needs to be an array!') : true;
+    !Array.isArray(options.yTitlePosition) ? makeError('Option yTitlePosition needs to be an array!') : true;
 
-    typeof options.xAxisFont !== 'string' ? makeError('Option xAxisFont need to be an string!') : true;
-    typeof options.yAxisFont !== 'string' ? makeError('Option yAxisFont need to be an string!') : true;
-    typeof options.xTitleFont !== 'string' ? makeError('Option xTitleFont need to be an string!') : true;
-    typeof options.yTitleFont !== 'string' ? makeError('Option yTitleFont need to be an string!') : true;
+    typeof options.xAxisFont !== 'string' ? makeError('Option xAxisFont needs to be a string!') : true;
+    typeof options.yAxisFont !== 'string' ? makeError('Option yAxisFont needs to be a string!') : true;
+    typeof options.xTitleFont !== 'string' ? makeError('Option xTitleFont needs to be a string!') : true;
+    typeof options.yTitleFont !== 'string' ? makeError('Option yTitleFont needs to be a string!') : true;
+
+    (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
+    !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
+
+    (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
+    (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
+    typeof options.axisLineWidth !== 'number' ? makeError('Option axisLineWidth needs to be a number!') : true;
+
+    !Array.isArray(options.tickInward) ? makeError('Option tickInward needs to be an array!') : true;
+    !Array.isArray(options.tickLabelRemove) ? makeError('Option tickLabelRemove needs to be an array!') : true;
+    !Array.isArray(options.axisLongLineRemove) ? makeError('Option axisLongLineRemove needs to be an array!') : true;
 
     //parse float just in case and get parameters
     let xAxisPosition = options.xAxisPosition;
@@ -162,8 +181,16 @@ class BaseSimpleGroupAxis {
     let yAxisFont = options.yAxisFont;
     let xTitleFont = options.xTitleFont;
     let yTitleFont = options.yTitleFont;
+    let xTickLabelRotate = parseInt(options.xTickLabelRotate);
+    let xTicks = options.xTicks;
+    let yTicks = options.yTicks;
+    let axisLineWidth = options.axisLineWidth;
+    let tickInward = options.tickInward;
+    let tickLabelRemove = options.tickLabelRemove;
+    let axisLongLineRemove = options.axisLongLineRemove;
 
-    return [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]
+    return [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]
   }
 
   /**
@@ -173,7 +200,7 @@ class BaseSimpleGroupAxis {
   _validate2dArray(data) {
     //validate 2d array data format
     if (!Array.isArray(data) || !data.every((row) => Array.isArray(row))) {
-      throw new Error('data need to be a 2d array!')
+      throw new Error('data needs to be a 2d array!')
     }
   }
 
@@ -210,14 +237,44 @@ class BaseSimpleGroupAxis {
   }
 
   _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-    xPosition, yPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont]) {
+    xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+    xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]) {
+
     //x axis
-    for (let i = 0; i < Math.min(xPosition.length, 2); i++) {
-      svg
+    for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
+      let xAxis = svg
         .append('g')
         .style("font", xAxisFont)
-        .attr('transform', `translate(0, ${xPosition[i] == 'top' ? 0 : innerHeight})`)
-        .call(xPosition[i] == 'top' ? d3.axisTop(xScale) : d3.axisBottom(xScale));
+        .attr('transform', `translate(0, ${xAxisPosition[i] == 'top' ? 0 : innerHeight})`)
+        .call(xAxisPosition[i] == 'top' ? d3.axisTop(xScale).ticks(xTicks) : d3.axisBottom(xScale).ticks(xTicks))
+        .attr("stroke-width", axisLineWidth);
+
+      xAxis
+        .selectAll("text")
+        .attr("y", (9 - 9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1))   // d3 default off y 9. Max 90 degrees to 0
+        .attr("dy", `${0.355 + (0.355 - 0.355 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1)}em`)   // d3 default off y 0.71em. Max 90 degrees to 0.355em
+        .attr("x", (9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1) * (xTickLabelRotate < 0 ? -1 : 1))   // d3 default off x 0. Max 90 degrees to 9
+        .style("text-anchor", xTickLabelRotate != 0 ? (xTickLabelRotate < 0 ? (xAxisPosition[i] == 'top' ? 'start' : 'end') : (xAxisPosition[i] == 'top' ? 'end' : 'start')) : 'middle')
+        .attr("transform", `rotate(${xTickLabelRotate})`);
+
+      if (tickInward.includes(xAxisPosition[i])) {
+        xAxis
+          .selectAll("line")
+          .attr("y2", xAxisPosition[i] == 'top' ? 6 : -6)
+      }
+
+      if (tickLabelRemove.includes(xAxisPosition[i])) {
+        xAxis
+          .selectAll("text")
+          .remove();
+      }
+
+      if (axisLongLineRemove.includes(xAxisPosition[i])) {
+        xAxis
+          .select("path")
+          .remove();
+      }
+
     }
 
     //x axis title
@@ -232,12 +289,33 @@ class BaseSimpleGroupAxis {
     }
 
     //y axis
-    for (let i = 0; i < Math.min(yPosition.length, 2); i++) {
-      svg
+    for (let i = 0; i < Math.min(yAxisPosition.length, 2); i++) {
+      let yAxis = svg
         .append('g')
         .style("font", yAxisFont)
-        .attr('transform', `translate(${yPosition[i] == 'right' ? innerWidth : 0}, 0)`)
-        .call(yPosition[i] == 'right' ? d3.axisRight(yScale) : d3.axisLeft(yScale));
+        .attr('transform', `translate(${yAxisPosition[i] == 'right' ? innerWidth : 0}, 0)`)
+        .call(yAxisPosition[i] == 'right' ? d3.axisRight(yScale).ticks(yTicks) : d3.axisLeft(yScale).ticks(yTicks))
+        .attr("stroke-width", axisLineWidth);
+
+      if (tickInward.includes(yAxisPosition[i])) {
+        yAxis
+          .selectAll("line")
+          .attr("x2", yAxisPosition[i] == 'left' ? 6 : -6)
+      }
+
+      if (tickLabelRemove.includes(yAxisPosition[i])) {
+        yAxis
+          .selectAll("text")
+          .remove();
+      }
+
+      if (axisLongLineRemove.includes(yAxisPosition[i])) {
+        yAxis
+          .select("path")
+          .remove();
+      }
+
+
     }
 
     //y axis title
@@ -250,6 +328,7 @@ class BaseSimpleGroupAxis {
         .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + frameRight : -frameLeft}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right
         .text(yDataName);
     }
+
   }
 
 
