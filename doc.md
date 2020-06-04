@@ -34,6 +34,6 @@ common options:
   `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)
   `gridColor: ''` Sets the grid line color
   `gridDashArray: ''` Sets the grid line properties  // example values `'4 1'`
-  `gridLineWidth: 0` Sets the grid line properties
+  `gridStrokeWidth: 0` Sets the grid line properties
   `line0: true` Sets whether line 0 will show if there is positive and negative data
 
