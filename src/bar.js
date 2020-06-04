@@ -193,11 +193,6 @@ class Bar extends BaseSimpleGroupAxis {
 
     // add line at y = 0 when there is negative data
     let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))))
-    console.log('drawLine0: ', drawLine0);
-    console.log('line0: ', line0);
-    console.log('1st: ', (yMin < 0 && yMax > 0));
-    console.log('2nd: ', (yMin == 0 && !xAxisPosition.includes('bottom')));
-    console.log('3nd: ', (yMax == 0 && !xAxisPosition.includes('top')));
     this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
       xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
       xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
