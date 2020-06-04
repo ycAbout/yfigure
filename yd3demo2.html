@@ -165,6 +165,7 @@
     // example 2 rotate x tick lables, change layout, font
     let bar2 = new yd3.Bar(population, {
       frameBottom:45,
+      frameLeft:40,
       xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
       xAxisFont: '16px times', yAxisFont: '14px times', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif',
       yTicks: 6,
@@ -177,7 +178,7 @@
 
     Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
-    let bar3 = new yd3.Bar(Saskatoon2010to2019, {
+    let bar3 = new yd3.Bar(Saskatoon2010to2019, { xAxisPosition: ['bottom']
     });
 
     // example 4 change color, bar padding
@@ -191,8 +192,9 @@
     let bar5 = new yd3.Bar(Saskatoon2010to2019, {
       width: 600,
       margin: 50,
+      line0: true,
       location: 'body',
-      xPosition: ['bottom'], yPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
+      xAxisPosition: ['bottom'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
       colors: ['steelblue', '#CC2529']
     });
 

@@ -25,8 +25,13 @@ common options:
   `yTitleFont: '10px sans-serif'` Sets axis title font
   `xTicks = null` Sets axis tick number  // approximate
   `yTicks = null` Sets axis tick number  // approximate
-  `axisLineWidth: 1` Sets axis line width
+  `axisLineWidth: 1` Sets axis (and ticks) line width
   `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
   `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)
+  `gridColor: ''` Sets the grid line properties
+  `gridDashArray: ''` Sets the grid line properties  // example values `'4 1'`
+  `gridLineWidth: 0` Sets the grid line properties
+  `line0: true` Sets whether line 0 will show if there is positive and negative data
+

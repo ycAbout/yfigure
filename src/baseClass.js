@@ -128,8 +128,9 @@ class BaseSimpleGroupAxis {
    */
   _getAxisOption(options) {
 
+    let xAxisPositionSet = false // for whether user supplied values
     // set defaul values so no need to feed options in a way none or all
-    options.xAxisPosition ? true : options.xAxisPosition = ['bottom'];  // for none or both xAxisPosition = [], yAxisPosition = ['left', 'right']
+    options.xAxisPosition ? xAxisPositionSet = true : options.xAxisPosition = ['bottom'];  // for none or both xAxisPosition = [], yAxisPosition = ['left', 'right']
     options.yAxisPosition ? true : options.yAxisPosition = ['left'];
     options.xTitlePosition ? true : options.xTitlePosition = ['bottom'];
     options.yTitlePosition ? true : options.yTitlePosition = ['left'];
@@ -145,6 +146,10 @@ class BaseSimpleGroupAxis {
     options.tickInward ? true : options.tickInward = [];
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
+    options.gridColor ? true : options.gridColor = '';
+    options.gridDashArray ? true : options.gridDashArray = '';
+    options.gridLineWidth ? true : options.gridLineWidth = 0;
+    options.line0 === false ? true : options.line0 = true;
 
     function makeError(msg) {
       throw new Error(msg)
@@ -172,6 +177,12 @@ class BaseSimpleGroupAxis {
     !Array.isArray(options.tickLabelRemove) ? makeError('Option tickLabelRemove needs to be an array!') : true;
     !Array.isArray(options.axisLongLineRemove) ? makeError('Option axisLongLineRemove needs to be an array!') : true;
 
+    typeof options.gridColor !== 'string' ? makeError('Option gridColor needs to be a string!') : true;
+    typeof options.gridDashArray !== 'string' ? makeError('Option gridDashArray needs to be a string!') : true;
+    typeof options.gridLineWidth !== 'number' ? makeError('Option gridLineWidth needs to be a number!') : true;
+
+    (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
+
     //parse float just in case and get parameters
     let xAxisPosition = options.xAxisPosition;
     let yAxisPosition = options.yAxisPosition;
@@ -188,9 +199,13 @@ class BaseSimpleGroupAxis {
     let tickInward = options.tickInward;
     let tickLabelRemove = options.tickLabelRemove;
     let axisLongLineRemove = options.axisLongLineRemove;
+    let gridColor = options.gridColor;
+    let gridDashArray = options.gridDashArray;
+    let gridLineWidth = options.gridLineWidth;
+    let line0 = options.line0;
 
-    return [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]
+    return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0]
   }
 
   /**
@@ -238,7 +253,7 @@ class BaseSimpleGroupAxis {
 
   _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
     xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-    xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]) {
+    xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]) {
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -274,7 +289,6 @@ class BaseSimpleGroupAxis {
           .select("path")
           .remove();
       }
-
     }
 
     //x axis title
@@ -315,7 +329,6 @@ class BaseSimpleGroupAxis {
           .remove();
       }
 
-
     }
 
     //y axis title
@@ -329,6 +342,38 @@ class BaseSimpleGroupAxis {
         .text(yDataName);
     }
 
+    if (drawLine0) {
+      svg.append("path")
+        .attr("stroke", 'black')
+        .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
+    }
+
+    // add x gridlines
+    svg.append("g")
+      .style("color", gridColor)
+      .style("stroke-dasharray", gridDashArray)
+      .style("stroke-width", gridLineWidth)
+      .attr('transform', `translate(0, ${innerHeight})`)
+      .call(d3.axisBottom(xScale)
+        .ticks(xTicks)
+        .tickSize(-innerHeight)
+        .tickFormat("")
+      )
+      .select("path")
+      .remove();
+
+    // add y gridlines
+    svg.append("g")
+      .style("color", gridColor)
+      .style("stroke-dasharray", gridDashArray)
+      .style("stroke-width", gridLineWidth)
+      .call(d3.axisLeft(yScale)
+        .ticks(yTicks)
+        .tickSize(-innerWidth)
+        .tickFormat("")
+      )
+      .select("path")
+      .remove();
   }
 
 

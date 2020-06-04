@@ -149,8 +149,9 @@ var yd3 = (function (exports, d3$1) {
      */
     _getAxisOption(options) {
 
+      let xAxisPositionSet = false; // for whether user supplied values
       // set defaul values so no need to feed options in a way none or all
-      options.xAxisPosition ? true : options.xAxisPosition = ['bottom'];  // for none or both xAxisPosition = [], yAxisPosition = ['left', 'right']
+      options.xAxisPosition ? xAxisPositionSet = true : options.xAxisPosition = ['bottom'];  // for none or both xAxisPosition = [], yAxisPosition = ['left', 'right']
       options.yAxisPosition ? true : options.yAxisPosition = ['left'];
       options.xTitlePosition ? true : options.xTitlePosition = ['bottom'];
       options.yTitlePosition ? true : options.yTitlePosition = ['left'];
@@ -166,6 +167,10 @@ var yd3 = (function (exports, d3$1) {
       options.tickInward ? true : options.tickInward = [];
       options.tickLabelRemove ? true : options.tickLabelRemove = [];
       options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
+      options.gridColor ? true : options.gridColor = '';
+      options.gridDashArray ? true : options.gridDashArray = '';
+      options.gridLineWidth ? true : options.gridLineWidth = 0;
+      options.line0 === false ? true : options.line0 = true;
 
       function makeError(msg) {
         throw new Error(msg)
@@ -193,6 +198,12 @@ var yd3 = (function (exports, d3$1) {
       !Array.isArray(options.tickLabelRemove) ? makeError('Option tickLabelRemove needs to be an array!') : true;
       !Array.isArray(options.axisLongLineRemove) ? makeError('Option axisLongLineRemove needs to be an array!') : true;
 
+      typeof options.gridColor !== 'string' ? makeError('Option gridColor needs to be a string!') : true;
+      typeof options.gridDashArray !== 'string' ? makeError('Option gridDashArray needs to be a string!') : true;
+      typeof options.gridLineWidth !== 'number' ? makeError('Option gridLineWidth needs to be a number!') : true;
+
+      (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
+
       //parse float just in case and get parameters
       let xAxisPosition = options.xAxisPosition;
       let yAxisPosition = options.yAxisPosition;
@@ -209,9 +220,13 @@ var yd3 = (function (exports, d3$1) {
       let tickInward = options.tickInward;
       let tickLabelRemove = options.tickLabelRemove;
       let axisLongLineRemove = options.axisLongLineRemove;
+      let gridColor = options.gridColor;
+      let gridDashArray = options.gridDashArray;
+      let gridLineWidth = options.gridLineWidth;
+      let line0 = options.line0;
 
-      return [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]
+      return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0]
     }
 
     /**
@@ -259,7 +274,7 @@ var yd3 = (function (exports, d3$1) {
 
     _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
       xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-      xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]) {
+      xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]) {
 
       //x axis
       for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -295,7 +310,6 @@ var yd3 = (function (exports, d3$1) {
             .select("path")
             .remove();
         }
-
       }
 
       //x axis title
@@ -336,7 +350,6 @@ var yd3 = (function (exports, d3$1) {
             .remove();
         }
 
-
       }
 
       //y axis title
@@ -350,6 +363,38 @@ var yd3 = (function (exports, d3$1) {
           .text(yDataName);
       }
 
+      if (drawLine0) {
+        svg.append("path")
+          .attr("stroke", 'black')
+          .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
+      }
+
+      // add x gridlines
+      svg.append("g")
+        .style("color", gridColor)
+        .style("stroke-dasharray", gridDashArray)
+        .style("stroke-width", gridLineWidth)
+        .attr('transform', `translate(0, ${innerHeight})`)
+        .call(d3.axisBottom(xScale)
+          .ticks(xTicks)
+          .tickSize(-innerHeight)
+          .tickFormat("")
+        )
+        .select("path")
+        .remove();
+
+      // add y gridlines
+      svg.append("g")
+        .style("color", gridColor)
+        .style("stroke-dasharray", gridDashArray)
+        .style("stroke-width", gridLineWidth)
+        .call(d3.axisLeft(yScale)
+          .ticks(yTicks)
+          .tickSize(-innerWidth)
+          .tickFormat("")
+        )
+        .select("path")
+        .remove();
     }
 
 
@@ -390,7 +435,7 @@ var yd3 = (function (exports, d3$1) {
 
   }
 
-  //to do, axis label show, lable rotate, each bar each color(maybe group bar with 1 group?), 0 bar no show, grid, x title based on tick width
+  //to do, each bar each color(maybe group bar with 1 group?), y dataName for group, line0 x y axis color , tickInward to tickSize, commerical copyright, error bar, stack bar, vertical bar
 
 
   /**
@@ -434,8 +479,8 @@ var yd3 = (function (exports, d3$1) {
         innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+      let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
@@ -546,21 +591,20 @@ var yd3 = (function (exports, d3$1) {
         }
       }
 
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
+      if (!xAxisPositionSet) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+        // set default x axisTitle to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+      }
 
       // add line at y = 0 when there is negative data
-      if (yMin != 0 && yMax != 0) {
-        svg.append("path")
-          .attr("stroke", 'black')
-          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
-      }
+      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
+
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth,drawLine0]);
+
       return id;
     }
   }
@@ -602,8 +646,8 @@ var yd3 = (function (exports, d3$1) {
         innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+      let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth] = this._getAxisOption(options);
 
       let nBins = options.nBins;
       let color = options.color;
@@ -680,9 +724,12 @@ var yd3 = (function (exports, d3$1) {
         })
         .on('mouseout', () => d3$1.select('#' + dataPointDisplayId).style('display', 'none'));
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
+      // no need for line0
+      let drawLine0 = false;
+
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
 
       return id;
 
@@ -730,8 +777,8 @@ var yd3 = (function (exports, d3$1) {
         innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+      let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
@@ -844,22 +891,19 @@ var yd3 = (function (exports, d3$1) {
         }
       }
 
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
+      if (!xAxisPositionSet) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+        // set default x axisTitle to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+      }
 
       // add line at y = 0 when there is negative data
-      if (yMin <= 0 && yMax >= 0) {
-        svg.append("path")
-          .attr("stroke", 'black')
-          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
-      }
+      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
+
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
 
       return id;
 
@@ -906,8 +950,8 @@ var yd3 = (function (exports, d3$1) {
         innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+      let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
@@ -1008,22 +1052,20 @@ var yd3 = (function (exports, d3$1) {
         }
       }
 
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-
-
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
+      // default x Axis position
+      if (!xAxisPositionSet) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+        // set default x axisTitle to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+      }
 
       // add line at y = 0 when there is negative data
-      if (yMin <= 0 && yMax >= 0) {
-        svg.append("path")
-          .attr("stroke", 'black')
-          .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
-      }
+      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
+
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
 
       return id;
 
@@ -1070,8 +1112,8 @@ var yd3 = (function (exports, d3$1) {
         innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
       // set all the axis options
-      let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+      let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+        xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
       // take first column as x name label, second column as y name label, of the first object
       let xDataName = data[0][0];
@@ -1107,7 +1149,7 @@ var yd3 = (function (exports, d3$1) {
 
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
       let dataPointDisplayId = this._setDataPoint();
-      
+
       // use arrow function to automatically bind this.
       const draw = (dataValue, svg, order) => {
         let innerData;
@@ -1178,26 +1220,24 @@ var yd3 = (function (exports, d3$1) {
 
         d3$1.select('#' + id + 'xyl999').remove();
 
-        // set default x axis to top if y max is 0
-        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-        // set default x axisTitle to top if y max is 0
-        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+        if (!xAxisPositionSet) {
+          // set default x axis to top if y max is 0
+          if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+          // set default x axisTitle to top if y max is 0
+          if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+        }
 
         //set the axis group
         svg = svg
           .append('g')
           .attr('id', id + 'xyl999');
 
-        this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-          xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-          xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
-
         // add line at y = 0 when there is negative data
-        if (yMin != 0 && yMax != 0) {
-          svg.append("path")
-            .attr("stroke", 'black')
-            .attr("d", d3$1.line()([[0, yScale(0)], [innerWidth, yScale(0)]]));
-        }
+        let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
+
+        this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+          xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+          xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
 
       };
 

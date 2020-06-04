@@ -41,8 +41,8 @@ class SortableBar extends BaseSimpleGroupAxis {
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, 
-      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove] = this._getAxisOption(options);
+    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = data[0][0];
@@ -78,7 +78,7 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
-    
+
     // use arrow function to automatically bind this.
     const draw = (dataValue, svg, order) => {
       let innerData;
@@ -149,26 +149,24 @@ class SortableBar extends BaseSimpleGroupAxis {
 
       d3.select('#' + id + 'xyl999').remove()
 
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+      if (!xAxisPositionSet) {
+        // set default x axis to top if y max is 0
+        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+        // set default x axisTitle to top if y max is 0
+        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+      }
 
       //set the axis group
       svg = svg
         .append('g')
         .attr('id', id + 'xyl999')
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove]);
-
       // add line at y = 0 when there is negative data
-      if (yMin != 0 && yMax != 0) {
-        svg.append("path")
-          .attr("stroke", 'black')
-          .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
-      }
+      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))))
+
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+        xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]);
 
     }
 
