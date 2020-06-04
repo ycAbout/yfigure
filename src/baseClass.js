@@ -142,7 +142,7 @@ class BaseSimpleGroupAxis {
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
     options.xTicks ? true : options.xTicks = null;
     options.yTicks ? true : options.yTicks = null;
-    options.axisColor ? true : options.axisColor = '';
+    options.axisColor ? true : options.axisColor = 'black';
     options.axisStrokeWidth ? true : options.axisStrokeWidth = 1;
     options.tickInward ? true : options.tickInward = [];
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
@@ -380,9 +380,12 @@ class BaseSimpleGroupAxis {
     }
 
     if (drawLine0) {
-      svg.append("path")
-        .attr("color", axisColor)
-        .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
+      svg.append("line")
+        .attr("x1", 0)
+        .attr("y1", yScale(0) + 0.5)
+        .attr("x2", innerWidth)
+        .attr("y2", yScale(0))
+        .style('stroke', axisColor)
     }
 
     // add x gridlines

@@ -28,7 +28,6 @@ common options:
   `yTicks = null` Sets axis tick number  // approximate
   `axisColor: ''` Sets axises (and ticks), labels, and titles line color
   `axisStrokeWidth: 1` Sets axis (and ticks) line width
-
   `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
