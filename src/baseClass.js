@@ -134,7 +134,7 @@ class BaseSimpleGroupAxis {
     options.yAxisPosition ? true : options.yAxisPosition = ['left'];
     options.xTitlePosition ? true : options.xTitlePosition = ['bottom'];
     options.yTitlePosition ? true : options.yTitlePosition = ['left'];
-
+    options.yTitle ? true : options.yTitle = '';             // for grouped figures where y title can not acuqired from data
     options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
     options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
@@ -142,7 +142,8 @@ class BaseSimpleGroupAxis {
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
     options.xTicks ? true : options.xTicks = null;
     options.yTicks ? true : options.yTicks = null;
-    options.axisLineWidth ? true : options.axisLineWidth = 1;
+    options.axisColor ? true : options.axisColor = '';
+    options.axisStrokeWidth ? true : options.axisStrokeWidth = 1;
     options.tickInward ? true : options.tickInward = [];
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
@@ -155,30 +156,42 @@ class BaseSimpleGroupAxis {
       throw new Error(msg)
     }
 
-    //validate format
-    !Array.isArray(options.xAxisPosition) ? makeError('Option xAxisPosition needs to be an array!') : true;
-    !Array.isArray(options.yAxisPosition) ? makeError('Option yAxisPosition needs to be an array!') : true;
-    !Array.isArray(options.xTitlePosition) ? makeError('Option xTitlePosition needs to be an array!') : true;
-    !Array.isArray(options.yTitlePosition) ? makeError('Option yTitlePosition needs to be an array!') : true;
+    function validateArray(arrayToBe, errorString) {
+      !Array.isArray(arrayToBe) ? makeError(`Option ${errorString} needs to be an array!`) : true;
+    }
 
-    typeof options.xAxisFont !== 'string' ? makeError('Option xAxisFont needs to be a string!') : true;
-    typeof options.yAxisFont !== 'string' ? makeError('Option yAxisFont needs to be a string!') : true;
-    typeof options.xTitleFont !== 'string' ? makeError('Option xTitleFont needs to be a string!') : true;
-    typeof options.yTitleFont !== 'string' ? makeError('Option yTitleFont needs to be a string!') : true;
+    //validate array format
+    validateArray(options.xAxisPosition, 'xAxisPosition');
+    validateArray(options.yAxisPosition, 'yAxisPosition');
+    validateArray(options.xTitlePosition, 'xTitlePosition');
+    validateArray(options.yTitlePosition, 'yTitlePosition');
+
+    validateArray(options.tickInward, 'tickInward');
+    validateArray(options.tickLabelRemove, 'tickLabelRemove');
+    validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
+
+    function validateString(stringToBe, errorString) {
+      typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an array!`) : true;
+    }
+
+    validateString(options.xAxisFont, 'xAxisFont');
+    validateString(options.yAxisFont, 'yAxisFont');
+    validateString(options.xTitleFont, 'xTitleFont');
+    validateString(options.yTitleFont, 'yTitleFont');
+
+    validateString(options.axisColor, 'axisColor');
+    validateString(options.gridColor, 'gridColor');
+    validateString(options.gridDashArray, 'gridDashArray');
+
 
     (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
     !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
 
     (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
     (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
-    typeof options.axisLineWidth !== 'number' ? makeError('Option axisLineWidth needs to be a number!') : true;
 
-    !Array.isArray(options.tickInward) ? makeError('Option tickInward needs to be an array!') : true;
-    !Array.isArray(options.tickLabelRemove) ? makeError('Option tickLabelRemove needs to be an array!') : true;
-    !Array.isArray(options.axisLongLineRemove) ? makeError('Option axisLongLineRemove needs to be an array!') : true;
+    typeof options.axisStrokeWidth !== 'number' ? makeError('Option axisStrokeWidth needs to be a number!') : true;
 
-    typeof options.gridColor !== 'string' ? makeError('Option gridColor needs to be a string!') : true;
-    typeof options.gridDashArray !== 'string' ? makeError('Option gridDashArray needs to be a string!') : true;
     typeof options.gridLineWidth !== 'number' ? makeError('Option gridLineWidth needs to be a number!') : true;
 
     (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
@@ -188,6 +201,7 @@ class BaseSimpleGroupAxis {
     let yAxisPosition = options.yAxisPosition;
     let xTitlePosition = options.xTitlePosition;
     let yTitlePosition = options.yTitlePosition;
+    let yTitle = options.yTitle;
     let xAxisFont = options.xAxisFont;
     let yAxisFont = options.yAxisFont;
     let xTitleFont = options.xTitleFont;
@@ -195,7 +209,8 @@ class BaseSimpleGroupAxis {
     let xTickLabelRotate = parseInt(options.xTickLabelRotate);
     let xTicks = options.xTicks;
     let yTicks = options.yTicks;
-    let axisLineWidth = options.axisLineWidth;
+    let axisColor = options.axisColor;
+    let axisStrokeWidth = options.axisStrokeWidth;
     let tickInward = options.tickInward;
     let tickLabelRemove = options.tickLabelRemove;
     let axisLongLineRemove = options.axisLongLineRemove;
@@ -204,8 +219,8 @@ class BaseSimpleGroupAxis {
     let gridLineWidth = options.gridLineWidth;
     let line0 = options.line0;
 
-    return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0]
+    return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+      xTickLabelRotate, xTicks, yTicks, axisColor, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0]
   }
 
   /**
@@ -248,21 +263,40 @@ class BaseSimpleGroupAxis {
     let dataMax = d3.max(maxYArray);
     let dataMin = d3.min(minYArray);
 
-    return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin]
+    function sumArray(numberArray) {
+      let sumNegative = 0;
+      let sumPostive = 0;
+
+      for (let i = 0; i < numberArray.length; i++) {
+        if (numberArray[i] < 0) {
+          sumNegative += numberArray[i];
+        } else {
+          sumPostive += numberArray[i];
+        }
+      }
+
+      return [sumPostive, sumNegative];
+    }
+
+    let dataMaxSum = sumArray(maxYArray)[0]
+    let dataMinSum = sumArray(minYArray)[1]
+
+    return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
   }
 
   _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
     xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-    xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]) {
+    xTicks, yTicks, axisColor, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, drawLine0]) {
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
       let xAxis = svg
         .append('g')
+        .attr("color", axisColor)
         .style("font", xAxisFont)
         .attr('transform', `translate(0, ${xAxisPosition[i] == 'top' ? 0 : innerHeight})`)
         .call(xAxisPosition[i] == 'top' ? d3.axisTop(xScale).ticks(xTicks) : d3.axisBottom(xScale).ticks(xTicks))
-        .attr("stroke-width", axisLineWidth);
+        .attr("stroke-width", axisStrokeWidth);
 
       xAxis
         .selectAll("text")
@@ -296,6 +330,7 @@ class BaseSimpleGroupAxis {
       svg
         .append("text")
         .style('font', xTitleFont)
+        .style('fill', axisColor)
         .attr("text-anchor", "middle")  // transform is applied to the middle anchor
         .attr("dominant-baseline", xTitlePosition[i] == 'top' ? "baseline" : "hanging")   //text vertical reference point
         .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -frameTop : innerHeight + frameBottom})`)  // centre at margin bottom/top
@@ -306,10 +341,11 @@ class BaseSimpleGroupAxis {
     for (let i = 0; i < Math.min(yAxisPosition.length, 2); i++) {
       let yAxis = svg
         .append('g')
+        .style("color", axisColor)
         .style("font", yAxisFont)
         .attr('transform', `translate(${yAxisPosition[i] == 'right' ? innerWidth : 0}, 0)`)
         .call(yAxisPosition[i] == 'right' ? d3.axisRight(yScale).ticks(yTicks) : d3.axisLeft(yScale).ticks(yTicks))
-        .attr("stroke-width", axisLineWidth);
+        .attr("stroke-width", axisStrokeWidth);
 
       if (tickInward.includes(yAxisPosition[i])) {
         yAxis
@@ -336,6 +372,7 @@ class BaseSimpleGroupAxis {
       svg
         .append("text")
         .style('font', yTitleFont)
+        .style('fill', axisColor)
         .attr("text-anchor", "middle")  // transform is applied to the middle anchor
         .attr("dominant-baseline", yTitlePosition[i] == 'right' ? "hanging" : "baseline")   //text vertical reference point
         .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + frameRight : -frameLeft}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right
@@ -344,7 +381,7 @@ class BaseSimpleGroupAxis {
 
     if (drawLine0) {
       svg.append("path")
-        .attr("stroke", 'black')
+        .attr("color", axisColor)
         .attr("d", d3.line()([[0, yScale(0)], [innerWidth, yScale(0)]]))
     }
 

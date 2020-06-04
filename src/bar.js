@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), y dataName for group, line0 x y axis color , tickInward to tickSize, commerical copyright, error bar, stack bar, vertical bar
+//to do, each bar each color(maybe group bar with 1 group?), line0 x y axis color, tickInward to tickSize, commerical copyright, error bar, vertical bar
 
 
 /**
@@ -22,6 +22,7 @@ class Bar extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.barPadding ? true : this._options.barPadding = 0.1;
+    this._options.stacked === true ? true : this._options.stacked = false;
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
@@ -39,25 +40,31 @@ class Bar extends BaseSimpleGroupAxis {
 
     let colors = options.colors;
     let barPadding = options.barPadding;
+    let stacked = options.stacked;
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
+    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
+      xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridStroke, gridDashArray, gridLineWidth, line0] = this._getAxisOption(options);
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
+    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
+
+    // if user specified yTitle
+    if (yTitle !== '') yDataName = yTitle;
 
     // make data plot approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * 0.1;
 
+    let ySetbackStack = (dataMaxSum - dataMinSum) * 0.1;
+
     // if there is negative data, set y min. Otherwise choose 0 as default y min
-    let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
+    let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
     // when there is postive data, set y max. Otherwsie choose 0 as default y max
-    let yMax = (dataMax > 0 ? dataMax + ySetback : 0);
+    let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax > 0 ? dataMax + ySetback : 0);
 
     let svg = d3.select(location)
       .append('svg')
@@ -73,7 +80,7 @@ class Bar extends BaseSimpleGroupAxis {
       .padding(barPadding);
 
     let xSubScale = d3.scaleBand()
-      .domain(yDataNames)
+      .domain(stacked ? ['stack'] : yDataNames)
       .range([0, xScale.bandwidth()])
       .padding(0.03);
 
@@ -93,6 +100,12 @@ class Bar extends BaseSimpleGroupAxis {
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
 
+    let lastPositive = [];
+    let lastNegative = [];
+    lastPositive.length = lastNegative.length = dataValue.length;
+    lastPositive.fill(0);
+    lastNegative.fill(0);
+
     // draw each y data
     for (let i = 0; i < yDataNames.length; i++) {
 
@@ -102,15 +115,29 @@ class Bar extends BaseSimpleGroupAxis {
         .data(dataValue)
         .join('rect')
         .attr("transform", element => `translate(${xScale(element[xDataIndex])}, 0)`)
-        .attr('x', xSubScale(yDataNames[i]))
+        .attr('x', stacked ? xSubScale('stack') : xSubScale(yDataNames[i]))
         .attr('width', xSubScale.bandwidth())
-        .attr('y', element => yScale(Math.max(element[i + 1], 0)))       // if negative, use y(0) as starting point
+        .attr('y', (element, index) => {
+          if (stacked) {
+            let baseline;
+            if (element[i + 1] >= 0) {
+              baseline = lastPositive[index];
+              lastPositive[index] += element[i + 1];    //update
+            } else {
+              baseline = lastNegative[index];
+              lastNegative[index] += element[i + 1];
+            }
+            return yScale(Math.max(baseline + element[i + 1], baseline));
+          } else {
+            return yScale(Math.max(element[i + 1], 0))
+          }
+        })       // if negative, use y(0) as starting point
         .attr('height', element => Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0)
         .attr('fill', element => {
           if (yDataNames.length == 1) {
-            return element[i + 1] > 0 ? colors[0] : colors[1]
+            return element[i + 1] > 0 ? colors[0] : colors[1]       //only one y, positive vs. negative
           } else {
-            return colorScale(yDataNames[i])
+            return colorScale(yDataNames[i])              // two and more ys, no postive vs. negative
           }
         })
         .on('mouseover', (element) => {
@@ -169,7 +196,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
       xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-      xTicks, yTicks, axisLineWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridLineWidth,drawLine0]);
+      xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridStroke, gridDashArray, gridLineWidth, drawLine0]);
 
     return id;
   }

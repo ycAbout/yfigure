@@ -19,18 +19,21 @@ common options:
   `yAxisPosition: ['left']`  Sets axis location
   `xTitlePosition: ['bottom']` Sets axis title location
   `yTitlePosition: ['left']` Sets axis title location
+  `yTitle: ''` Sets the y axis title when there is mulitple y
   `xAxisFont: '10px sans-serif'` Sets axis tick font
   `yAxisFont: '10px sans-serif'` Sets axis tick font
   `xTitleFont: '10px sans-serif'` Sets axis title font
   `yTitleFont: '10px sans-serif'` Sets axis title font
   `xTicks = null` Sets axis tick number  // approximate
   `yTicks = null` Sets axis tick number  // approximate
-  `axisLineWidth: 1` Sets axis (and ticks) line width
+  `axisColor: ''` Sets axises (and ticks), labels, and titles line color
+  `axisStrokeWidth: 1` Sets axis (and ticks) line width
+
   `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
   `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)
-  `gridColor: ''` Sets the grid line properties
+  `gridColor: ''` Sets the grid line color
   `gridDashArray: ''` Sets the grid line properties  // example values `'4 1'`
   `gridLineWidth: 0` Sets the grid line properties
   `line0: true` Sets whether line 0 will show if there is positive and negative data

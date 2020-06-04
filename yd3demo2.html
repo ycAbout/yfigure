@@ -99,9 +99,9 @@
     ];
 
     let dataBar5 = [["group", "score1", "score2", "score3", "score4"],
-    [1, 50, 50 - 20, -50 - 20, 50 + 40],
-    [2, 80, 80 - 20, -80 - 20, 80 + 40],
-    [3, 30, 30 - 20, -30 - 20, 30 + 40],
+    [1, 50, 30, -70, -50 + 40],
+    [2, 80, 60, -100, -80 + 40],
+    [3, 30, 10, -50, -30 + 40],
     ];
 
     let dataBar6 = [["group", "score1", "score2", "score3", "score4", "score5"]];
@@ -160,7 +160,7 @@
 
     // example 1
     population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(population);
+    let bar1 = new yd3.Bar(population, {axisColor: 'green'});
 
     // example 2 rotate x tick lables, change layout, font
     let bar2 = new yd3.Bar(population, {
@@ -210,9 +210,9 @@
     createTitle("H2", "group bar");
 
     // example 1
-    let bar9 = new yd3.Bar(dataBar4);
+    let bar9 = new yd3.Bar(dataBar4, {stacked: false});
     // example 2
-    let bar10 = new yd3.Bar(dataBar5, {
+    let bar10 = new yd3.Bar(dataBar5, {stacked: true
     });
     br();
     // example 3
@@ -229,6 +229,8 @@
     //bar6.update();
 
     
+    createTitle("H2", "Stack bar");
+
 
     createTitle("H2", "sortableBar");
 
