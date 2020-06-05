@@ -163,8 +163,6 @@ var yd3 = (function (exports, d3$1) {
       options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
       options.xTicks ? true : options.xTicks = null;
       options.yTicks ? true : options.yTicks = null;
-      options.axisColor ? true : options.axisColor = 'black';
-      options.axisStrokeWidth ? true : options.axisStrokeWidth = 1;
       options.tickInward ? true : options.tickInward = [];
       options.tickLabelRemove ? true : options.tickLabelRemove = [];
       options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
@@ -172,6 +170,10 @@ var yd3 = (function (exports, d3$1) {
       options.gridDashArray ? true : options.gridDashArray = '';
       options.gridStrokeWidth ? true : options.gridStrokeWidth = 0;
       options.line0 === false ? true : options.line0 = true;
+      options.line0Stroke ? true : options.line0Stroke = 'black';
+      options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
+      options.line0DashArray ? true : options.line0DashArray = '';
+
 
       function makeError(msg) {
         throw new Error(msg)
@@ -200,9 +202,11 @@ var yd3 = (function (exports, d3$1) {
       validateString(options.xTitleFont, 'xTitleFont');
       validateString(options.yTitleFont, 'yTitleFont');
 
-      validateString(options.axisColor, 'axisColor');
       validateString(options.gridColor, 'gridColor');
       validateString(options.gridDashArray, 'gridDashArray');
+
+      validateString(options.line0Stroke, 'line0Stroke');
+      validateString(options.line0DashArray, 'line0DashArray');
 
 
       (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
@@ -211,11 +215,85 @@ var yd3 = (function (exports, d3$1) {
       (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
       (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
 
-      typeof options.axisStrokeWidth !== 'number' ? makeError('Option axisStrokeWidth needs to be a number!') : true;
-
       typeof options.gridStrokeWidth !== 'number' ? makeError('Option gridStrokeWidth needs to be a number!') : true;
 
       (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
+
+      (typeof options.line0StrokeWidth !== 'string' && typeof options.line0StrokeWidth !== 'number') ? makeError('Option line0StrokeWidth needs to be a string or number!') : true;
+
+      let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
+
+      // make axisColor shortcut for all axis related colors
+      if (options.axisColor) {
+
+        (typeof options.axisColor !== 'string') ? makeError('Option axisColor needs to be a string!') : true;
+
+        xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
+
+        // any one of the margin is set
+      } else if (options['xAxisColor'] || options['yAxisColor'] || options['xTitleColor'] || options['yTitleColor'] || options['xTickLabelColor'] || options['yTickLabelColor ']) {
+
+        options['xAxisColor'] ? true : options['xAxisColor'] = 'black';
+        options['yAxisColor'] ? true : options['yAxisColor'] = 'black';
+        options['xTitleColor'] ? true : options['xTitleColor'] = 'black';
+        options['yTitleColor'] ? true : options['yTitleColor'] = 'black';
+        options['xTickLabelColor'] ? true : options['xTickLabelColor'] = 'black';
+        options['yTickLabelColor '] ? true : options['yTickLabelColor '] = 'black';
+
+        //validate format
+        typeof options['xAxisColor'] !== 'string' ? makeError('Option xAxisColor needs to be a string!') : true;
+        typeof options['yAxisColor'] !== 'string' ? makeError('Option yAxisColor needs to be a string!') : true;
+        typeof options['xTitleColor'] !== 'string' ? makeError('Option xTitleColor needs to be a string!') : true;
+        typeof options['yTitleColor'] !== 'string' ? makeError('Option yTitleColor needs to be a string!') : true;
+        typeof options['xTickLabelColor'] !== 'string' ? makeError('Option xTickLabelColor needs to be a string!') : true;
+        typeof options['yTickLabelColor '] !== 'string' ? makeError('Option yTickLabelColor  needs to be a string!') : true;
+
+
+        xAxisColor = options['xAxisColor'];
+        yAxisColor = options['yAxisColor'];
+        xTitleColor = options['xTitleColor'];
+        yTitleColor = options['yTitleColor'];
+        xTickLabelColor = options['xTickLabelColor'];
+        yTickLabelColor = options['yTickLabelColor '];
+
+      } else {
+        options.axisColor = 'black';
+        xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
+      }
+
+
+      let xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth;
+      // make margin short cut for all margin
+      if (options.axisStrokeWidth) {
+
+        (typeof options.axisStrokeWidth !== 'string' && typeof options.axisStrokeWidth !== 'number') ? makeError('Option axisStrokeWidth needs to be a string or number!') : true;
+
+        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
+
+        // any one of the margin is set
+      } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
+
+        options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
+        options.yAxisStrokeWidth ? true : options.yAxisStrokeWidth = 1;
+        options.xTickStrokeWidth ? true : options.xTickStrokeWidth = 1;
+        options.yTickStrokeWidth ? true : options.yTickStrokeWidth = 1;
+
+        //validate format
+        (typeof options.xAxisStrokeWidth !== 'string' && typeof options.xAxisStrokeWidth !== 'number') ? makeError('Option xAxisStrokeWidth needs to be a string or number!') : true;
+        (typeof options.yAxisStrokeWidth !== 'string' && typeof options.yAxisStrokeWidth !== 'number') ? makeError('Option yAxisStrokeWidth needs to be a string or number!') : true;
+        (typeof options.xTickStrokeWidth !== 'string' && typeof options.xTickStrokeWidth !== 'number') ? makeError('Option xTickStrokeWidth needs to be a string or number!') : true;
+        (typeof options.yTickStrokeWidth !== 'string' && typeof options.yTickStrokeWidth !== 'number') ? makeError('Option yTickStrokeWidth needs to be a string or number!') : true;
+
+        xAxisStrokeWidth = parseInt(options.xAxisStrokeWidth);
+        yAxisStrokeWidth = parseInt(options.yAxisStrokeWidth);
+        xTickStrokeWidth = parseInt(options.xTickStrokeWidth);
+        yTickStrokeWidth = parseInt(options.yTickStrokeWidth);
+
+      } else {
+        options.axisStrokeWidth = 1;
+        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
+      }
+
 
       //parse float just in case and get parameters
       let xAxisPosition = options.xAxisPosition;
@@ -230,8 +308,6 @@ var yd3 = (function (exports, d3$1) {
       let xTickLabelRotate = parseInt(options.xTickLabelRotate);
       let xTicks = options.xTicks;
       let yTicks = options.yTicks;
-      let axisColor = options.axisColor;
-      let axisStrokeWidth = options.axisStrokeWidth;
       let tickInward = options.tickInward;
       let tickLabelRemove = options.tickLabelRemove;
       let axisLongLineRemove = options.axisLongLineRemove;
@@ -240,8 +316,15 @@ var yd3 = (function (exports, d3$1) {
       let gridStrokeWidth = options.gridStrokeWidth;
       let line0 = options.line0;
 
+      let line0Stroke = options.line0Stroke;
+      let line0StrokeWidth = options.line0StrokeWidth;
+      let line0DashArray = options.line0DashArray;
+
+
       return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisColor, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0]
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor,
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]
     }
 
     /**
@@ -307,25 +390,32 @@ var yd3 = (function (exports, d3$1) {
 
     _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
       xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-      xTicks, yTicks, axisColor, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]) {
+      xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor,
+      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
+      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]) {
 
       //x axis
       for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
         let xAxis = svg
           .append('g')
-          .attr("color", axisColor)
+          .attr("color", xAxisColor)
           .style("font", xAxisFont)
           .attr('transform', `translate(0, ${xAxisPosition[i] == 'top' ? 0 : innerHeight})`)
           .call(xAxisPosition[i] == 'top' ? d3.axisTop(xScale).ticks(xTicks) : d3.axisBottom(xScale).ticks(xTicks))
-          .attr("stroke-width", axisStrokeWidth);
+          .attr("stroke-width", xAxisStrokeWidth);
 
         xAxis
           .selectAll("text")
+          .attr("color", xTickLabelColor)
           .attr("y", (9 - 9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1))   // d3 default off y 9. Max 90 degrees to 0
           .attr("dy", `${0.355 + (0.355 - 0.355 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1)}em`)   // d3 default off y 0.71em. Max 90 degrees to 0.355em
           .attr("x", (9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1) * (xTickLabelRotate < 0 ? -1 : 1))   // d3 default off x 0. Max 90 degrees to 9
           .style("text-anchor", xTickLabelRotate != 0 ? (xTickLabelRotate < 0 ? (xAxisPosition[i] == 'top' ? 'start' : 'end') : (xAxisPosition[i] == 'top' ? 'end' : 'start')) : 'middle')
           .attr("transform", `rotate(${xTickLabelRotate})`);
+
+        xAxis
+          .selectAll("line")
+          .attr("stroke-width", xTickStrokeWidth);
 
         if (tickInward.includes(xAxisPosition[i])) {
           xAxis
@@ -351,7 +441,7 @@ var yd3 = (function (exports, d3$1) {
         svg
           .append("text")
           .style('font', xTitleFont)
-          .style('fill', axisColor)
+          .style('fill', xTitleColor)
           .attr("text-anchor", "middle")  // transform is applied to the middle anchor
           .attr("dominant-baseline", xTitlePosition[i] == 'top' ? "baseline" : "hanging")   //text vertical reference point
           .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -frameTop : innerHeight + frameBottom})`)  // centre at margin bottom/top
@@ -362,11 +452,19 @@ var yd3 = (function (exports, d3$1) {
       for (let i = 0; i < Math.min(yAxisPosition.length, 2); i++) {
         let yAxis = svg
           .append('g')
-          .style("color", axisColor)
+          .style("color", yAxisColor)
           .style("font", yAxisFont)
           .attr('transform', `translate(${yAxisPosition[i] == 'right' ? innerWidth : 0}, 0)`)
           .call(yAxisPosition[i] == 'right' ? d3.axisRight(yScale).ticks(yTicks) : d3.axisLeft(yScale).ticks(yTicks))
-          .attr("stroke-width", axisStrokeWidth);
+          .attr("stroke-width", yAxisStrokeWidth);
+
+        yAxis
+          .selectAll("text")
+          .attr("color", yTickLabelColor);
+
+        yAxis
+          .selectAll("line")
+          .attr("stroke-width", yTickStrokeWidth);
 
         if (tickInward.includes(yAxisPosition[i])) {
           yAxis
@@ -393,7 +491,7 @@ var yd3 = (function (exports, d3$1) {
         svg
           .append("text")
           .style('font', yTitleFont)
-          .style('fill', axisColor)
+          .style('fill', yTitleColor)
           .attr("text-anchor", "middle")  // transform is applied to the middle anchor
           .attr("dominant-baseline", yTitlePosition[i] == 'right' ? "hanging" : "baseline")   //text vertical reference point
           .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + frameRight : -frameLeft}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right
@@ -406,7 +504,10 @@ var yd3 = (function (exports, d3$1) {
           .attr("y1", yScale(0) + 0.5)
           .attr("x2", innerWidth)
           .attr("y2", yScale(0))
-          .style('stroke', axisColor);
+          .style('stroke', line0Stroke)
+          .style('stroke-width', line0StrokeWidth)
+          .style("stroke-dasharray", line0DashArray);
+
       }
 
       // add x gridlines
@@ -475,7 +576,7 @@ var yd3 = (function (exports, d3$1) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), line0 x y axis, gridxy color break down, tickInward to tickSize, commerical copyright, error bar, vertical bar
+  //to do, each bar each color(maybe group bar with 1 group?), line0 x y axis, gridxy color break down, tickInward to tickSize, background color, commerical copyright, error bar, vertical bar, line hover, stack line
 
 
   /**
@@ -522,7 +623,9 @@ var yd3 = (function (exports, d3$1) {
 
       // set all the axis options
       let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0] = this._getAxisOption(options);
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
@@ -667,9 +770,11 @@ var yd3 = (function (exports, d3$1) {
 
       // add line at y = 0 when there is negative data
       let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))));
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-        xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]);
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+        xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       return id;
     }
@@ -713,7 +818,9 @@ var yd3 = (function (exports, d3$1) {
 
       // set all the axis options
       let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0] = this._getAxisOption(options);
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
 
       let nBins = options.nBins;
       let color = options.color;
@@ -796,9 +903,11 @@ var yd3 = (function (exports, d3$1) {
       // no need for line0
       let drawLine0 = false;
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-        xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]);
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+        xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       return id;
 
@@ -847,7 +956,9 @@ var yd3 = (function (exports, d3$1) {
 
       // set all the axis options
       let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0] = this._getAxisOption(options);
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
@@ -973,9 +1084,11 @@ var yd3 = (function (exports, d3$1) {
       // add line at y = 0 when there is negative data
       let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-        xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]);
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+        xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       return id;
 
@@ -1023,7 +1136,9 @@ var yd3 = (function (exports, d3$1) {
 
       // set all the axis options
       let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0] = this._getAxisOption(options);
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
 
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
@@ -1138,9 +1253,11 @@ var yd3 = (function (exports, d3$1) {
       // add line at y = 0 when there is negative data
       let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-        xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]);
+      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+        xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       return id;
 
@@ -1188,7 +1305,9 @@ var yd3 = (function (exports, d3$1) {
 
       // set all the axis options
       let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-        xTickLabelRotate, xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0] = this._getAxisOption(options);
+        xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
+        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
 
       // take first column as x name label, second column as y name label, of the first object
       let xDataName = data[0][0];
@@ -1313,9 +1432,11 @@ var yd3 = (function (exports, d3$1) {
         // add line at y = 0 when there is negative data
         let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))));
 
-        this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-          xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-          xTicks, yTicks, axisStroke, axisStrokeWidth, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0]);
+        this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
+          xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
+          xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
+          yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
+          yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       };
 

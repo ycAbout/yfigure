@@ -26,8 +26,18 @@ common options:
   `yTitleFont: '10px sans-serif'` Sets axis title font
   `xTicks = null` Sets axis tick number  // approximate
   `yTicks = null` Sets axis tick number  // approximate
-  `axisColor: ''` Sets axises (and ticks), labels, and titles line color
-  `axisStrokeWidth: 1` Sets axis (and ticks) line width
+  `axisColor: ''` Sets axises (and ticks), labels, and titles color in one declaration, overrides individual settings.
+  `xAxisColor: 'black'` Set individual color
+  `yAxisColor: 'black'` Set individual color
+  `xTitleColor: 'black'` Set individual color
+  `yTitleColor: 'black'` Set individual color
+  `xTickLabelColor: 'black'` Set individual color
+  `yTickLabelColor: 'black'` Set individual color
+  `axisStrokeWidth: 1` Sets axis (and ticks) line width in one declaration, overrides individual settings.
+  `xAxisStrokeWidth: 1` Sets individual line width
+  `yAxisStrokeWidth: 1` Sets individual line width
+  `xTickStrokeWidth: 1` Sets individual line width
+  `yTickStrokeWidth: 1` Sets individual line width
   `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
@@ -36,4 +46,9 @@ common options:
   `gridDashArray: ''` Sets the grid line properties  // example values `'4 1'`
   `gridStrokeWidth: 0` Sets the grid line properties
   `line0: true` Sets whether line 0 will show if there is positive and negative data
+  `line0Stroke: 'black'` Sets line0 properties
+  `line0StrokeWidth: 1` Sets line0 properties
+  `line0DashArray: ''` Sets line0 properties
+
+
 
