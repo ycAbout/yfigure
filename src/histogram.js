@@ -19,10 +19,12 @@ class Histogram extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.nBins ? true : this._options.nBins = 50;
     this._options.color ? true : this._options.color = 'steelblue';
+    this._options.horizontal === true ? true : this._options.horizontal = false;
 
     //validate format
     if (typeof this._options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
     if (typeof this._options.color !== 'string') { throw new Error('Option color need to be a string!') }
+    if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -42,7 +44,7 @@ class Histogram extends BaseSimpleGroupAxis {
 
     let nBins = options.nBins;
     let color = options.color;
-    let horizontal = true;
+    let horizontal = options.horizontal;
 
     let xDataName = data[0][0];
     let xDataIndex = 0;
