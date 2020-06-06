@@ -468,7 +468,11 @@ var yd3 = (function (exports, d3) {
       }
 
       // add line at y = 0 when there is negative data
-      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))));
+      let drawLine0 = (line0 && (
+        (yMin < 0 && yMax > 0) || 
+      (horizontal ? (yMin == 0 && !yAxisPosition.includes('left')) : (yMin == 0 && !xAxisPosition.includes('bottom'))) || 
+      (horizontal ? (yMax == 0 && !yAxisPosition.includes('right')) : (yMax == 0 && !xAxisPosition.includes('top')))
+      ));
 
       // if user not specified xTitle
       if (xTitle.length == 0) xTitle = xDataName;
@@ -936,6 +940,7 @@ var yd3 = (function (exports, d3) {
 
       let nBins = options.nBins;
       let color = options.color;
+      let horizontal = true;
 
       let xDataName = data[0][0];
       let xDataIndex = 0;
@@ -961,7 +966,7 @@ var yd3 = (function (exports, d3) {
       // X axis scale
       let xScale = d3.scaleLinear()
         .domain([dataMin, dataMax])
-        .range([0, innerWidth]);
+        .range([0,  innerHeight ]);
 
       //evenly generate an array of thresholds, each value = min + nthPortion*(max-min)/nBins
       let portion = (dataMax - dataMin) / nBins;
@@ -980,7 +985,7 @@ var yd3 = (function (exports, d3) {
       let bins = histogram(dataValue);
 
       let yScale = d3.scaleLinear()
-        .range([innerHeight, 0])
+        .range( [0, innerWidth] )
         .domain([0, d3.max(bins, d => d.length * 1.1)]);
 
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
@@ -991,10 +996,10 @@ var yd3 = (function (exports, d3) {
         .data(bins)
         .enter()
         .append("rect")
-        .attr("x", d => xScale(d.x0))
-        .attr("y", d => yScale(d.length))
-        .attr("width", d => xScale(d.x1) - xScale(d.x0) - 1)
-        .attr("height", d => innerHeight - yScale(d.length))
+        .attr("x", d =>  0 )
+        .attr("y", d =>  xScale(d.x0) )
+        .attr("width", d =>  yScale(d.length) )
+        .attr("height", d =>  xScale(d.x1) - xScale(d.x0) - 1 )
         .style("fill", color)
         .on('mouseover', (d) => {
           d3.select('#' + dataPointDisplayId)
@@ -1012,7 +1017,16 @@ var yd3 = (function (exports, d3) {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-      let horizontal = false;
+
+      {    // switch xScale and yScale to make axis
+        let middleMan = xScale;
+        xScale = yScale;
+        yScale = middleMan;
+
+        middleMan = xDataName;
+        xDataName = yDataName;
+        yDataName = middleMan;
+      }
 
       this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);

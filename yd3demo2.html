@@ -167,7 +167,7 @@
     // example 2 rotate x tick lables, change layout, font
     dataBar2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
     let bar2 = new yd3.Bar(dataBar2, {
-      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'],
+      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['right'],
       axisLongLineRemove: ['top', 'right'],
       xAxisFont: '14px times', yAxisFont: '14px times',
       horizontal: true,
@@ -175,7 +175,9 @@
 
     Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
-    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,        title: 'Saskatoon temprature 2010 to 2019',  titleFont: '32px arial',    horizontal: true,});
+    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,  
+      title: 'Saskatoon temprature 2010 to 2019',  
+      titleFont: '32px arial', yAxisPosition: ['left'], horizontal: true,});
 
     // example 4 change color, bar padding
     let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
@@ -270,7 +272,8 @@
     let histogram1 = new yd3.Histogram(dataHistogram);
     // example 2 
     let histogram2 = new yd3.Histogram(dataHistogram, {
-      nBins: 30
+      nBins: 30,
+      yAxisPosition:['right']
     });
     br();
     // example 3 

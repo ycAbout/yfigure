@@ -449,7 +449,11 @@ class BaseSimpleGroupAxis {
     }
 
     // add line at y = 0 when there is negative data
-    let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))))
+    let drawLine0 = (line0 && (
+      (yMin < 0 && yMax > 0) || 
+    (horizontal ? (yMin == 0 && !yAxisPosition.includes('left')) : (yMin == 0 && !xAxisPosition.includes('bottom'))) || 
+    (horizontal ? (yMax == 0 && !yAxisPosition.includes('right')) : (yMax == 0 && !xAxisPosition.includes('top')))
+    ))
 
     // if user not specified xTitle
     if (xTitle.length == 0) xTitle = xDataName;

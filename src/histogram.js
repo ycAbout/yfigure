@@ -42,6 +42,7 @@ class Histogram extends BaseSimpleGroupAxis {
 
     let nBins = options.nBins;
     let color = options.color;
+    let horizontal = true;
 
     let xDataName = data[0][0];
     let xDataIndex = 0;
@@ -67,7 +68,7 @@ class Histogram extends BaseSimpleGroupAxis {
     // X axis scale
     let xScale = d3.scaleLinear()
       .domain([dataMin, dataMax])
-      .range([0, innerWidth]);
+      .range([0, horizontal ? innerHeight : innerWidth]);
 
     //evenly generate an array of thresholds, each value = min + nthPortion*(max-min)/nBins
     let portion = (dataMax - dataMin) / nBins
@@ -86,7 +87,7 @@ class Histogram extends BaseSimpleGroupAxis {
     let bins = histogram(dataValue);
 
     let yScale = d3.scaleLinear()
-      .range([innerHeight, 0])
+      .range(horizontal ? [0, innerWidth] : [innerHeight, 0])
       .domain([0, d3.max(bins, d => d.length * 1.1)]);
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
@@ -97,10 +98,10 @@ class Histogram extends BaseSimpleGroupAxis {
       .data(bins)
       .enter()
       .append("rect")
-      .attr("x", d => xScale(d.x0))
-      .attr("y", d => yScale(d.length))
-      .attr("width", d => xScale(d.x1) - xScale(d.x0) - 1)
-      .attr("height", d => innerHeight - yScale(d.length))
+      .attr("x", d => horizontal ? 0 : xScale(d.x0))
+      .attr("y", d => horizontal ? xScale(d.x0) : yScale(d.length))
+      .attr("width", d => horizontal ? yScale(d.length) : xScale(d.x1) - xScale(d.x0) - 1)
+      .attr("height", d => horizontal ? xScale(d.x1) - xScale(d.x0) - 1 : innerHeight - yScale(d.length))
       .style("fill", color)
       .on('mouseover', (d) => {
         d3.select('#' + dataPointDisplayId)
@@ -118,7 +119,16 @@ class Histogram extends BaseSimpleGroupAxis {
       })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-    let horizontal = false;
+
+    if (horizontal) {    // switch xScale and yScale to make axis
+      let middleMan = xScale;
+      xScale = yScale;
+      yScale = middleMan;
+
+      middleMan = xDataName;
+      xDataName = yDataName;
+      yDataName = middleMan;
+    }
 
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
       frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
