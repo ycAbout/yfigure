@@ -94,33 +94,29 @@ var yd3 = (function (exports, d3) {
       let title = options.title;
       let titleFont = options.titleFont;
       let titleColor = options.titleColor;
-      let titleX = options.titleX;
-      let titleY = options.titleY;
-      let titleRotate = options.titleRotate;
+      let titleX = parseFloat(options.titleX);
+      let titleY = parseFloat(options.titleY);
+      let titleRotate = parseInt(options.titleRotate);
 
 
       let marginTop, marginLeft, marginBottom, marginRight;
 
       // make margin short cut for all margin
       if (options.margin) {
-
-        (typeof options.margin !== 'string' && typeof options.margin !== 'number') ? makeError('Option margin needs to be a string or number!') : true;
-
+        validateNumStr(options.margin, 'margin');
         marginTop = marginLeft = marginBottom = marginRight = parseInt(options.margin);
-
         // any one of the margin is set
       } else if (options['marginLeft'] || options['marginTop'] || options['marginRight'] || options['marginBottom']) {
-
         options['marginLeft'] ? true : options['marginLeft'] = 25;
         options['marginTop'] ? true : options['marginTop'] = 25;
         options['marginRight'] ? true : options['marginRight'] = 25;
         options['marginBottom'] ? true : options['marginBottom'] = 25;
 
         //validate format
-        (typeof options['marginLeft'] !== 'string' && typeof options['marginLeft'] !== 'number') ? makeError('Option marginLeft needs to be a string or number!') : true;
-        (typeof options['marginTop'] !== 'string' && typeof options['marginTop'] !== 'number') ? makeError('Option marginTop needs to be a string or number!') : true;
-        (typeof options['marginRight'] !== 'string' && typeof options['marginRight'] !== 'number') ? makeError('Option marginRight needs to be a string or number!') : true;
-        (typeof options['marginBottom'] !== 'string' && typeof options['marginBottom'] !== 'number') ? makeError('Option marginBottom needs to be a string or number!') : true;
+        validateNumStr(options.marginLeft, 'marginLeft');
+        validateNumStr(options.marginTop, 'marginTop');
+        validateNumStr(options.marginRight, 'marginRight');
+        validateNumStr(options.marginBottom, 'marginBottom');
 
         marginLeft = parseInt(options['marginLeft']);
         marginTop = parseInt(options['marginTop']);
@@ -132,15 +128,13 @@ var yd3 = (function (exports, d3) {
         marginTop = marginLeft = marginBottom = marginRight = options.margin;
       }
 
-
       let frameTop, frameLeft, frameBottom, frameRight;
 
-      // make margin short cut for all margin
+      // make frame short cut for all frames
       if (options.frame) {
-        (typeof options.frame !== 'string' && typeof options.frame !== 'number') ? makeError('Option frame needs to be a string or number!') : true;
+        validateNumStr(options.frame, 'frame');
         frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
-
-        // any one of the margin is set
+        // any one of the frame is set
       } else if (options.frameLeft || options.frameTop || options.frameRight || options.frameBottom) {
         options.frameLeft ? true : options.frameLeft = 30;
         options.frameTop ? true : options.frameTop = 30;
@@ -148,16 +142,15 @@ var yd3 = (function (exports, d3) {
         options.frameBottom ? true : options.frameBottom = 30;
 
         //validate format
-        (typeof options.frameLeft !== 'string' && typeof options.frameLeft !== 'number') ? makeError('Option frameLeft needs to be a string or number!') : true;
-        (typeof options.frameTop !== 'string' && typeof options.frameTop !== 'number') ? makeError('Option frameTop needs to be a string or number!') : true;
-        (typeof options.frameRight !== 'string' && typeof options.frameRight !== 'number') ? makeError('Option frameRight needs to be a string or number!') : true;
-        (typeof options.frameBottom !== 'string' && typeof options.frameBottom !== 'number') ? makeError('Option frameBottom needs to be a string or number!') : true;
+        validateNumStr(options.frameLeft, 'frameLeft');
+        validateNumStr(options.frameTop, 'frameTop');
+        validateNumStr(options.frameRight, 'frameRight');
+        validateNumStr(options.frameBottom, 'frameBottom');
 
         frameLeft = parseInt(options.frameLeft);
         frameTop = parseInt(options.frameTop);
         frameRight = parseInt(options.frameRight);
         frameBottom = parseInt(options.frameBottom);
-
       } else {
         options.frame = 30;
         frameTop = frameLeft = frameBottom = frameRight = options.frame;
@@ -213,9 +206,9 @@ var yd3 = (function (exports, d3) {
       options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
       options.line0DashArray ? true : options.line0DashArray = '';
 
-
-      options.xPadding ? true: options.xPadding = 0.1;  // just set up, not returned in array
-      options.yPadding ? true: options.yPadding = 0.1;  // jsut set up, not returned in array
+      //****************** not returned, assigned in each individual function */
+      options.xPadding ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+      options.yPadding ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
       function makeError(msg) {
         throw new Error(msg)
@@ -262,14 +255,13 @@ var yd3 = (function (exports, d3) {
       validateNumStr(options.line0StrokeWidth, 'line0StrokeWidth');
       validateNumStr(options.xPadding, 'xPadding');
       validateNumStr(options.yPadding, 'yPadding');
-      
+
       !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
 
       (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
       (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
 
       (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
-
 
       let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
 
@@ -311,7 +303,7 @@ var yd3 = (function (exports, d3) {
       // make margin short cut for all margin
       if (options.axisStrokeWidth) {
         validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
-        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
+        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = ParseFloat(options.axisStrokeWidth);
         // any one of the margin is set
       } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
         options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
@@ -325,10 +317,10 @@ var yd3 = (function (exports, d3) {
         validateNumStr(options.xTickStrokeWidth, 'xTickStrokeWidth');
         validateNumStr(options.yTickStrokeWidth, 'yTickStrokeWidth');
 
-        xAxisStrokeWidth = parseInt(options.xAxisStrokeWidth);
-        yAxisStrokeWidth = parseInt(options.yAxisStrokeWidth);
-        xTickStrokeWidth = parseInt(options.xTickStrokeWidth);
-        yTickStrokeWidth = parseInt(options.yTickStrokeWidth);
+        xAxisStrokeWidth = parseFloat(options.xAxisStrokeWidth);
+        yAxisStrokeWidth = parseFloat(options.yAxisStrokeWidth);
+        xTickStrokeWidth = parseFloat(options.xTickStrokeWidth);
+        yTickStrokeWidth = parseFloat(options.yTickStrokeWidth);
       } else {
         options.axisStrokeWidth = 1;
         xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
@@ -348,21 +340,21 @@ var yd3 = (function (exports, d3) {
       let xTickLabelRotate = parseInt(options.xTickLabelRotate);
       let xTicks = options.xTicks;
       let yTicks = options.yTicks;
-      let xTickSize = options.xTickSize;
-      let yTickSize = options.yTickSize;
+      let xTickSize = parseFloat(options.xTickSize);
+      let yTickSize = parseFloat(options.yTickSize);
       let tickLabelRemove = options.tickLabelRemove;
       let axisLongLineRemove = options.axisLongLineRemove;
       let xGridColor = options.xGridColor;
       let xGridDashArray = options.xGridDashArray;
-      let xGridStrokeWidth = options.xGridStrokeWidth;
+      let xGridStrokeWidth = parseFloat(options.xGridStrokeWidth);
       let yGridColor = options.yGridColor;
       let yGridDashArray = options.yGridDashArray;
-      let yGridStrokeWidth = options.yGridStrokeWidth;
+      let yGridStrokeWidth = parseFloat(options.yGridStrokeWidth);
 
       let line0 = options.line0;
 
       let line0Stroke = options.line0Stroke;
-      let line0StrokeWidth = options.line0StrokeWidth;
+      let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
       let line0DashArray = options.line0DashArray;
 
       return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
@@ -465,9 +457,9 @@ var yd3 = (function (exports, d3) {
 
       // add line at y = 0 when there is negative data
       let drawLine0 = (line0 && (
-        (yMin < 0 && yMax > 0) || 
-      (horizontal ? (yMin == 0 && !yAxisPosition.includes('left')) : (yMin == 0 && !xAxisPosition.includes('bottom'))) || 
-      (horizontal ? (yMax == 0 && !yAxisPosition.includes('right')) : (yMax == 0 && !xAxisPosition.includes('top')))
+        (yMin < 0 && yMax > 0) ||
+        (horizontal ? (yMin == 0 && !yAxisPosition.includes('left')) : (yMin == 0 && !xAxisPosition.includes('bottom'))) ||
+        (horizontal ? (yMax == 0 && !yAxisPosition.includes('right')) : (yMax == 0 && !xAxisPosition.includes('top')))
       ));
 
       // if user not specified xTitle
