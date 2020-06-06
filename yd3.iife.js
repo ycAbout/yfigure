@@ -1059,9 +1059,12 @@ var yd3 = (function (exports, d3) {
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
+      this._options.linePadding ? true : this._options.linePadding = 0.2;
+
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
+      if (typeof this._options.linePadding !== 'number') { throw new Error('Option linePadding need to be a number!') }
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
@@ -1075,6 +1078,7 @@ var yd3 = (function (exports, d3) {
 
       let colors = options.colors;
       let dotRadius = options.dotRadius;
+      let linePadding = options.linePadding;
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -1104,7 +1108,7 @@ var yd3 = (function (exports, d3) {
       let xScale = d3.scalePoint()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, innerWidth])
-        .padding(0.2);
+        .padding(linePadding);
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])  // data points off axis
