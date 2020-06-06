@@ -22,6 +22,7 @@ class Bar extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.barPadding ? true : this._options.barPadding = 0.1;
+    this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.03;
     this._options.stacked === true ? true : this._options.stacked = false;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
@@ -43,6 +44,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     let colors = options.colors;
     let barPadding = options.barPadding;
+    let withinGroupPadding = options.withinGroupPadding
     let stacked = options.stacked;
     let horizontal = options.horizontal;
 
@@ -82,7 +84,7 @@ class Bar extends BaseSimpleGroupAxis {
     let xSubScale = d3.scaleBand()
       .domain(stacked ? ['stack'] : yDataNames)
       .range([0, xScale.bandwidth()])
-      .padding(0.03);
+      .padding(withinGroupPadding);
 
     let yScale = d3.scaleLinear()
       .domain([yMin, yMax])
