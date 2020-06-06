@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), x y padding, background color, commerical copyright, error bar, line hover, stack line
+//to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, line hover, stack line
 
 
 /**
@@ -47,7 +47,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+      innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
@@ -74,6 +74,7 @@ class Bar extends BaseSimpleGroupAxis {
       .attr('id', id)
       .attr('width', width)
       .attr('height', height)
+      .style('background-color', backgroundColor)
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 

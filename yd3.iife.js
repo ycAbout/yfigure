@@ -49,6 +49,7 @@ var yd3 = (function (exports, d3) {
       options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
       options.width ? true : options.width = 400;
       options.height ? true : options.height = 300;
+      options.backgroundColor ? true : options.backgroundColor = '';
 
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = '16px sans-serif';
@@ -65,9 +66,10 @@ var yd3 = (function (exports, d3) {
       function validateString(stringToBe, errorString) {
         typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
       }
-
+      
       validateString(options.location, 'location');
       validateString(options.id, 'id');
+      validateString(options.backgroundColor, 'backgroundColor');
       validateString(options.title, 'title');
       validateString(options.titleFont, 'titleFont');
       validateString(options.titleColor, 'titleColor');
@@ -90,6 +92,7 @@ var yd3 = (function (exports, d3) {
       let id = options.id;
       let width = parseInt(options.width);
       let height = parseInt(options.height);
+      let backgroundColor = options.backgroundColor;
 
       let title = options.title;
       let titleFont = options.titleFont;
@@ -161,7 +164,7 @@ var yd3 = (function (exports, d3) {
       let innerHeight = height - marginTop - marginBottom - frameTop - frameBottom;
 
       return [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate]
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
     }
 
 
@@ -186,8 +189,8 @@ var yd3 = (function (exports, d3) {
       options.yTitle ? true : options.yTitle = '';             // for user sepcified y title
       options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
       options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
-      options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
-      options.yTitleFont ? true : options.yTitleFont = '14px sans-serif';
+      options.xTitleFont ? true : options.xTitleFont = '12px sans-serif';
+      options.yTitleFont ? true : options.yTitleFont = '12px sans-serif';
       options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
       options.xTicks ? true : options.xTicks = null;
       options.yTicks ? true : options.yTicks = null;
@@ -659,7 +662,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), x y padding, background color, commerical copyright, error bar, line hover, stack line
+  //to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, line hover, stack line
 
 
   /**
@@ -705,7 +708,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -732,6 +735,7 @@ var yd3 = (function (exports, d3) {
         .attr('id', id)
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', backgroundColor)
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
@@ -924,7 +928,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -1075,7 +1079,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -1253,7 +1257,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -1408,7 +1412,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);

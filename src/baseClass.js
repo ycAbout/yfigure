@@ -30,6 +30,7 @@ class BaseSimpleGroupAxis {
     options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
     options.width ? true : options.width = 400;
     options.height ? true : options.height = 300;
+    options.backgroundColor ? true : options.backgroundColor = '';
 
     options.title ? true : options.title = '';
     options.titleFont ? true : options.titleFont = '16px sans-serif';
@@ -46,9 +47,10 @@ class BaseSimpleGroupAxis {
     function validateString(stringToBe, errorString) {
       typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
-
+    
     validateString(options.location, 'location');
     validateString(options.id, 'id');
+    validateString(options.backgroundColor, 'backgroundColor');
     validateString(options.title, 'title');
     validateString(options.titleFont, 'titleFont');
     validateString(options.titleColor, 'titleColor');
@@ -71,6 +73,7 @@ class BaseSimpleGroupAxis {
     let id = options.id;
     let width = parseInt(options.width);
     let height = parseInt(options.height);
+    let backgroundColor = options.backgroundColor;
 
     let title = options.title;
     let titleFont = options.titleFont;
@@ -142,7 +145,7 @@ class BaseSimpleGroupAxis {
     let innerHeight = height - marginTop - marginBottom - frameTop - frameBottom;
 
     return [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate]
+      innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
   }
 
 
@@ -167,8 +170,8 @@ class BaseSimpleGroupAxis {
     options.yTitle ? true : options.yTitle = '';             // for user sepcified y title
     options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
-    options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
-    options.yTitleFont ? true : options.yTitleFont = '14px sans-serif';
+    options.xTitleFont ? true : options.xTitleFont = '12px sans-serif';
+    options.yTitleFont ? true : options.yTitleFont = '12px sans-serif';
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
     options.xTicks ? true : options.xTicks = null;
     options.yTicks ? true : options.yTicks = null;
