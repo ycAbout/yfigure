@@ -167,7 +167,8 @@ var yd3 = (function (exports, d3) {
       options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
       options.xTicks ? true : options.xTicks = null;
       options.yTicks ? true : options.yTicks = null;
-      options.tickInward ? true : options.tickInward = [];
+      options.xTickSize ? true: options.xTickSize = 6;
+      options.yTickSize ? true: options.yTickSize = 6;
       options.tickLabelRemove ? true : options.tickLabelRemove = [];
       options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
       options.xGridColor ? true : options.xGridColor = '';
@@ -195,7 +196,6 @@ var yd3 = (function (exports, d3) {
       validateArray(options.xTitlePosition, 'xTitlePosition');
       validateArray(options.yTitlePosition, 'yTitlePosition');
 
-      validateArray(options.tickInward, 'tickInward');
       validateArray(options.tickLabelRemove, 'tickLabelRemove');
       validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
 
@@ -223,7 +223,9 @@ var yd3 = (function (exports, d3) {
 
       (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
       (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
-
+      
+      typeof options.xTickSize !== 'number' ? makeError('Option xTickSize needs to be a number!') : true;
+      typeof options.yTickSize !== 'number' ? makeError('Option yTickSize needs to be a number!') : true;
       typeof options.xGridStrokeWidth !== 'number' ? makeError('Option xGridStrokeWidth needs to be a number!') : true;
       typeof options.yGridStrokeWidth !== 'number' ? makeError('Option yGridStrokeWidth needs to be a number!') : true;
 
@@ -322,7 +324,8 @@ var yd3 = (function (exports, d3) {
       let xTickLabelRotate = parseInt(options.xTickLabelRotate);
       let xTicks = options.xTicks;
       let yTicks = options.yTicks;
-      let tickInward = options.tickInward;
+      let xTickSize = options.xTickSize;
+      let yTickSize  = options.yTickSize;
       let tickLabelRemove = options.tickLabelRemove;
       let axisLongLineRemove = options.axisLongLineRemove;
       let xGridColor = options.xGridColor;
@@ -339,7 +342,7 @@ var yd3 = (function (exports, d3) {
       let line0DashArray = options.line0DashArray;
 
       return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-        xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove,
+        xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
         xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
         yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
         line0StrokeWidth, line0DashArray]
@@ -409,11 +412,10 @@ var yd3 = (function (exports, d3) {
 
     _drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, horizontal,
       xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove,
+      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
       xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
       yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
       line0StrokeWidth, line0DashArray]) {
-
 
       if (!xAxisPositionSet && !horizontal) {
         // set default x axis to top if y max is 0
@@ -448,27 +450,21 @@ var yd3 = (function (exports, d3) {
           .attr("color", xAxisColor)
           .style("font", xAxisFont)
           .attr('transform', `translate(0, ${xAxisPosition[i] == 'top' ? 0 : innerHeight})`)
-          .call(xAxisPosition[i] == 'top' ? d3.axisTop(xScale).ticks(xTicks) : d3.axisBottom(xScale).ticks(xTicks))
+          .call(xAxisPosition[i] == 'top' ? d3.axisTop(xScale).ticks(xTicks).tickSize(xTickSize) : d3.axisBottom(xScale).ticks(xTicks).tickSize(xTickSize))
           .attr("stroke-width", xAxisStrokeWidth);
 
         xAxis
           .selectAll("text")
           .attr("color", xTickLabelColor)
-          .attr("y", (9 - 9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1))   // d3 default off y 9. Max 90 degrees to 0
+          .attr("y", (Math.max(xTickSize, 0) + 3 - (Math.max(xTickSize, 0) + 3) / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1))   // d3 default off y 9. Max 90 degrees to 0
           .attr("dy", `${0.355 + (0.355 - 0.355 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1)}em`)   // d3 default off y 0.71em. Max 90 degrees to 0.355em
-          .attr("x", (9 / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1) * (xTickLabelRotate < 0 ? -1 : 1))   // d3 default off x 0. Max 90 degrees to 9
+          .attr("x", ((Math.max(xTickSize, 0) + 3) / 90 * Math.abs(xTickLabelRotate)) * (xAxisPosition[i] == 'top' ? -1 : 1) * (xTickLabelRotate < 0 ? -1 : 1))   // d3 default off x 0. Max 90 degrees to 9
           .style("text-anchor", xTickLabelRotate != 0 ? (xTickLabelRotate < 0 ? (xAxisPosition[i] == 'top' ? 'start' : 'end') : (xAxisPosition[i] == 'top' ? 'end' : 'start')) : 'middle')
           .attr("transform", `rotate(${xTickLabelRotate})`);
 
         xAxis
           .selectAll("line")
           .attr("stroke-width", xTickStrokeWidth);
-
-        if (tickInward.includes(xAxisPosition[i])) {
-          xAxis
-            .selectAll("line")
-            .attr("y2", xAxisPosition[i] == 'top' ? 6 : -6);
-        }
 
         if (tickLabelRemove.includes(xAxisPosition[i])) {
           xAxis
@@ -502,22 +498,17 @@ var yd3 = (function (exports, d3) {
           .style("color", yAxisColor)
           .style("font", yAxisFont)
           .attr('transform', `translate(${yAxisPosition[i] == 'right' ? innerWidth : 0}, 0)`)
-          .call(yAxisPosition[i] == 'right' ? d3.axisRight(yScale).ticks(yTicks) : d3.axisLeft(yScale).ticks(yTicks))
+          .call(yAxisPosition[i] == 'right' ? d3.axisRight(yScale).ticks(yTicks).tickSize(yTickSize) : d3.axisLeft(yScale).ticks(yTicks).tickSize(yTickSize))
           .attr("stroke-width", yAxisStrokeWidth);
 
         yAxis
           .selectAll("text")
           .attr("color", yTickLabelColor);
 
+        // tick line
         yAxis
           .selectAll("line")
           .attr("stroke-width", yTickStrokeWidth);
-
-        if (tickInward.includes(yAxisPosition[i])) {
-          yAxis
-            .selectAll("line")
-            .attr("x2", yAxisPosition[i] == 'left' ? 6 : -6);
-        }
 
         if (tickLabelRemove.includes(yAxisPosition[i])) {
           yAxis
@@ -623,7 +614,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), tickInward to tickSize, background color, commerical copyright, error bar, vertical bar, line hover, stack line
+  //to do, each bar each color(maybe group bar with 1 group?), tickInward to tickSize, background color, commerical copyright, error bar, vertical his line?, line hover, stack line
 
 
   /**
@@ -838,12 +829,6 @@ var yd3 = (function (exports, d3) {
         yDataName = middleMan;
 
       }
-
-      //this._drawAxis(...[svg, xScale, yScale, yMin, yMax, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft,
-      //  xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, xTitlePositionSet, yTitlePosition, xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-      //  xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor,
-      //  yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
-      //  yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
 
       this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);

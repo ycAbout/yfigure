@@ -25,8 +25,10 @@ common options:
   `yAxisFont: '10px sans-serif'` Sets axis tick font
   `xTitleFont: '10px sans-serif'` Sets axis title font
   `yTitleFont: '10px sans-serif'` Sets axis title font
-  `xTicks = null` Sets axis tick number  // approximate
-  `yTicks = null` Sets axis tick number  // approximate
+  `xTicks: null` Sets axis tick number  // approximate
+  `yTicks: null` Sets axis tick number  // approximate
+  `xTickSize: 6` ? Sets axis tick size, negative number changes direction
+  `yTickSize: 6` ? Sets axis tick size, negative number changes direction
   `axisColor: ''` Sets axises (and ticks), labels, and titles color in one declaration, overrides individual settings.
   `xAxisColor: 'black'` Set individual color
   `yAxisColor: 'black'` Set individual color
@@ -39,6 +41,7 @@ common options:
   `yAxisStrokeWidth: 1` Sets individual line width
   `xTickStrokeWidth: 1` Sets individual line width
   `yTickStrokeWidth: 1` Sets individual line width
+
   `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`

@@ -217,12 +217,6 @@ class Bar extends BaseSimpleGroupAxis {
 
     }
 
-    //this._drawAxis(...[svg, xScale, yScale, yMin, yMax, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft,
-    //  xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, xTitlePositionSet, yTitlePosition, xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-    //  xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor,
-    //  yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
-    //  yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
-
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
       frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
