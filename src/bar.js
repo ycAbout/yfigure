@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, vertical hist line?, line hover, stack line
+//to do, each bar each color(maybe group bar with 1 group?), x y padding, background color, commerical copyright, error bar, line hover, stack line
 
 
 /**
@@ -21,14 +21,12 @@ class Bar extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-    this._options.barPadding ? true : this._options.barPadding = 0.1;
     this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.03;
     this._options.stacked === true ? true : this._options.stacked = false;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-    if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number!') }
     if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -43,7 +41,6 @@ class Bar extends BaseSimpleGroupAxis {
   _draw(data, options) {
 
     let colors = options.colors;
-    let barPadding = options.barPadding;
     let withinGroupPadding = options.withinGroupPadding
     let stacked = options.stacked;
     let horizontal = options.horizontal;
@@ -55,13 +52,17 @@ class Bar extends BaseSimpleGroupAxis {
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
 
+    // has to be after set axis options
+    let xPadding = options.xPadding;
+    let yPadding = options.yPadding;
+
     // set data parameters
     let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
 
     // make data plot approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * 0.1;
+    let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
 
-    let ySetbackStack = (dataMaxSum - dataMinSum) * 0.1;
+    let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
 
     // if there is negative data, set y min. Otherwise choose 0 as default y min
     let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
@@ -79,7 +80,7 @@ class Bar extends BaseSimpleGroupAxis {
     let xScale = d3.scaleBand()
       .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, horizontal ? innerHeight : innerWidth])
-      .padding(barPadding);
+      .padding((horizontal ? yPadding : xPadding));
 
     let xSubScale = d3.scaleBand()
       .domain(stacked ? ['stack'] : yDataNames)

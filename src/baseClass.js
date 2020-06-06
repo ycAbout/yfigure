@@ -194,6 +194,10 @@ class BaseSimpleGroupAxis {
     options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
     options.line0DashArray ? true : options.line0DashArray = '';
 
+
+    options.xPadding ? true: options.xPadding = 0.1;  // just set up, not returned in array
+    options.yPadding ? true: options.yPadding = 0.1;  // jsut set up, not returned in array
+
     function makeError(msg) {
       throw new Error(msg)
     }
@@ -207,7 +211,6 @@ class BaseSimpleGroupAxis {
     validateArray(options.yAxisPosition, 'yAxisPosition');
     validateArray(options.xTitlePosition, 'xTitlePosition');
     validateArray(options.yTitlePosition, 'yTitlePosition');
-
     validateArray(options.tickLabelRemove, 'tickLabelRemove');
     validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
 
@@ -217,47 +220,46 @@ class BaseSimpleGroupAxis {
 
     validateString(options.xTitle, 'xTitle');
     validateString(options.yTitle, 'yTitle');
-
     validateString(options.xAxisFont, 'xAxisFont');
     validateString(options.yAxisFont, 'yAxisFont');
     validateString(options.xTitleFont, 'xTitleFont');
     validateString(options.yTitleFont, 'yTitleFont');
-
     validateString(options.xGridColor, 'xGridColor');
     validateString(options.xGridDashArray, 'xGridDashArray');
     validateString(options.yGridColor, 'yGridColor');
     validateString(options.yGridDashArray, 'yGridDashArray');
-
     validateString(options.line0Stroke, 'line0Stroke');
     validateString(options.line0DashArray, 'line0DashArray');
 
-    (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
+    function validateNumStr(numStrToBe, errorString) {
+      (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+    }
+
+    validateNumStr(options.xTickLabelRotate, 'xTickLabelRotate');
+    validateNumStr(options.xTickSize, 'xTickSize');
+    validateNumStr(options.yTickSize, 'yTickSize');
+    validateNumStr(options.xGridStrokeWidth, 'xGridStrokeWidth');
+    validateNumStr(options.yGridStrokeWidth, 'yGridStrokeWidth');
+    validateNumStr(options.line0StrokeWidth, 'line0StrokeWidth');
+    validateNumStr(options.xPadding, 'xPadding');
+    validateNumStr(options.yPadding, 'yPadding');
+    
     !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
 
     (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
     (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
 
-    typeof options.xTickSize !== 'number' ? makeError('Option xTickSize needs to be a number!') : true;
-    typeof options.yTickSize !== 'number' ? makeError('Option yTickSize needs to be a number!') : true;
-    typeof options.xGridStrokeWidth !== 'number' ? makeError('Option xGridStrokeWidth needs to be a number!') : true;
-    typeof options.yGridStrokeWidth !== 'number' ? makeError('Option yGridStrokeWidth needs to be a number!') : true;
-
     (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
 
-    (typeof options.line0StrokeWidth !== 'string' && typeof options.line0StrokeWidth !== 'number') ? makeError('Option line0StrokeWidth needs to be a string or number!') : true;
 
     let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
 
     // make axisColor shortcut for all axis related colors
     if (options.axisColor) {
-
-      (typeof options.axisColor !== 'string') ? makeError('Option axisColor needs to be a string!') : true;
-
+      validateString(options.axisColor, 'axisColor')
       xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
-
       // any one of the margin is set
     } else if (options['xAxisColor'] || options['yAxisColor'] || options['xTitleColor'] || options['yTitleColor'] || options['xTickLabelColor'] || options['yTickLabelColor ']) {
-
       options['xAxisColor'] ? true : options['xAxisColor'] = 'black';
       options['yAxisColor'] ? true : options['yAxisColor'] = 'black';
       options['xTitleColor'] ? true : options['xTitleColor'] = 'black';
@@ -266,12 +268,12 @@ class BaseSimpleGroupAxis {
       options['yTickLabelColor '] ? true : options['yTickLabelColor '] = 'black';
 
       //validate format
-      typeof options['xAxisColor'] !== 'string' ? makeError('Option xAxisColor needs to be a string!') : true;
-      typeof options['yAxisColor'] !== 'string' ? makeError('Option yAxisColor needs to be a string!') : true;
-      typeof options['xTitleColor'] !== 'string' ? makeError('Option xTitleColor needs to be a string!') : true;
-      typeof options['yTitleColor'] !== 'string' ? makeError('Option yTitleColor needs to be a string!') : true;
-      typeof options['xTickLabelColor'] !== 'string' ? makeError('Option xTickLabelColor needs to be a string!') : true;
-      typeof options['yTickLabelColor '] !== 'string' ? makeError('Option yTickLabelColor  needs to be a string!') : true;
+      validateString(options.xAxisColor, 'xAxisColor');
+      validateString(options.yAxisColor, 'yAxisColor');
+      validateString(options.xTitleColor, 'xTitleColor');
+      validateString(options.yTitleColor, 'yTitleColor');
+      validateString(options.xTickLabelColor, 'xTickLabelColor');
+      validateString(options.yTickLabelColor, 'yTickLabelColor');
 
       xAxisColor = options['xAxisColor'];
       yAxisColor = options['yAxisColor'];
@@ -289,35 +291,29 @@ class BaseSimpleGroupAxis {
     let xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth;
     // make margin short cut for all margin
     if (options.axisStrokeWidth) {
-
-      (typeof options.axisStrokeWidth !== 'string' && typeof options.axisStrokeWidth !== 'number') ? makeError('Option axisStrokeWidth needs to be a string or number!') : true;
-
+      validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
       xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
-
       // any one of the margin is set
     } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
-
       options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
       options.yAxisStrokeWidth ? true : options.yAxisStrokeWidth = 1;
       options.xTickStrokeWidth ? true : options.xTickStrokeWidth = 1;
       options.yTickStrokeWidth ? true : options.yTickStrokeWidth = 1;
 
       //validate format
-      (typeof options.xAxisStrokeWidth !== 'string' && typeof options.xAxisStrokeWidth !== 'number') ? makeError('Option xAxisStrokeWidth needs to be a string or number!') : true;
-      (typeof options.yAxisStrokeWidth !== 'string' && typeof options.yAxisStrokeWidth !== 'number') ? makeError('Option yAxisStrokeWidth needs to be a string or number!') : true;
-      (typeof options.xTickStrokeWidth !== 'string' && typeof options.xTickStrokeWidth !== 'number') ? makeError('Option xTickStrokeWidth needs to be a string or number!') : true;
-      (typeof options.yTickStrokeWidth !== 'string' && typeof options.yTickStrokeWidth !== 'number') ? makeError('Option yTickStrokeWidth needs to be a string or number!') : true;
+      validateNumStr(options.xAxisStrokeWidth, 'xAxisStrokeWidth');
+      validateNumStr(options.yAxisStrokeWidth, 'yAxisStrokeWidth');
+      validateNumStr(options.xTickStrokeWidth, 'xTickStrokeWidth');
+      validateNumStr(options.yTickStrokeWidth, 'yTickStrokeWidth');
 
       xAxisStrokeWidth = parseInt(options.xAxisStrokeWidth);
       yAxisStrokeWidth = parseInt(options.yAxisStrokeWidth);
       xTickStrokeWidth = parseInt(options.xTickStrokeWidth);
       yTickStrokeWidth = parseInt(options.yTickStrokeWidth);
-
     } else {
       options.axisStrokeWidth = 1;
       xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
     }
-
 
     //parse float just in case and get parameters
     let xAxisPosition = options.xAxisPosition;

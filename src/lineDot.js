@@ -19,15 +19,12 @@ class LineDot extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.dotRadius ? true : this._options.dotRadius = 4;
-    this._options.linePadding ? true : this._options.linePadding = 0.2;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
-    if (typeof this._options.linePadding !== 'number') { throw new Error('Option linePadding need to be a number!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
-
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -51,11 +48,14 @@ class LineDot extends BaseSimpleGroupAxis {
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
 
+    let xPadding = options.xPadding;
+    let yPadding = options.yPadding;
+
     // set data parameters
     let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
     // make highest number approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+    let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);  //10% of data range
 
     let yMin = dataMin - ySetback;
     let yMax = dataMax + ySetback;
@@ -72,7 +72,7 @@ class LineDot extends BaseSimpleGroupAxis {
     let xScale = d3.scalePoint()
       .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, horizontal ? innerHeight : innerWidth])
-      .padding(linePadding);
+      .padding((horizontal ? yPadding : xPadding));
 
     let yScale = d3.scaleLinear()
       .domain([yMin, yMax])  // data points off axis

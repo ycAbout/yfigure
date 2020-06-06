@@ -162,7 +162,7 @@
 
     // example 1
     dataBar1 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(dataBar1);
+    let bar1 = new yd3.Bar(dataBar1, {yPadding: 1});
 
     // example 2 rotate x tick lables, change layout, font
     dataBar2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
@@ -177,7 +177,8 @@
     // example 3 negative data
     let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,  
       title: 'Saskatoon temprature 2010 to 2019',  
-      titleFont: '32px arial', yAxisPosition: ['left'], horizontal: true,});
+      titleFont: '32px arial', yAxisPosition: ['left'], horizontal: true,   
+});
 
     // example 4 change color, bar padding
     let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
@@ -248,7 +249,7 @@
     createTitle("H2", "sortableBar");
 
     // example 1
-    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019Low, {horizontal: true});
+    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019Low, {horizontal: true, xPadding: 1});
     // example 2
     let sortableBar2 = new yd3.SortableBar(dataBar2, {
     });
@@ -311,7 +312,7 @@
     createTitle("H2", "lineDot");
 
     // example 1  
-    let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5, linePadding: 5});
+    let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5, yPadding: 5});
     // example 2
     let linedot5 = new yd3.LineDot(dataLineDot2, {
       

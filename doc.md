@@ -27,6 +27,8 @@ common options:
   `yTitlePosition: ['left']` Sets axis title location
   `xTitle: ''` Sets the x axis title, override xDataName, use space string `' '` to remove it
   `yTitle: ''` Sets the y axis title, override yDataName, use space string `' '` to remove it
+  `xPadding: 0.1` Sets the x data padding on axis
+  `yPadding: 0.1` Sets the y data padding on axis
   `xAxisFont: '10px sans-serif'` Sets axis tick font
   `yAxisFont: '10px sans-serif'` Sets axis tick font
   `xTitleFont: '10px sans-serif'` Sets axis title font

@@ -213,6 +213,10 @@ var yd3 = (function (exports, d3) {
       options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
       options.line0DashArray ? true : options.line0DashArray = '';
 
+
+      options.xPadding ? true: options.xPadding = 0.1;  // just set up, not returned in array
+      options.yPadding ? true: options.yPadding = 0.1;  // jsut set up, not returned in array
+
       function makeError(msg) {
         throw new Error(msg)
       }
@@ -226,7 +230,6 @@ var yd3 = (function (exports, d3) {
       validateArray(options.yAxisPosition, 'yAxisPosition');
       validateArray(options.xTitlePosition, 'xTitlePosition');
       validateArray(options.yTitlePosition, 'yTitlePosition');
-
       validateArray(options.tickLabelRemove, 'tickLabelRemove');
       validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
 
@@ -236,47 +239,46 @@ var yd3 = (function (exports, d3) {
 
       validateString(options.xTitle, 'xTitle');
       validateString(options.yTitle, 'yTitle');
-
       validateString(options.xAxisFont, 'xAxisFont');
       validateString(options.yAxisFont, 'yAxisFont');
       validateString(options.xTitleFont, 'xTitleFont');
       validateString(options.yTitleFont, 'yTitleFont');
-
       validateString(options.xGridColor, 'xGridColor');
       validateString(options.xGridDashArray, 'xGridDashArray');
       validateString(options.yGridColor, 'yGridColor');
       validateString(options.yGridDashArray, 'yGridDashArray');
-
       validateString(options.line0Stroke, 'line0Stroke');
       validateString(options.line0DashArray, 'line0DashArray');
 
-      (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
+      function validateNumStr(numStrToBe, errorString) {
+        (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+      }
+
+      validateNumStr(options.xTickLabelRotate, 'xTickLabelRotate');
+      validateNumStr(options.xTickSize, 'xTickSize');
+      validateNumStr(options.yTickSize, 'yTickSize');
+      validateNumStr(options.xGridStrokeWidth, 'xGridStrokeWidth');
+      validateNumStr(options.yGridStrokeWidth, 'yGridStrokeWidth');
+      validateNumStr(options.line0StrokeWidth, 'line0StrokeWidth');
+      validateNumStr(options.xPadding, 'xPadding');
+      validateNumStr(options.yPadding, 'yPadding');
+      
       !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
 
       (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
       (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
 
-      typeof options.xTickSize !== 'number' ? makeError('Option xTickSize needs to be a number!') : true;
-      typeof options.yTickSize !== 'number' ? makeError('Option yTickSize needs to be a number!') : true;
-      typeof options.xGridStrokeWidth !== 'number' ? makeError('Option xGridStrokeWidth needs to be a number!') : true;
-      typeof options.yGridStrokeWidth !== 'number' ? makeError('Option yGridStrokeWidth needs to be a number!') : true;
-
       (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
 
-      (typeof options.line0StrokeWidth !== 'string' && typeof options.line0StrokeWidth !== 'number') ? makeError('Option line0StrokeWidth needs to be a string or number!') : true;
 
       let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
 
       // make axisColor shortcut for all axis related colors
       if (options.axisColor) {
-
-        (typeof options.axisColor !== 'string') ? makeError('Option axisColor needs to be a string!') : true;
-
+        validateString(options.axisColor, 'axisColor');
         xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
-
         // any one of the margin is set
       } else if (options['xAxisColor'] || options['yAxisColor'] || options['xTitleColor'] || options['yTitleColor'] || options['xTickLabelColor'] || options['yTickLabelColor ']) {
-
         options['xAxisColor'] ? true : options['xAxisColor'] = 'black';
         options['yAxisColor'] ? true : options['yAxisColor'] = 'black';
         options['xTitleColor'] ? true : options['xTitleColor'] = 'black';
@@ -285,12 +287,12 @@ var yd3 = (function (exports, d3) {
         options['yTickLabelColor '] ? true : options['yTickLabelColor '] = 'black';
 
         //validate format
-        typeof options['xAxisColor'] !== 'string' ? makeError('Option xAxisColor needs to be a string!') : true;
-        typeof options['yAxisColor'] !== 'string' ? makeError('Option yAxisColor needs to be a string!') : true;
-        typeof options['xTitleColor'] !== 'string' ? makeError('Option xTitleColor needs to be a string!') : true;
-        typeof options['yTitleColor'] !== 'string' ? makeError('Option yTitleColor needs to be a string!') : true;
-        typeof options['xTickLabelColor'] !== 'string' ? makeError('Option xTickLabelColor needs to be a string!') : true;
-        typeof options['yTickLabelColor '] !== 'string' ? makeError('Option yTickLabelColor  needs to be a string!') : true;
+        validateString(options.xAxisColor, 'xAxisColor');
+        validateString(options.yAxisColor, 'yAxisColor');
+        validateString(options.xTitleColor, 'xTitleColor');
+        validateString(options.yTitleColor, 'yTitleColor');
+        validateString(options.xTickLabelColor, 'xTickLabelColor');
+        validateString(options.yTickLabelColor, 'yTickLabelColor');
 
         xAxisColor = options['xAxisColor'];
         yAxisColor = options['yAxisColor'];
@@ -308,35 +310,29 @@ var yd3 = (function (exports, d3) {
       let xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth;
       // make margin short cut for all margin
       if (options.axisStrokeWidth) {
-
-        (typeof options.axisStrokeWidth !== 'string' && typeof options.axisStrokeWidth !== 'number') ? makeError('Option axisStrokeWidth needs to be a string or number!') : true;
-
+        validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
         xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
-
         // any one of the margin is set
       } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
-
         options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
         options.yAxisStrokeWidth ? true : options.yAxisStrokeWidth = 1;
         options.xTickStrokeWidth ? true : options.xTickStrokeWidth = 1;
         options.yTickStrokeWidth ? true : options.yTickStrokeWidth = 1;
 
         //validate format
-        (typeof options.xAxisStrokeWidth !== 'string' && typeof options.xAxisStrokeWidth !== 'number') ? makeError('Option xAxisStrokeWidth needs to be a string or number!') : true;
-        (typeof options.yAxisStrokeWidth !== 'string' && typeof options.yAxisStrokeWidth !== 'number') ? makeError('Option yAxisStrokeWidth needs to be a string or number!') : true;
-        (typeof options.xTickStrokeWidth !== 'string' && typeof options.xTickStrokeWidth !== 'number') ? makeError('Option xTickStrokeWidth needs to be a string or number!') : true;
-        (typeof options.yTickStrokeWidth !== 'string' && typeof options.yTickStrokeWidth !== 'number') ? makeError('Option yTickStrokeWidth needs to be a string or number!') : true;
+        validateNumStr(options.xAxisStrokeWidth, 'xAxisStrokeWidth');
+        validateNumStr(options.yAxisStrokeWidth, 'yAxisStrokeWidth');
+        validateNumStr(options.xTickStrokeWidth, 'xTickStrokeWidth');
+        validateNumStr(options.yTickStrokeWidth, 'yTickStrokeWidth');
 
         xAxisStrokeWidth = parseInt(options.xAxisStrokeWidth);
         yAxisStrokeWidth = parseInt(options.yAxisStrokeWidth);
         xTickStrokeWidth = parseInt(options.xTickStrokeWidth);
         yTickStrokeWidth = parseInt(options.yTickStrokeWidth);
-
       } else {
         options.axisStrokeWidth = 1;
         xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
       }
-
 
       //parse float just in case and get parameters
       let xAxisPosition = options.xAxisPosition;
@@ -671,7 +667,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, vertical hist line?, line hover, stack line
+  //to do, each bar each color(maybe group bar with 1 group?), x y padding, background color, commerical copyright, error bar, line hover, stack line
 
 
   /**
@@ -691,14 +687,12 @@ var yd3 = (function (exports, d3) {
 
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-      this._options.barPadding ? true : this._options.barPadding = 0.1;
       this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.03;
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-      if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number!') }
       if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -713,7 +707,6 @@ var yd3 = (function (exports, d3) {
     _draw(data, options) {
 
       let colors = options.colors;
-      let barPadding = options.barPadding;
       let withinGroupPadding = options.withinGroupPadding;
       let stacked = options.stacked;
       let horizontal = options.horizontal;
@@ -725,13 +718,17 @@ var yd3 = (function (exports, d3) {
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
 
+      // has to be after set axis options
+      let xPadding = options.xPadding;
+      let yPadding = options.yPadding;
+
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
 
       // make data plot approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * 0.1;
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
 
-      let ySetbackStack = (dataMaxSum - dataMinSum) * 0.1;
+      let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
       let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
@@ -749,7 +746,7 @@ var yd3 = (function (exports, d3) {
       let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, horizontal ? innerHeight : innerWidth])
-        .padding(barPadding);
+        .padding((horizontal ? yPadding : xPadding));
 
       let xSubScale = d3.scaleBand()
         .domain(stacked ? ['stack'] : yDataNames)
@@ -940,6 +937,9 @@ var yd3 = (function (exports, d3) {
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
 
+      let xPadding = options.xPadding;
+      let yPadding = options.yPadding;
+
       let nBins = options.nBins;
       let color = options.color;
       let horizontal = options.horizontal;
@@ -988,7 +988,7 @@ var yd3 = (function (exports, d3) {
 
       let yScale = d3.scaleLinear()
         .range(horizontal ? [0, innerWidth] : [innerHeight, 0])
-        .domain([0, d3.max(bins, d => d.length * 1.1)]);
+        .domain([0, d3.max(bins, d => d.length * (1 + (horizontal ? xPadding : yPadding)))]);
 
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
       let dataPointDisplayId = this._setDataPoint();
@@ -1059,15 +1059,12 @@ var yd3 = (function (exports, d3) {
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
-      this._options.linePadding ? true : this._options.linePadding = 0.2;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
-      if (typeof this._options.linePadding !== 'number') { throw new Error('Option linePadding need to be a number!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
-
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
@@ -1091,11 +1088,14 @@ var yd3 = (function (exports, d3) {
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
 
+      let xPadding = options.xPadding;
+      let yPadding = options.yPadding;
+
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);  //10% of data range
 
       let yMin = dataMin - ySetback;
       let yMax = dataMax + ySetback;
@@ -1112,7 +1112,7 @@ var yd3 = (function (exports, d3) {
       let xScale = d3.scalePoint()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, horizontal ? innerHeight : innerWidth])
-        .padding(linePadding);
+        .padding((horizontal ? yPadding : xPadding));
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])  // data points off axis
@@ -1266,11 +1266,14 @@ var yd3 = (function (exports, d3) {
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
 
+      let xPadding = options.xPadding;
+      let yPadding = options.yPadding;
+
       // set data parameters
       let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+      let ySetback = (dataMax - dataMin) * yPadding;  //10% of data range
 
       let yMin = dataMin - ySetback;
       let yMax = dataMax + ySetback;
@@ -1278,7 +1281,7 @@ var yd3 = (function (exports, d3) {
       // set up x scale, make data points approximately 2% off axis
       let xMax = d3.max(dataValue, element => element[xDataIndex]);
       let xMin = d3.min(dataValue, element => element[xDataIndex]);
-      let xSetback = (xMax - xMin) * 0.02;
+      let xSetback = (xMax - xMin) * xPadding;
 
       let svg = d3.select(location)
         .append('svg')
@@ -1369,7 +1372,7 @@ var yd3 = (function (exports, d3) {
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
       this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
-      
+
       return id;
 
     }
@@ -1392,12 +1395,10 @@ var yd3 = (function (exports, d3) {
 
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
-      this._options.barPadding ? true : this._options.barPadding = 0.1;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-      if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number between 0 and 1!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
       this._validate2dArray(this._data);
@@ -1411,7 +1412,6 @@ var yd3 = (function (exports, d3) {
     _draw(data, options) {
 
       let colors = options.colors;
-      let barPadding = options.barPadding;
       let horizontal = options.horizontal;
 
       // set all the common options
@@ -1420,6 +1420,10 @@ var yd3 = (function (exports, d3) {
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
+
+      // has to be after set axis options
+      let xPadding = options.xPadding;
+      let yPadding = options.yPadding;
 
       // take first column as x name label, second column as y name label, of the first object
       let xDataName = data[0][0];
@@ -1483,7 +1487,7 @@ var yd3 = (function (exports, d3) {
         let dataMin = d3.min(innerData, element => element[yDataIndex]);
 
         // make tallest bar approximately 10% range off the range
-        let ySetback = (dataMax - dataMin) * 0.1;
+        let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding) ;
 
         // if there is negative data, set y min. Otherwise choose 0 as default y min
         let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
@@ -1494,7 +1498,7 @@ var yd3 = (function (exports, d3) {
         let xScale = d3.scaleBand()
           .domain(innerData.map((element) => element[xDataIndex]))
           .range([0, horizontal ? innerHeight : innerWidth])
-          .padding(barPadding);
+          .padding((horizontal ? yPadding : xPadding));
 
         let yScale = d3.scaleLinear()
           .domain([yMin, yMax])

@@ -18,12 +18,10 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
-    this._options.barPadding ? true : this._options.barPadding = 0.1;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
-    if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number between 0 and 1!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
     this._validate2dArray(this._data);
@@ -37,7 +35,6 @@ class SortableBar extends BaseSimpleGroupAxis {
   _draw(data, options) {
 
     let colors = options.colors;
-    let barPadding = options.barPadding;
     let horizontal = options.horizontal;
 
     // set all the common options
@@ -46,6 +43,10 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
+
+    // has to be after set axis options
+    let xPadding = options.xPadding;
+    let yPadding = options.yPadding;
 
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = data[0][0];
@@ -109,7 +110,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       let dataMin = d3.min(innerData, element => element[yDataIndex]);
 
       // make tallest bar approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * 0.1;
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding) ;
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
       let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
@@ -120,7 +121,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       let xScale = d3.scaleBand()
         .domain(innerData.map((element) => element[xDataIndex]))
         .range([0, horizontal ? innerHeight : innerWidth])
-        .padding(barPadding);
+        .padding((horizontal ? yPadding : xPadding));
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])

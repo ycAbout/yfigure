@@ -42,6 +42,9 @@ class Histogram extends BaseSimpleGroupAxis {
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
 
+    let xPadding = options.xPadding;
+    let yPadding = options.yPadding;
+
     let nBins = options.nBins;
     let color = options.color;
     let horizontal = options.horizontal;
@@ -90,7 +93,7 @@ class Histogram extends BaseSimpleGroupAxis {
 
     let yScale = d3.scaleLinear()
       .range(horizontal ? [0, innerWidth] : [innerHeight, 0])
-      .domain([0, d3.max(bins, d => d.length * 1.1)]);
+      .domain([0, d3.max(bins, d => d.length * (1 + (horizontal ? xPadding : yPadding)))]);
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();

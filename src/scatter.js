@@ -43,11 +43,14 @@ class Scatter extends BaseSimpleGroupAxis {
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
 
+    let xPadding = options.xPadding;
+    let yPadding = options.yPadding;
+
     // set data parameters
     let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
     // make highest number approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
+    let ySetback = (dataMax - dataMin) * yPadding;  //10% of data range
 
     let yMin = dataMin - ySetback;
     let yMax = dataMax + ySetback;
@@ -55,7 +58,7 @@ class Scatter extends BaseSimpleGroupAxis {
     // set up x scale, make data points approximately 2% off axis
     let xMax = d3.max(dataValue, element => element[xDataIndex]);
     let xMin = d3.min(dataValue, element => element[xDataIndex]);
-    let xSetback = (xMax - xMin) * 0.02;
+    let xSetback = (xMax - xMin) * xPadding;
 
     let svg = d3.select(location)
       .append('svg')
@@ -146,7 +149,7 @@ class Scatter extends BaseSimpleGroupAxis {
       frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
-    
+
     return id;
 
   }
