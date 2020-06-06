@@ -1060,11 +1060,14 @@ var yd3 = (function (exports, d3) {
       this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       this._options.linePadding ? true : this._options.linePadding = 0.2;
+      this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
       if (typeof this._options.linePadding !== 'number') { throw new Error('Option linePadding need to be a number!') }
+      if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
+
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
@@ -1079,6 +1082,7 @@ var yd3 = (function (exports, d3) {
       let colors = options.colors;
       let dotRadius = options.dotRadius;
       let linePadding = options.linePadding;
+      let horizontal = options.horizontal;
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -1107,12 +1111,13 @@ var yd3 = (function (exports, d3) {
       //scalePoint can use padding but not scaleOrdinal
       let xScale = d3.scalePoint()
         .domain(dataValue.map((element) => element[xDataIndex]))
-        .range([0, innerWidth])
+        .range([0, horizontal ? innerHeight : innerWidth])
         .padding(linePadding);
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])  // data points off axis
-        .range([innerHeight, 0]);
+        .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
+
 
       //colors for difference lines
       let colorScale = d3.scaleOrdinal()
@@ -1135,8 +1140,8 @@ var yd3 = (function (exports, d3) {
           .attr("stroke", colorScale(yDataNames[i]))
           .attr("stroke-width", 2)
           .attr("d", d3.line()
-            .x(function (element) { return xScale(element[xDataIndex]) })
-            .y(function (element) { return yScale(element[i + 1]) })
+            .x(element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
+            .y(element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
           );
 
         // Add the points
@@ -1145,8 +1150,8 @@ var yd3 = (function (exports, d3) {
           .selectAll("circle")
           .data(dataValue)
           .join("circle")
-          .attr("cx", function (element) { return xScale(element[xDataIndex]) })
-          .attr("cy", function (element) { return yScale(element[i + 1]) })
+          .attr("cx", element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
+          .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
           .attr("r", dotRadius)
           .attr("fill", colorScale(yDataNames[i]))
           .on('mouseover', (element) => {
@@ -1198,7 +1203,16 @@ var yd3 = (function (exports, d3) {
         }
       }
 
-      let horizontal = false;
+      if (horizontal) {    // switch xScale and yScale to make axis
+        let middleMan = xScale;
+        xScale = yScale;
+        yScale = middleMan;
+
+        middleMan = xDataName;
+        xDataName = yDataName;
+        yDataName = middleMan;
+
+      }
 
       this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
