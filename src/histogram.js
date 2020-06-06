@@ -35,7 +35,7 @@ class Histogram extends BaseSimpleGroupAxis {
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id] = this._getCommonOption(options);
+      innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
@@ -122,6 +122,8 @@ class Histogram extends BaseSimpleGroupAxis {
 
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
       frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
+
+    this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
     return id;
 

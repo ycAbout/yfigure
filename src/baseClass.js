@@ -31,16 +31,56 @@ class BaseSimpleGroupAxis {
     options.width ? true : options.width = 400;
     options.height ? true : options.height = 300;
 
+    options.title ? true : options.title = '';
+    options.titleFont ? true : options.titleFont = '16px sans-serif';
+    options.titleColor ? true : options.titleColor = 'black';
+    options.titleX ? true : options.titleX = 0.5;   // 0 - 1
+    options.titleY ? true : options.titleY = 0;   // 0 - 1
+    options.titleRotate ? true : options.titleRotate = 0;
+
+    function makeError(msg) {
+      throw new Error(msg)
+    }
+
+    //validate format
+    function validateString(stringToBe, errorString) {
+      typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
+    }
+
+    validateString(options.location, 'location');
+    validateString(options.id, 'id');
+    validateString(options.title, 'title');
+    validateString(options.titleFont, 'titleFont');
+    validateString(options.titleColor, 'titleColor');
+
+    function validateNumStr(numStrToBe, errorString) {
+      (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+    }
+
+    validateNumStr(options.width, 'width');
+    validateNumStr(options.height, 'height');
+
+    validateNumStr(options.titleX, 'titleX');
+    validateNumStr(options.titleY, 'titleY');
+    validateNumStr(options.titleRotate, 'titleRotate');
+
+    !(parseInt(options.titleX) <= 1 && parseInt(options.titleX) >= 0) ? makeError('Option titleX needs to be between 0 to 1!') : true;
+    !(parseInt(options.titleY) <= 1 && parseInt(options.titleY) >= 0) ? makeError('Option titleY needs to be between 0 to 1!') : true;
+
     let location = options.location;
     let id = options.id;
     let width = parseInt(options.width);
     let height = parseInt(options.height);
 
-    let marginTop, marginLeft, marginBottom, marginRight;
+    let title = options.title;
+    let titleFont = options.titleFont;
+    let titleColor = options.titleColor;
+    let titleX = options.titleX;
+    let titleY = options.titleY;
+    let titleRotate = options.titleRotate;
 
-    function makeError(msg) {
-      throw new Error(msg)
-    }
+
+    let marginTop, marginLeft, marginBottom, marginRight;
 
     // make margin short cut for all margin
     if (options.margin) {
@@ -78,11 +118,8 @@ class BaseSimpleGroupAxis {
 
     // make margin short cut for all margin
     if (options.frame) {
-
       (typeof options.frame !== 'string' && typeof options.frame !== 'number') ? makeError('Option frame needs to be a string or number!') : true;
-
       frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
-
 
       // any one of the margin is set
     } else if (options.frameLeft || options.frameTop || options.frameRight || options.frameBottom) {
@@ -107,18 +144,12 @@ class BaseSimpleGroupAxis {
       frameTop = frameLeft = frameBottom = frameRight = options.frame;
     }
 
-    //validate format
-    (typeof options.width !== 'string' && typeof options.width !== 'number') ? makeError('Option width needs to be a string or number!') : true;
-    (typeof options.height !== 'string' && typeof options.height !== 'number') ? makeError('Option height needs to be a string or number!') : true;
-    typeof options.location !== 'string' ? makeError('Option location needs to be a string or number!') : true;
-    typeof options.id !== 'string' ? makeError('Option id needs to be a string or number!') : true;
-
     //parse float just in case and get parameters
     let innerWidth = width - marginLeft - marginRight - frameLeft - frameRight;
     let innerHeight = height - marginTop - marginBottom - frameTop - frameBottom;
 
     return [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id]
+      innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate]
   }
 
 
@@ -139,8 +170,8 @@ class BaseSimpleGroupAxis {
     options.yAxisPosition ? yAxisPositionSet = true : options.yAxisPosition = ['left'];
     options.xTitlePosition ? xTitlePositionSet = true : options.xTitlePosition = ['bottom'];
     options.yTitlePosition ? yTitlePositionSet = true : options.yTitlePosition = ['left'];
-    options.xTitle ? true : options.xTitle = false;             // for user specified x title
-    options.yTitle ? true : options.yTitle = false;             // for user sepcified y title
+    options.xTitle ? true : options.xTitle = '';             // for user specified x title
+    options.yTitle ? true : options.yTitle = '';             // for user sepcified y title
     options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
     options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
@@ -148,8 +179,8 @@ class BaseSimpleGroupAxis {
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
     options.xTicks ? true : options.xTicks = null;
     options.yTicks ? true : options.yTicks = null;
-    options.xTickSize ? true: options.xTickSize = 6;
-    options.yTickSize ? true: options.yTickSize = 6;
+    options.xTickSize ? true : options.xTickSize = 6;
+    options.yTickSize ? true : options.yTickSize = 6;
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
     options.xGridColor ? true : options.xGridColor = '';
@@ -184,6 +215,9 @@ class BaseSimpleGroupAxis {
       typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
 
+    validateString(options.xTitle, 'xTitle');
+    validateString(options.yTitle, 'yTitle');
+
     validateString(options.xAxisFont, 'xAxisFont');
     validateString(options.yAxisFont, 'yAxisFont');
     validateString(options.xTitleFont, 'xTitleFont');
@@ -194,17 +228,15 @@ class BaseSimpleGroupAxis {
     validateString(options.yGridColor, 'yGridColor');
     validateString(options.yGridDashArray, 'yGridDashArray');
 
-
     validateString(options.line0Stroke, 'line0Stroke');
     validateString(options.line0DashArray, 'line0DashArray');
-
 
     (typeof options.xTickLabelRotate !== 'string' && typeof options.xTickLabelRotate !== 'number') ? makeError('Option xTickLabelRotate needs to be a string or number between -90 to 90 degree!') : true;
     !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
 
     (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
     (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
-    
+
     typeof options.xTickSize !== 'number' ? makeError('Option xTickSize needs to be a number!') : true;
     typeof options.yTickSize !== 'number' ? makeError('Option yTickSize needs to be a number!') : true;
     typeof options.xGridStrokeWidth !== 'number' ? makeError('Option xGridStrokeWidth needs to be a number!') : true;
@@ -213,9 +245,6 @@ class BaseSimpleGroupAxis {
     (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
 
     (typeof options.line0StrokeWidth !== 'string' && typeof options.line0StrokeWidth !== 'number') ? makeError('Option line0StrokeWidth needs to be a string or number!') : true;
-
-    (typeof options.xTitle !== 'string' && options.xTitle) ? makeError('Option xTitle needs to be a string or not specified!') : true;
-    (typeof options.yTitle !== 'string' && options.yTitle) ? makeError('Option yTitle needs to be a string or not specified!') : true;
 
     let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
 
@@ -243,7 +272,6 @@ class BaseSimpleGroupAxis {
       typeof options['yTitleColor'] !== 'string' ? makeError('Option yTitleColor needs to be a string!') : true;
       typeof options['xTickLabelColor'] !== 'string' ? makeError('Option xTickLabelColor needs to be a string!') : true;
       typeof options['yTickLabelColor '] !== 'string' ? makeError('Option yTickLabelColor  needs to be a string!') : true;
-
 
       xAxisColor = options['xAxisColor'];
       yAxisColor = options['yAxisColor'];
@@ -306,7 +334,7 @@ class BaseSimpleGroupAxis {
     let xTicks = options.xTicks;
     let yTicks = options.yTicks;
     let xTickSize = options.xTickSize;
-    let yTickSize  = options.yTickSize;
+    let yTickSize = options.yTickSize;
     let tickLabelRemove = options.tickLabelRemove;
     let axisLongLineRemove = options.axisLongLineRemove;
     let xGridColor = options.xGridColor;
@@ -391,6 +419,10 @@ class BaseSimpleGroupAxis {
     return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
   }
 
+  /**
+   * This function draws the axises, axis titles and grids
+   * @param  {...array} [] all the related parameters.
+   */
   _drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, horizontal,
     xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
     xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
@@ -419,10 +451,10 @@ class BaseSimpleGroupAxis {
     // add line at y = 0 when there is negative data
     let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))))
 
-    // if user specified xTitle
-    if (!xTitle) xTitle = xDataName;
-    // if user specified yTitle
-    if (!yTitle) yTitle = yDataName;
+    // if user not specified xTitle
+    if (xTitle.length == 0) xTitle = xDataName;
+    // if user not specified yTitle
+    if (yTitle.length == 0) yTitle = yDataName;
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -556,6 +588,27 @@ class BaseSimpleGroupAxis {
       .select("path")
       .remove();
   }
+
+  /**
+   * This function draws the figure title
+   * @param  {...array} [] all the related parameters.
+   */
+  _drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]) {
+
+    //Figure title
+    svg
+      .append("g")
+      .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`)  // move to the beginning
+      .append("text")
+      .style('font', titleFont)
+      .style('fill', titleColor)
+      .attr("text-anchor", titleX < 0.34 ? "start" : titleX < 0.67 ? "middle" : "end")  // transform is applied to the anchor
+      .attr("transform", `translate(${width * titleX}, ${height * titleY}) rotate(${titleRotate})`)
+      .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
+      .text(title);
+  }
+
+
 
 
   /**

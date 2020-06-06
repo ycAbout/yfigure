@@ -175,7 +175,7 @@
 
     Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
-    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,       horizontal: true,});
+    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,        title: 'Saskatoon temprature 2010 to 2019',  titleFont: '32px arial',    horizontal: true,});
 
     // example 4 change color, bar padding
     let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
@@ -203,7 +203,7 @@
       xGridDashArray: '4 2',
       xGridStrokeWidth: 0.2,
       yGridDashArray: '4 2',
-      yGridStrokeWidth: 0.2
+      yGridStrokeWidth: 0.2,
     });
 
 

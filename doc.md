@@ -13,6 +13,12 @@ common options:
   `frameBottom: 25` Sets inside frame
   `location: 'body'` Sets the html location where to put the graph   // for id, use `location: '#<ID>'`
   `id: 'graph123456'`.  Sets the id of graph
+  `title: ''` Sets figure title
+  `titleFont: '20px sans-serif'` Sets figure title properties
+  `titleColor: 'black'` Sets figure title properties
+  `titleX: 0.5` Sets figure title  properties  // 0 - 1 from left to right
+  `titleY: 0` Sets figure title  properties  // 0 - 1  from top to bottom
+  `titleRotate: 0` Sets figure title properties
 
   axis options:
   `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`

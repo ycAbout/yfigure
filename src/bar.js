@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), tickInward to tickSize, background color, commerical copyright, error bar, vertical his line?, line hover, stack line
+//to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, vertical hist line?, line hover, stack line
 
 
 /**
@@ -48,7 +48,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id] = this._getCommonOption(options);
+      innerWidth, innerHeight, location, id, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);
@@ -219,6 +219,9 @@ class Bar extends BaseSimpleGroupAxis {
 
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
       frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
+
+
+    this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
     return id;
   }
