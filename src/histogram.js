@@ -38,10 +38,7 @@ class Histogram extends BaseSimpleGroupAxis {
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
+    let axisOptionArray = this._getAxisOption(options);
 
     let nBins = options.nBins;
     let color = options.color;
@@ -50,14 +47,14 @@ class Histogram extends BaseSimpleGroupAxis {
     let xDataIndex = 0;
     let yDataName = 'Frequency';
 
-    // if user specified yTitle
-    if (yTitle !== '') yDataName = yTitle;
-
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1)
 
     let dataMax = d3.max(dataValue, d => d[xDataIndex]);
     let dataMin = d3.min(dataValue, d => d[xDataIndex]);
+
+    let yMin = 0;   // just for passing yMin, no real use
+    let yMax = dataValue.length;   // just for passing yMin, no real use
 
     let svg = d3.select(location)
       .append('svg')
@@ -121,14 +118,10 @@ class Histogram extends BaseSimpleGroupAxis {
       })
       .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-    // no need for line0
-    let drawLine0 = false
+    let horizontal = false;
 
-    this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-      xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-      xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
+    this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+      frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     return id;
 

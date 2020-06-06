@@ -14,10 +14,6 @@
   <script> console.log(yd3)</script>
   <script>
 
-    let size1 = { width: 400, height: 300 };
-    let size2 = { width: 500, height: 300 };
-    let size3 = { width: 600, height: 400 };
-
     function createTitle(level, head) {
       let h = document.createElement(level); // Create the H1 element 
       let t = document.createTextNode(head); // Create a text element 
@@ -28,7 +24,6 @@
       let br = document.createElement("br");
       document.body.appendChild(br);
     }
-
 
     //generate a sudo normal distributed dataset
     let dataHistogram = [["age"]];
@@ -156,48 +151,61 @@
     ['Saskatchewan', 45.0, -56.7]
     ]
 
-    let Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+    let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], 
+    ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+    
+    let Saskatoon2010to2019High = [['Month', 'High temperature (°C)'], ['January', -8], ['February', -9], ['March', 0], ['April', 10], 
+    ['May', 19], ['June', 23], ['July', 25], ['August', 24], ['September', 19], ['October', 10], ['November', -2], ['December', -8]]
+    
+    let Saskatoon2010to2019Avg = [['Month', 'High temperature (°C)'], ["January", -13.5], ["February", -14.5], ["March", -5.5], ["April", 3.5], 
+    ["May", 11.5], ["June", 16.5], ["July", 18.5], ["August", 17], ["September", 12], ["October", 4], ["November", -6.5], ["December", -12.5]]
 
     // example 1
-    population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(population, {axisColor: 'green', gridLineWidth: 1
-});
+    dataBar1 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar1 = new yd3.Bar(dataBar1);
 
     // example 2 rotate x tick lables, change layout, font
-    let bar2 = new yd3.Bar(population, {
-      frameBottom:45,
-      frameLeft:40,
-      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
-      xAxisFont: '16px times', yAxisFont: '14px times', xTitleFont: '1em sans-serif', yTitleFont: '1em sans-serif',
-      yTicks: 6,
-      tickInward: ['top', 'right'],
-      //tickLabelRemove: ['top', 'right'],
+    dataBar2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar2 = new yd3.Bar(dataBar2, {
+      xAxisPosition: ['bottom', 'top'], yAxisPosition: ['left', 'right'],
       axisLongLineRemove: ['top', 'right'],
-      xTickLabelRotate: -20
+      xAxisFont: '14px times', yAxisFont: '14px times',
+      horizontal: true,
     });
 
-
-    Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
+    Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
-    let bar3 = new yd3.Bar(Saskatoon2010to2019, { xAxisPosition: ['bottom']
-    });
+    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {barPadding: 0.05,       horizontal: true,});
 
     // example 4 change color, bar padding
-    let bar4 = new yd3.Bar(Saskatoon2010to2019, {
-      colors: ['#CC2529', '#006994'], // second for negative value
-      barPadding: 0.2
+    let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
+      colors: ['#CC2529', '#1f9400'], // second for negative value
+      barPadding: 0.3,
+      xAxisFont: '16px times', yAxisFont: '16px times',
+      xTitle: ' ',   // no xTitle
+      xTickLabelRotate: -20,
+      yTicks: 5,
+      horizontal: true,
     });
 
+
     // example 5, both positive and negative data
-    Saskatoon2010to2019 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3], ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
-    let bar5 = new yd3.Bar(Saskatoon2010to2019, {
-      width: 600,
-      margin: 50,
-      line0: true,
-      location: 'body',
-      xAxisPosition: ['bottom'], yAxisPosition: ['left', 'right'], xTitlePosition: ['bottom'], yTitlePosition: ['left'],
-      colors: ['steelblue', '#CC2529']
+    let canadaBudget = [['year', 'Surplus/deficit (% GDP)'], ['1995', -4.64], ['1996', -3.62], ['1997', -1.02], ['1998', 0.33],
+    ['1999', 0.62], ['2000', 1.42], ['2001', 1.94], ['2002', 0.71], ['2003', 0.55], ['2004', 0.73], ['2005', 0.11], ['2006', 0.93],
+    ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
+    ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
+
+    let bar5 = new yd3.Bar(canadaBudget, {
+      width: 800,
+      height: 500,
+      horizontal: true,
+      xAxisPosition: ['top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['top'],
+      xGridDashArray: '4 2',
+      xGridStrokeWidth: 0.2,
+      yGridDashArray: '4 2',
+      yGridStrokeWidth: 0.2
     });
+
 
     br();
 
@@ -211,9 +219,10 @@
     createTitle("H2", "group bar");
 
     // example 1
-    let bar9 = new yd3.Bar(dataBar4, {stacked: false});
+    let bar9 = new yd3.Bar(dataBar4, { stacked: false });
     // example 2
-    let bar10 = new yd3.Bar(dataBar5, {stacked: true
+    let bar10 = new yd3.Bar(dataBar5, {
+      stacked: true
     });
     br();
     // example 3
@@ -229,22 +238,21 @@
     //bar5.update();
     //bar6.update();
 
-    
-    createTitle("H2", "Stack bar");
+    createTitle("H2", "stack bar");
+
+    createTitle("H2", "horizontal bar");
 
 
     createTitle("H2", "sortableBar");
 
     // example 1
-    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019);
+    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019Low, {horizontal: true});
     // example 2
     let sortableBar2 = new yd3.SortableBar(dataBar2, {
-      size: size2,
     });
     br();
     // example 3
     let sortableBar3 = new yd3.SortableBar(dataBar3, {
-      size: size3,
       left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       colors: ['steelblue', '#CC2529']
@@ -262,13 +270,11 @@
     let histogram1 = new yd3.Histogram(dataHistogram);
     // example 2 
     let histogram2 = new yd3.Histogram(dataHistogram, {
-      size: size2,
       nBins: 30
     });
     br();
     // example 3 
     let histogram3 = new yd3.Histogram(dataHistogram, {
-      size: size3,
       margin: 50,
       location: 'body',
       nBins: 100
@@ -279,21 +285,19 @@
     //histogram3.update();
 
 
-
-
     createTitle("H2", "line");
 
     // example 1  
     let linedot1 = new yd3.LineDot(dataLineDot1, { dotRadius: 1 });
     // example 2
     let linedot2 = new yd3.LineDot(dataLineDot2, {
-      size: size2,
+      
       dotRadius: 1
     });
     br();
     // example 3 
     let linedot3 = new yd3.LineDot(dataLineDot3, {
-      size: size3,
+      
       margin: 50,
       location: 'body',
       dotRadius: 1,
@@ -307,12 +311,12 @@
     let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5 });
     // example 2
     let linedot5 = new yd3.LineDot(dataLineDot2, {
-      size: size2,
+      
     });
     br();
     // example 3 
     let linedot6 = new yd3.LineDot(dataLineDot3, {
-      size: size3,
+      
       margin: 50,
       location: 'body',
       dotRadius: 5,
@@ -333,12 +337,12 @@
     let scatter1 = new yd3.Scatter(dataScatter1);
     // example 2 
     let scatter2 = new yd3.Scatter(dataScatter2, {
-      size: size2,
+      
     });
     br();
     // example 3 
     let scatter3 = new yd3.Scatter(dataScatter3, {
-      size: size3,
+      
       margin: 50,
       location: 'body',
       dotRadius: 4,

@@ -19,9 +19,12 @@ class SortableBar extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
     this._options.barPadding ? true : this._options.barPadding = 0.1;
+    this._options.horizontal === true ? true : this._options.horizontal = false;
+
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number between 0 and 1!') }
+    if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -35,16 +38,14 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     let colors = options.colors;
     let barPadding = options.barPadding;
+    let horizontal = options.horizontal;
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
+    let axisOptionArray = this._getAxisOption(options);
 
     // take first column as x name label, second column as y name label, of the first object
     let xDataName = data[0][0];
@@ -53,8 +54,11 @@ class SortableBar extends BaseSimpleGroupAxis {
     let xDataIndex = 0;
     let yDataIndex = 1;
 
-    // if user specified yTitle
-    if (yTitle !== '') yDataName = yTitle;
+    if (horizontal) {    // switch xScale and yScale to make axis
+      let middleManName = xDataName;
+      xDataName = yDataName;
+      yDataName = middleManName;
+    }
 
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1)
@@ -115,12 +119,12 @@ class SortableBar extends BaseSimpleGroupAxis {
       //x and y scale inside function for purpose of update (general purpose, not necessary but no harm in this case)
       let xScale = d3.scaleBand()
         .domain(innerData.map((element) => element[xDataIndex]))
-        .range([0, innerWidth])
+        .range([0, horizontal ? innerHeight : innerWidth])
         .padding(barPadding);
 
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])
-        .range([innerHeight, 0]);
+        .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
       //draw graph, update works with select rect
       svg
@@ -130,10 +134,10 @@ class SortableBar extends BaseSimpleGroupAxis {
           enter => enter.append('rect'),
           update => update
         )
-        .attr('x', element => xScale(element[xDataIndex]))
-        .attr('width', xScale.bandwidth())
-        .attr('y', element => yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
-        .attr('height', element => Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
+        .attr('x', element => horizontal ? yScale(Math.min(element[yDataIndex], 0)) : xScale(element[xDataIndex]))
+        .attr('width', element => horizontal ? Math.abs(yScale(element[yDataIndex]) - yScale(0)) : xScale.bandwidth())
+        .attr('y', element => horizontal ? xScale(element[xDataIndex]) : yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
+        .attr('height', element => horizontal ? xScale.bandwidth() : Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
         .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
         .on('mouseover', (element) => {
           d3.select('#' + dataPointDisplayId)
@@ -151,29 +155,24 @@ class SortableBar extends BaseSimpleGroupAxis {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-
+      // remove old one if exist and draw a new one
       d3.select('#' + id + 'xyl999').remove()
-
-      if (!xAxisPositionSet) {
-        // set default x axis to top if y max is 0
-        if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-        // set default x axisTitle to top if y max is 0
-        if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-      }
 
       //set the axis group
       svg = svg
         .append('g')
         .attr('id', id + 'xyl999')
 
-      // add line at y = 0 when there is negative data
-      let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))))
 
-      this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-        xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-        xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
-        yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-        yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
+      if (horizontal) {    // switch xScale and yScale to make axis
+        let middleMan = xScale;
+        xScale = yScale;
+        yScale = middleMan;
+      }
+
+
+      this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+        frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     }
 

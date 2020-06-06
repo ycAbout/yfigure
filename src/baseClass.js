@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+
 /**
  * A base class used for simple and grouped graph with axises, such as bar, line, and scatter.
  */
@@ -128,13 +130,17 @@ class BaseSimpleGroupAxis {
    */
   _getAxisOption(options) {
 
-    let xAxisPositionSet = false // for whether user supplied values
+    let xAxisPositionSet = false; // for whether user supplied values
+    let xTitlePositionSet = false; // for whether user supplied values
+    let yAxisPositionSet = false;
+    let yTitlePositionSet = false;
     // set defaul values so no need to feed options in a way none or all
     options.xAxisPosition ? xAxisPositionSet = true : options.xAxisPosition = ['bottom'];  // for none or both xAxisPosition = [], yAxisPosition = ['left', 'right']
-    options.yAxisPosition ? true : options.yAxisPosition = ['left'];
-    options.xTitlePosition ? true : options.xTitlePosition = ['bottom'];
-    options.yTitlePosition ? true : options.yTitlePosition = ['left'];
-    options.yTitle ? true : options.yTitle = '';             // for grouped figures where y title can not acuqired from data
+    options.yAxisPosition ? yAxisPositionSet = true : options.yAxisPosition = ['left'];
+    options.xTitlePosition ? xTitlePositionSet = true : options.xTitlePosition = ['bottom'];
+    options.yTitlePosition ? yTitlePositionSet = true : options.yTitlePosition = ['left'];
+    options.xTitle ? true : options.xTitle = false;             // for user specified x title
+    options.yTitle ? true : options.yTitle = false;             // for user sepcified y title
     options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
     options.xTitleFont ? true : options.xTitleFont = '14px sans-serif';
@@ -145,14 +151,16 @@ class BaseSimpleGroupAxis {
     options.tickInward ? true : options.tickInward = [];
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
-    options.gridColor ? true : options.gridColor = '';
-    options.gridDashArray ? true : options.gridDashArray = '';
-    options.gridStrokeWidth ? true : options.gridStrokeWidth = 0;
+    options.xGridColor ? true : options.xGridColor = '';
+    options.xGridDashArray ? true : options.xGridDashArray = '';
+    options.xGridStrokeWidth ? true : options.xGridStrokeWidth = 0;
+    options.yGridColor ? true : options.yGridColor = '';
+    options.yGridDashArray ? true : options.yGridDashArray = '';
+    options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
     options.line0 === false ? true : options.line0 = true;
     options.line0Stroke ? true : options.line0Stroke = 'black';
     options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
     options.line0DashArray ? true : options.line0DashArray = '';
-
 
     function makeError(msg) {
       throw new Error(msg)
@@ -173,7 +181,7 @@ class BaseSimpleGroupAxis {
     validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
 
     function validateString(stringToBe, errorString) {
-      typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an array!`) : true;
+      typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
 
     validateString(options.xAxisFont, 'xAxisFont');
@@ -181,8 +189,11 @@ class BaseSimpleGroupAxis {
     validateString(options.xTitleFont, 'xTitleFont');
     validateString(options.yTitleFont, 'yTitleFont');
 
-    validateString(options.gridColor, 'gridColor');
-    validateString(options.gridDashArray, 'gridDashArray');
+    validateString(options.xGridColor, 'xGridColor');
+    validateString(options.xGridDashArray, 'xGridDashArray');
+    validateString(options.yGridColor, 'yGridColor');
+    validateString(options.yGridDashArray, 'yGridDashArray');
+
 
     validateString(options.line0Stroke, 'line0Stroke');
     validateString(options.line0DashArray, 'line0DashArray');
@@ -194,11 +205,15 @@ class BaseSimpleGroupAxis {
     (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
     (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
 
-    typeof options.gridStrokeWidth !== 'number' ? makeError('Option gridStrokeWidth needs to be a number!') : true;
+    typeof options.xGridStrokeWidth !== 'number' ? makeError('Option xGridStrokeWidth needs to be a number!') : true;
+    typeof options.yGridStrokeWidth !== 'number' ? makeError('Option yGridStrokeWidth needs to be a number!') : true;
 
     (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
 
     (typeof options.line0StrokeWidth !== 'string' && typeof options.line0StrokeWidth !== 'number') ? makeError('Option line0StrokeWidth needs to be a string or number!') : true;
+
+    (typeof options.xTitle !== 'string' && options.xTitle) ? makeError('Option xTitle needs to be a string or not specified!') : true;
+    (typeof options.yTitle !== 'string' && options.yTitle) ? makeError('Option yTitle needs to be a string or not specified!') : true;
 
     let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
 
@@ -279,6 +294,7 @@ class BaseSimpleGroupAxis {
     let yAxisPosition = options.yAxisPosition;
     let xTitlePosition = options.xTitlePosition;
     let yTitlePosition = options.yTitlePosition;
+    let xTitle = options.xTitle;
     let yTitle = options.yTitle;
     let xAxisFont = options.xAxisFont;
     let yAxisFont = options.yAxisFont;
@@ -290,20 +306,25 @@ class BaseSimpleGroupAxis {
     let tickInward = options.tickInward;
     let tickLabelRemove = options.tickLabelRemove;
     let axisLongLineRemove = options.axisLongLineRemove;
-    let gridColor = options.gridColor;
-    let gridDashArray = options.gridDashArray;
-    let gridStrokeWidth = options.gridStrokeWidth;
+    let xGridColor = options.xGridColor;
+    let xGridDashArray = options.xGridDashArray;
+    let xGridStrokeWidth = options.xGridStrokeWidth;
+    let yGridColor = options.yGridColor;
+    let yGridDashArray = options.yGridDashArray;
+    let yGridStrokeWidth = options.yGridStrokeWidth;
+
     let line0 = options.line0;
 
     let line0Stroke = options.line0Stroke;
     let line0StrokeWidth = options.line0StrokeWidth;
     let line0DashArray = options.line0DashArray;
 
+    return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
+      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove,
+      xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
+      yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
+      line0StrokeWidth, line0DashArray]
 
-    return [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor,
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]
   }
 
   /**
@@ -367,11 +388,39 @@ class BaseSimpleGroupAxis {
     return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
   }
 
-  _drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName,
-    xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
-    xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor,
-    yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
-    yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]) {
+  _drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, horizontal,
+    xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
+    xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove,
+    xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
+    yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
+    line0StrokeWidth, line0DashArray]) {
+
+
+    if (!xAxisPositionSet && !horizontal) {
+      // set default x axis to top if y max is 0
+      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+    }
+
+    if (!yAxisPositionSet && horizontal) {
+      if (yMax == 0 && yAxisPosition.length == 1 && yAxisPosition[0] == 'left') yAxisPosition = ['right'];
+    }
+
+    if (!xTitlePositionSet && !horizontal) {
+      // set default x axisTitle to top if y max is 0
+      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+    }
+
+    if (!yTitlePositionSet && horizontal) {
+      if (yMax == 0 && yTitlePosition.length == 1 && yTitlePosition[0] == 'left') yTitlePosition = ['right'];
+    }
+
+    // add line at y = 0 when there is negative data
+    let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))))
+
+    // if user specified xTitle
+    if (!xTitle) xTitle = xDataName;
+    // if user specified yTitle
+    if (!yTitle) yTitle = yDataName;
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -424,7 +473,7 @@ class BaseSimpleGroupAxis {
         .attr("text-anchor", "middle")  // transform is applied to the middle anchor
         .attr("dominant-baseline", xTitlePosition[i] == 'top' ? "baseline" : "hanging")   //text vertical reference point
         .attr("transform", `translate(${innerWidth / 2}, ${xTitlePosition[i] == 'top' ? -frameTop : innerHeight + frameBottom})`)  // centre at margin bottom/top
-        .text(xDataName);
+        .text(xTitle);
     }
 
     //y axis
@@ -474,15 +523,15 @@ class BaseSimpleGroupAxis {
         .attr("text-anchor", "middle")  // transform is applied to the middle anchor
         .attr("dominant-baseline", yTitlePosition[i] == 'right' ? "hanging" : "baseline")   //text vertical reference point
         .attr("transform", `translate(${yTitlePosition[i] == 'right' ? innerWidth + frameRight : -frameLeft}, ${innerHeight / 2}) rotate(-90)`)  // centre at margin left/right
-        .text(yDataName);
+        .text(yTitle);
     }
 
     if (drawLine0) {
       svg.append("line")
-        .attr("x1", 0)
-        .attr("y1", yScale(0) + 0.5)
-        .attr("x2", innerWidth)
-        .attr("y2", yScale(0))
+        .attr("x1", horizontal ? xScale(0) + 0.5 : 0)
+        .attr("y1", horizontal ? 0 : yScale(0) + 0.5)   // +0.5 to line up with tick
+        .attr("x2", horizontal ? xScale(0) + 0.5 : innerWidth)
+        .attr("y2", horizontal ? innerHeight : yScale(0) + 0.5)
         .style('stroke', line0Stroke)
         .style('stroke-width', line0StrokeWidth)
         .style("stroke-dasharray", line0DashArray);
@@ -491,9 +540,9 @@ class BaseSimpleGroupAxis {
 
     // add x gridlines
     svg.append("g")
-      .style("color", gridColor)
-      .style("stroke-dasharray", gridDashArray)
-      .style("stroke-width", gridStrokeWidth)
+      .style("color", xGridColor)
+      .style("stroke-dasharray", xGridDashArray)
+      .style("stroke-width", xGridStrokeWidth)
       .attr('transform', `translate(0, ${innerHeight})`)
       .call(d3.axisBottom(xScale)
         .ticks(xTicks)
@@ -505,9 +554,9 @@ class BaseSimpleGroupAxis {
 
     // add y gridlines
     svg.append("g")
-      .style("color", gridColor)
-      .style("stroke-dasharray", gridDashArray)
-      .style("stroke-width", gridStrokeWidth)
+      .style("color", yGridColor)
+      .style("stroke-dasharray", yGridDashArray)
+      .style("stroke-width", yGridStrokeWidth)
       .call(d3.axisLeft(yScale)
         .ticks(yTicks)
         .tickSize(-innerWidth)

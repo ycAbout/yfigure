@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), line0 x y axis, gridxy color break down, tickInward to tickSize, background color, commerical copyright, error bar, vertical bar, line hover, stack line
+//to do, each bar each color(maybe group bar with 1 group?), tickInward to tickSize, background color, commerical copyright, error bar, vertical his line?, line hover, stack line
 
 
 /**
@@ -23,10 +23,13 @@ class Bar extends BaseSimpleGroupAxis {
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.barPadding ? true : this._options.barPadding = 0.1;
     this._options.stacked === true ? true : this._options.stacked = false;
+    this._options.horizontal === true ? true : this._options.horizontal = false;
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.barPadding !== 'number') { throw new Error('Option barPadding need to be a number!') }
+    if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
+    if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -41,22 +44,17 @@ class Bar extends BaseSimpleGroupAxis {
     let colors = options.colors;
     let barPadding = options.barPadding;
     let stacked = options.stacked;
+    let horizontal = options.horizontal;
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
+    let axisOptionArray = this._getAxisOption(options);
 
     // set data parameters
     let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
-
-    // if user specified yTitle
-    if (yTitle !== '') yDataName = yTitle;
 
     // make data plot approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * 0.1;
@@ -78,7 +76,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     let xScale = d3.scaleBand()
       .domain(dataValue.map((element) => element[xDataIndex]))
-      .range([0, innerWidth])
+      .range([0, horizontal ? innerHeight : innerWidth])
       .padding(barPadding);
 
     let xSubScale = d3.scaleBand()
@@ -88,7 +86,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     let yScale = d3.scaleLinear()
       .domain([yMin, yMax])
-      .range([innerHeight, 0]);
+      .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
     //colors for difference lines
     let colorScale = d3.scaleOrdinal()
@@ -116,25 +114,47 @@ class Bar extends BaseSimpleGroupAxis {
         .selectAll('rect')
         .data(dataValue)
         .join('rect')
-        .attr("transform", element => `translate(${xScale(element[xDataIndex])}, 0)`)
-        .attr('x', stacked ? xSubScale('stack') : xSubScale(yDataNames[i]))
-        .attr('width', xSubScale.bandwidth())
-        .attr('y', (element, index) => {
-          if (stacked) {
-            let baseline;
-            if (element[i + 1] >= 0) {
-              baseline = lastPositive[index];
-              lastPositive[index] += element[i + 1];    //update
+        .attr("transform", element => horizontal ? `translate(0, ${xScale(element[xDataIndex])})` : `translate(${xScale(element[xDataIndex])}, 0)`)
+        .attr('x', (element, index) => {
+          if (horizontal) {   // horizontal bar chart
+            if (stacked) {
+              let baseline;
+              if (element[i + 1] >= 0) {
+                baseline = lastPositive[index];
+                lastPositive[index] += element[i + 1];    //update
+              } else {
+                baseline = lastNegative[index];
+                lastNegative[index] += element[i + 1];
+              }
+              return yScale(Math.min(baseline + element[i + 1], baseline));
             } else {
-              baseline = lastNegative[index];
-              lastNegative[index] += element[i + 1];
+              return yScale(Math.min(element[i + 1], 0))
             }
-            return yScale(Math.max(baseline + element[i + 1], baseline));
           } else {
-            return yScale(Math.max(element[i + 1], 0))
+            return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
           }
-        })       // if negative, use y(0) as starting point
-        .attr('height', element => Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0)
+        })
+        .attr('width', element => horizontal ? Math.abs(yScale(element[i + 1]) - yScale(0)) : xSubScale.bandwidth())
+        .attr('y', (element, index) => {
+          if (horizontal) {   // horizontal bar chart
+            return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
+          } else {
+            if (stacked) {
+              let baseline;
+              if (element[i + 1] >= 0) {
+                baseline = lastPositive[index];
+                lastPositive[index] += element[i + 1];    //update
+              } else {
+                baseline = lastNegative[index];
+                lastNegative[index] += element[i + 1];
+              }
+              return yScale(Math.max(baseline + element[i + 1], baseline));
+            } else {
+              return yScale(Math.max(element[i + 1], 0))   // if negative, use y(0) as starting point
+            }
+          }
+        })
+        .attr('height', element => horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0) 
         .attr('fill', element => {
           if (yDataNames.length == 1) {
             return element[i + 1] > 0 ? colors[0] : colors[1]       //only one y, positive vs. negative
@@ -186,20 +206,25 @@ class Bar extends BaseSimpleGroupAxis {
       }
     }
 
-    if (!xAxisPositionSet) {
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+    if (horizontal) {    // switch xScale and yScale to make axis
+      let middleMan = xScale;
+      xScale = yScale;
+      yScale = middleMan;
+
+      middleMan = xDataName;
+      xDataName = yDataName;
+      yDataName = middleMan;
+
     }
 
-    // add line at y = 0 when there is negative data
-    let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || (yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top'))))
-    this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-      xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-      xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
+    //this._drawAxis(...[svg, xScale, yScale, yMin, yMax, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft,
+    //  xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, xTitlePositionSet, yTitlePosition, xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate,
+    //  xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor,
+    //  yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth,
+    //  yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
+
+    this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+      frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     return id;
   }

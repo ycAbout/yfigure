@@ -41,16 +41,10 @@ class Scatter extends BaseSimpleGroupAxis {
       innerWidth, innerHeight, location, id] = this._getCommonOption(options);
 
     // set all the axis options
-    let [xAxisPosition, xAxisPositionSet, yAxisPosition, xTitlePosition, yTitlePosition, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont,
-      xTickLabelRotate, xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, line0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray] = this._getAxisOption(options);
+    let axisOptionArray = this._getAxisOption(options);
 
     // set data parameters
     let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
-
-    // if user specified yTitle
-    if (yTitle !== '') yDataName = yTitle;
 
     // make highest number approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * 0.1;  //10% of data range
@@ -147,23 +141,9 @@ class Scatter extends BaseSimpleGroupAxis {
         legendx += yDataNames[i].length * 8 + 18;
       }
     }
-
-    // default x Axis position
-    if (!xAxisPositionSet) {
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
-      // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
-    }
-
-    // add line at y = 0 when there is negative data
-    let drawLine0 = (line0 && ((yMin < 0 && yMax > 0) || ((yMin == 0 && !xAxisPosition.includes('bottom')) || (yMax == 0 && !xAxisPosition.includes('top')))))
-
-    this._drawAxis(...[svg, xScale, yScale, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, xDataName, yDataName, 
-      xAxisPosition, yAxisPosition, xTitlePosition, yTitlePosition, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, 
-      xTicks, yTicks, tickInward, tickLabelRemove, axisLongLineRemove, gridColor, gridDashArray, gridStrokeWidth, drawLine0, xAxisColor, 
-      yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, 
-      yTickStrokeWidth, line0Stroke, line0StrokeWidth, line0DashArray]);
+    let horizontal = false;
+    this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+      frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     return id;
 
