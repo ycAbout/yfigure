@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, line hover, stack line
+//to do, each bar each color(maybe group bar with 1 group?), value =0,background multiple color, figure legend(horizontal), area, pie chart commerical copyright, error bar, line hover, stack line, additional y
 
 
 /**
@@ -14,21 +14,35 @@ class Bar extends BaseSimpleGroupAxis {
    *                              common option key values pairs
    *                              graph specific key value pairs:
    *                                `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
-   *                                `barPadding: 0.1` Sets bar paddings between the bar, or bar group
    */
   constructor(data, options = {}) {
     super(data, options);
 
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-    this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.03;
+    this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
     this._options.stacked === true ? true : this._options.stacked = false;
     this._options.horizontal === true ? true : this._options.horizontal = false;
+
+    this._options.legendX ? true: options.legendX = 0.18;
+    this._options.legendY ? true: options.legendY = 0.02;
+    this._options.legendWidth ? true: options.legendWidth = 240;
+    this._options.legendFont ? true: options.legendFont = '10px sans-serif';
 
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
+
+    function validateNumStr(numStrToBe, errorString) {
+      (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+    }
+    validateNumStr(options.legendX, 'legendX');
+    validateNumStr(options.legendY, 'legendY');
+    validateNumStr(options.legendWidth, 'legendWidth');
+
+    typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
+
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -44,6 +58,11 @@ class Bar extends BaseSimpleGroupAxis {
     let withinGroupPadding = options.withinGroupPadding
     let stacked = options.stacked;
     let horizontal = options.horizontal;
+
+    let legendX = parseFloat(options.legendX);
+    let legendY = parseFloat(options.legendY);
+    let legendWidth = parseFloat(options.legendWidth);
+    let legendFont = options.legendFont;
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -98,8 +117,8 @@ class Bar extends BaseSimpleGroupAxis {
       .range(colors);
 
     // initialize legend position
-    let legendx = 8;
-    let legendy = 8;
+    let legendx = legendX * width;
+    let legendy = legendY * height;
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
@@ -182,31 +201,48 @@ class Bar extends BaseSimpleGroupAxis {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
+      // Add legend
       if (yDataNames.length > 1) {
-        // Add legend
-        // if add current legend spill over innerWidth
-        if (legendx + yDataNames[i].length * 8 + 12 > innerWidth) {
-          legendy += 16;    // start a new line
-          legendx = 8;
-        }
+        let legend = svg
+          .append("g")
+          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
-        svg
+        let legendText = legend
+          .append('text')
+          .style('font', legendFont)
+          .attr("transform", `translate(${legendx + 12}, ${legendy})`)
+          .attr("dy", "0.8em")
+          .attr('fill', colorScale(yDataNames[i]))
+          .text(yDataNames[i]);
+
+        let textWidth = legendText.node().getBBox().width;
+        let textHeight = legendText.node().getBBox().height;
+
+        legend
           .append("rect")
-          .attr("x", legendx)
-          .attr("y", legendy)
+          .attr("transform", `translate(${legendx}, ${legendy + (textHeight-12)/2})`)
           .attr("width", 8)
           .attr("height", 8)
           .attr("fill", colorScale(yDataNames[i]));
 
-        svg
-          .append('text')
-          .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-          .attr("transform", "translate(" + (legendx + 12) + "," + (legendy + 4) + ")")  // evenly across inner width, at margin top 2/3
-          .attr('fill', colorScale(yDataNames[i]))
-          .text(yDataNames[i]);
-
         // set up next legend x and y
-        legendx += yDataNames[i].length * 8 + 20;
+        legendx += 12 + textWidth + 8;
+
+        // if there is another
+        if (i + 1 < yDataNames.length) {
+          //test bbox for next one
+          let nextLegendText = legend
+            .append('text')
+            .text(yDataNames[i + 1]);
+          let nextTextWidth = nextLegendText.node().getBBox().width;
+          nextLegendText.remove();
+
+          // if add next legend spill over innerWidth
+          if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
+            legendy += textHeight;    // start a new line
+            legendx = legendX * width;
+          }
+        }
       }
     }
 

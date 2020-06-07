@@ -38,7 +38,6 @@ class LineDot extends BaseSimpleGroupAxis {
 
     let colors = options.colors;
     let dotRadius = options.dotRadius;
-    let linePadding = options.linePadding;
     let horizontal = options.horizontal;
 
     // set all the common options
@@ -65,6 +64,7 @@ class LineDot extends BaseSimpleGroupAxis {
       .attr('id', id)
       .attr('width', width)
       .attr('height', height)
+      .style('background-color', backgroundColor)
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 

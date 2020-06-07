@@ -33,10 +33,10 @@ class BaseSimpleGroupAxis {
     options.backgroundColor ? true : options.backgroundColor = '';
 
     options.title ? true : options.title = '';
-    options.titleFont ? true : options.titleFont = '16px sans-serif';
+    options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
     options.titleColor ? true : options.titleColor = 'black';
     options.titleX ? true : options.titleX = 0.5;   // 0 - 1
-    options.titleY ? true : options.titleY = 0;   // 0 - 1
+    options.titleY ? true : options.titleY = 0.02;   // 0 - 1
     options.titleRotate ? true : options.titleRotate = 0;
 
     function makeError(msg) {

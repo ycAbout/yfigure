@@ -65,6 +65,7 @@ class Scatter extends BaseSimpleGroupAxis {
       .attr('id', id)
       .attr('width', width)
       .attr('height', height)
+      .style('background-color', backgroundColor)
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 

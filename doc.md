@@ -13,6 +13,7 @@ common options:
   `frameBottom: 25` Sets inside frame
   `location: 'body'` Sets the html location where to put the graph   // for id, use `location: '#<ID>'`
   `id: 'graph123456'`.  Sets the id of graph
+  `backgroundColor: ''` Sets the background color of the figure
   `title: ''` Sets figure title
   `titleFont: '20px sans-serif'` Sets figure title properties
   `titleColor: 'black'` Sets figure title properties

@@ -83,6 +83,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       .append('svg')
       .attr('width', width)
       .attr('height', height)
+      .style('background-color', backgroundColor)
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
@@ -183,7 +184,7 @@ class SortableBar extends BaseSimpleGroupAxis {
     draw(dataValue, svg, 'default');
 
     selection
-      .on('change', function () {
+      .on('change', () => {
         draw(dataValue, svg, this.value)
       });
 

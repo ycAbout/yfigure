@@ -52,10 +52,10 @@ var yd3 = (function (exports, d3) {
       options.backgroundColor ? true : options.backgroundColor = '';
 
       options.title ? true : options.title = '';
-      options.titleFont ? true : options.titleFont = '16px sans-serif';
+      options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
       options.titleColor ? true : options.titleColor = 'black';
       options.titleX ? true : options.titleX = 0.5;   // 0 - 1
-      options.titleY ? true : options.titleY = 0;   // 0 - 1
+      options.titleY ? true : options.titleY = 0.02;   // 0 - 1
       options.titleRotate ? true : options.titleRotate = 0;
 
       function makeError(msg) {
@@ -662,7 +662,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), background color, commerical copyright, error bar, line hover, stack line
+  //to do, each bar each color(maybe group bar with 1 group?), background multiple color, figure legend, area, pie chart commerical copyright, error bar, line hover, stack line
 
 
   /**
@@ -682,7 +682,7 @@ var yd3 = (function (exports, d3) {
 
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
-      this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.03;
+      this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
@@ -705,6 +705,12 @@ var yd3 = (function (exports, d3) {
       let withinGroupPadding = options.withinGroupPadding;
       let stacked = options.stacked;
       let horizontal = options.horizontal;
+
+      // initialize legend position
+      let legendX = 0.5;
+      let legendY = 0.96;
+      let legendWidth = 200;
+      let legendFont = '10px arial';
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -759,8 +765,8 @@ var yd3 = (function (exports, d3) {
         .range(colors);
 
       // initialize legend position
-      let legendx = 8;
-      let legendy = 8;
+      let legendx = legendX * width;
+      let legendy = legendY * height;
 
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
       let dataPointDisplayId = this._setDataPoint();
@@ -843,31 +849,48 @@ var yd3 = (function (exports, d3) {
           })
           .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
+        // Add legend
         if (yDataNames.length > 1) {
-          // Add legend
-          // if add current legend spill over innerWidth
-          if (legendx + yDataNames[i].length * 8 + 12 > innerWidth) {
-            legendy += 16;    // start a new line
-            legendx = 8;
-          }
+          let legend = svg
+            .append("g")
+            .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
-          svg
+          let legendText = legend
+            .append('text')
+            .style('font', legendFont)
+            .attr("transform", `translate(${legendx + 12}, ${legendy})`)
+            .attr("dy", "0.8em")
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i]);
+
+          let textWidth = legendText.node().getBBox().width;
+          let textHeight = legendText.node().getBBox().height;
+
+          legend
             .append("rect")
-            .attr("x", legendx)
-            .attr("y", legendy)
+            .attr("transform", `translate(${legendx}, ${legendy + (textHeight-12)/2})`)
             .attr("width", 8)
             .attr("height", 8)
             .attr("fill", colorScale(yDataNames[i]));
 
-          svg
-            .append('text')
-            .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-            .attr("transform", "translate(" + (legendx + 12) + "," + (legendy + 4) + ")")  // evenly across inner width, at margin top 2/3
-            .attr('fill', colorScale(yDataNames[i]))
-            .text(yDataNames[i]);
-
           // set up next legend x and y
-          legendx += yDataNames[i].length * 8 + 20;
+          legendx += 12 + textWidth + 8;
+
+          // if there is another
+          if (i + 1 < yDataNames.length) {
+            //test bbox for next one
+            let nextLegendText = legend
+              .append('text')
+              .text(yDataNames[i + 1]);
+            let nextTextWidth = nextLegendText.node().getBBox().width;
+            nextLegendText.remove();
+
+            // if add next legend spill over innerWidth
+            if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
+              legendy += textHeight;    // start a new line
+              legendx = legendX * width;
+            }
+          }
         }
       }
 
@@ -1556,7 +1579,7 @@ var yd3 = (function (exports, d3) {
       draw(dataValue, svg, 'default');
 
       selection
-        .on('change', function () {
+        .on('change', () => {
           draw(dataValue, svg, this.value);
         });
 
