@@ -1,7 +1,8 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), value =0,background multiple color, figure legend(horizontal), area, pie chart commerical copyright, error bar, line hover, stack line, additional y
+//to do, each bar each color(maybe group bar with 1 group?), 
+//number value = 0, background multiple color, figure legend(horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
 
 /**
@@ -19,7 +20,6 @@ class Bar extends BaseSimpleGroupAxis {
     super(data, options);
 
     //set up graph specific option
-    this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
     this._options.stacked === true ? true : this._options.stacked = false;
     this._options.horizontal === true ? true : this._options.horizontal = false;
@@ -30,7 +30,6 @@ class Bar extends BaseSimpleGroupAxis {
     this._options.legendFont ? true: options.legendFont = '10px sans-serif';
 
     //validate format
-    if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -54,7 +53,6 @@ class Bar extends BaseSimpleGroupAxis {
 */
   _draw(data, options) {
 
-    let colors = options.colors;
     let withinGroupPadding = options.withinGroupPadding
     let stacked = options.stacked;
     let horizontal = options.horizontal;
@@ -66,7 +64,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+      innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);

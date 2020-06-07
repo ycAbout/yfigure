@@ -49,8 +49,8 @@ var yd3 = (function (exports, d3) {
       options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
       options.width ? true : options.width = 400;
       options.height ? true : options.height = 300;
+      options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       options.backgroundColor ? true : options.backgroundColor = '';
-
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
       options.titleColor ? true : options.titleColor = 'black';
@@ -88,10 +88,13 @@ var yd3 = (function (exports, d3) {
       !(parseInt(options.titleX) <= 1 && parseInt(options.titleX) >= 0) ? makeError('Option titleX needs to be between 0 to 1!') : true;
       !(parseInt(options.titleY) <= 1 && parseInt(options.titleY) >= 0) ? makeError('Option titleY needs to be between 0 to 1!') : true;
 
+      !Array.isArray(options.colors) ? makeError(`Option colors needs to be an array!`) : true;
+
       let location = options.location;
       let id = options.id;
       let width = parseInt(options.width);
       let height = parseInt(options.height);
+      let colors = options.colors;
       let backgroundColor = options.backgroundColor;
 
       let title = options.title;
@@ -164,7 +167,7 @@ var yd3 = (function (exports, d3) {
       let innerHeight = height - marginTop - marginBottom - frameTop - frameBottom;
 
       return [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
     }
 
 
@@ -662,7 +665,8 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), value =0,background multiple color, figure legend(horizontal), area, pie chart commerical copyright, error bar, line hover, stack line, additional y
+  //to do, each bar each color(maybe group bar with 1 group?), 
+  //number value = 0, background multiple color, figure legend(horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
 
   /**
@@ -680,7 +684,6 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.colors ? true : this._options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
@@ -691,7 +694,6 @@ var yd3 = (function (exports, d3) {
       this._options.legendFont ? true: options.legendFont = '10px sans-serif';
 
       //validate format
-      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -715,7 +717,6 @@ var yd3 = (function (exports, d3) {
   */
     _draw(data, options) {
 
-      let colors = options.colors;
       let withinGroupPadding = options.withinGroupPadding;
       let stacked = options.stacked;
       let horizontal = options.horizontal;
@@ -727,7 +728,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -945,12 +946,10 @@ var yd3 = (function (exports, d3) {
       super(data, options);
       //set up graph specific option
       this._options.nBins ? true : this._options.nBins = 50;
-      this._options.color ? true : this._options.color = 'steelblue';
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
       if (typeof this._options.nBins !== 'number') { throw new Error('Option nBins need to be an array object!') }
-      if (typeof this._options.color !== 'string') { throw new Error('Option color need to be a string!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
       this._validate2dArray(this._data);
@@ -964,17 +963,17 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
 
       let xPadding = options.xPadding;
       let yPadding = options.yPadding;
-
       let nBins = options.nBins;
-      let color = options.color;
       let horizontal = options.horizontal;
+
+      let color = colors[0];
 
       let xDataName = data[0][0];
       let xDataIndex = 0;
@@ -1090,7 +1089,6 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
@@ -1100,7 +1098,6 @@ var yd3 = (function (exports, d3) {
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
       //validate format
-      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -1123,7 +1120,6 @@ var yd3 = (function (exports, d3) {
      */
     _draw(data, options) {
 
-      let colors = options.colors;
       let dotRadius = options.dotRadius;
       let horizontal = options.horizontal;
 
@@ -1134,7 +1130,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -1311,7 +1307,6 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       this._options.legendX ? true : options.legendX = 0.18;
       this._options.legendY ? true : options.legendY = 0.18;
@@ -1319,7 +1314,6 @@ var yd3 = (function (exports, d3) {
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
       //validate format
-      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
 
       function validateNumStr(numStrToBe, errorString) {
@@ -1341,7 +1335,6 @@ var yd3 = (function (exports, d3) {
      */
     _draw(data, options) {
 
-      let colors = options.colors;
       let dotRadius = options.dotRadius;
 
       let legendX = parseFloat(options.legendX);
@@ -1352,7 +1345,7 @@ var yd3 = (function (exports, d3) {
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);
@@ -1503,11 +1496,9 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.colors ? true : this._options.colors = ['steelblue', '#CC2529'];
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       //validate format
-      if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
       this._validate2dArray(this._data);
@@ -1520,12 +1511,11 @@ var yd3 = (function (exports, d3) {
      */
     _draw(data, options) {
 
-      let colors = options.colors;
       let horizontal = options.horizontal;
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-        innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+        innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
       // set all the axis options
       let axisOptionArray = this._getAxisOption(options);

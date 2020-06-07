@@ -17,7 +17,6 @@ class LineDot extends BaseSimpleGroupAxis {
     super(data, options);
 
     //set up graph specific option
-    this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.dotRadius ? true : this._options.dotRadius = 4;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
@@ -27,7 +26,6 @@ class LineDot extends BaseSimpleGroupAxis {
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
     //validate format
-    if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
@@ -50,7 +48,6 @@ class LineDot extends BaseSimpleGroupAxis {
    */
   _draw(data, options) {
 
-    let colors = options.colors;
     let dotRadius = options.dotRadius;
     let horizontal = options.horizontal;
 
@@ -61,7 +58,7 @@ class LineDot extends BaseSimpleGroupAxis {
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
+      innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate] = this._getCommonOption(options);
 
     // set all the axis options
     let axisOptionArray = this._getAxisOption(options);

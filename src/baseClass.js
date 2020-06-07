@@ -30,8 +30,8 @@ class BaseSimpleGroupAxis {
     options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
     options.width ? true : options.width = 400;
     options.height ? true : options.height = 300;
+    options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.backgroundColor ? true : options.backgroundColor = '';
-
     options.title ? true : options.title = '';
     options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
     options.titleColor ? true : options.titleColor = 'black';
@@ -69,10 +69,13 @@ class BaseSimpleGroupAxis {
     !(parseInt(options.titleX) <= 1 && parseInt(options.titleX) >= 0) ? makeError('Option titleX needs to be between 0 to 1!') : true;
     !(parseInt(options.titleY) <= 1 && parseInt(options.titleY) >= 0) ? makeError('Option titleY needs to be between 0 to 1!') : true;
 
+    !Array.isArray(options.colors) ? makeError(`Option colors needs to be an array!`) : true;
+
     let location = options.location;
     let id = options.id;
     let width = parseInt(options.width);
     let height = parseInt(options.height);
+    let colors = options.colors;
     let backgroundColor = options.backgroundColor;
 
     let title = options.title;
@@ -145,7 +148,7 @@ class BaseSimpleGroupAxis {
     let innerHeight = height - marginTop - marginBottom - frameTop - frameBottom;
 
     return [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
-      innerWidth, innerHeight, location, id, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
+      innerWidth, innerHeight, location, id, colors, backgroundColor, title, titleFont, titleColor, titleX, titleY, titleRotate]
   }
 
 
