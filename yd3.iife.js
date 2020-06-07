@@ -401,6 +401,8 @@ var yd3 = (function (exports, d3) {
       //more than one y data columns
       let yDataNames = data[0].slice(1);
 
+      const yDataNamesOriginal = JSON.parse(JSON.stringify(yDataNames));
+
       let yDataName = (yDataNames.length == 1 ? data[0][1] : '');
 
       // get ride of column name, does not modify origin array
@@ -417,6 +419,7 @@ var yd3 = (function (exports, d3) {
       let dataMax = d3.max(maxYArray);
       let dataMin = d3.min(minYArray);
 
+      // for stacked bar chart
       function sumArray(numberArray) {
         let sumNegative = 0;
         let sumPostive = 0;
@@ -435,7 +438,7 @@ var yd3 = (function (exports, d3) {
       let dataMaxSum = sumArray(maxYArray)[0];
       let dataMinSum = sumArray(minYArray)[1];
 
-      return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
+      return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
     }
 
     /**
@@ -743,7 +746,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
 
       // make data plot approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
@@ -764,6 +767,11 @@ var yd3 = (function (exports, d3) {
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
+      //colors for difference lines
+      let colorScale = d3.scaleOrdinal()
+        .domain(yDataNamesOriginal)
+        .range(colors);
+        
       let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, horizontal ? innerHeight : innerWidth])
@@ -778,10 +786,6 @@ var yd3 = (function (exports, d3) {
         .domain([yMin, yMax])
         .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
-      //colors for difference lines
-      let colorScale = d3.scaleOrdinal()
-        .domain(yDataNames)
-        .range(colors);
 
       // initialize legend position
       let legendx = legendX * width;
@@ -790,6 +794,7 @@ var yd3 = (function (exports, d3) {
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
       let dataPointDisplayId = this._setDataPoint();
 
+      // for stacked graph
       let lastPositive = [];
       let lastNegative = [];
       lastPositive.length = lastNegative.length = dataValue.length;
@@ -869,9 +874,9 @@ var yd3 = (function (exports, d3) {
       }
 
       // Add legend
-      if (yDataNames.length > 1) {
+      if (yDataNamesOriginal.length > 1) {
         // draw each y legend
-        for (let i = 0; i < yDataNames.length; i++) {
+        for (let i = 0; i < yDataNamesOriginal.length; i++) {
           let legend = svg
             .append("g")
             .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -881,8 +886,8 @@ var yd3 = (function (exports, d3) {
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 12}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNames[i]))
-            .text(yDataNames[i]);
+            .attr('fill', colorScale(yDataNamesOriginal[i]))
+            .text(yDataNamesOriginal[i]);
 
           let textWidth = legendText.node().getBBox().width;
           let textHeight = legendText.node().getBBox().height;
@@ -892,17 +897,17 @@ var yd3 = (function (exports, d3) {
             .attr("transform", `translate(${legendx}, ${legendy + (textHeight - 12) / 2})`)
             .attr("width", 8)
             .attr("height", 8)
-            .attr("fill", colorScale(yDataNames[i]));
+            .attr("fill", colorScale(yDataNamesOriginal[i]));
 
           // set up next legend x and y
           legendx += 12 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNames.length) {
+          if (i + 1 < yDataNamesOriginal.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNames[i + 1]);
+              .text(yDataNamesOriginal[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 
@@ -1145,7 +1150,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);  //10% of data range
@@ -1162,6 +1167,11 @@ var yd3 = (function (exports, d3) {
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
+      //colors for difference lines
+      let colorScale = d3.scaleOrdinal()
+        .domain(yDataNamesOriginal)
+        .range(colors);
+
       //scalePoint can use padding but not scaleOrdinal
       let xScale = d3.scalePoint()
         .domain(dataValue.map((element) => element[xDataIndex]))
@@ -1172,11 +1182,6 @@ var yd3 = (function (exports, d3) {
         .domain([yMin, yMax])  // data points off axis
         .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
-
-      //colors for difference lines
-      let colorScale = d3.scaleOrdinal()
-        .domain(yDataNames)
-        .range(colors);
 
       // initialize legend position
       let legendx = legendX * width;
@@ -1226,9 +1231,9 @@ var yd3 = (function (exports, d3) {
       }
 
       // Add legend
-      if (yDataNames.length > 1) {
+      if (yDataNamesOriginal.length > 1) {
         // draw each y legend
-        for (let i = 0; i < yDataNames.length; i++) {
+        for (let i = 0; i < yDataNamesOriginal.length; i++) {
           let legend = svg
             .append("g")
             .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -1238,15 +1243,15 @@ var yd3 = (function (exports, d3) {
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 24}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNames[i]))
-            .text(yDataNames[i]);
+            .attr('fill', colorScale(yDataNamesOriginal[i]))
+            .text(yDataNamesOriginal[i]);
 
           let textWidth = legendText.node().getBBox().width;
           let textHeight = legendText.node().getBBox().height;
 
           legend
             .append('path')
-            .attr("stroke", colorScale(yDataNames[i]))
+            .attr("stroke", colorScale(yDataNamesOriginal[i]))
             .attr("stroke-width", 2)
             .attr("d", d3.line()([[legendx, legendy + 4 + (textHeight - 12) / 2], [legendx + 20, legendy + 4 + (textHeight - 12) / 2]]));
 
@@ -1256,17 +1261,17 @@ var yd3 = (function (exports, d3) {
             .append("circle")
             .attr("transform", `translate(${legendx + 10}, ${legendy + 4 + (textHeight - 12) / 2})`)
             .attr("r", legendDotRadius)
-            .attr("fill", colorScale(yDataNames[i]));
+            .attr("fill", colorScale(yDataNamesOriginal[i]));
 
           // set up next legend x and y
           legendx += 24 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNames.length) {
+          if (i + 1 < yDataNamesOriginal.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNames[i + 1]);
+              .text(yDataNamesOriginal[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 
@@ -1363,7 +1368,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
       // make highest number approximately 10% range off the range
       let ySetback = (dataMax - dataMin) * yPadding;  //10% of data range
@@ -1385,6 +1390,11 @@ var yd3 = (function (exports, d3) {
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
+      //colors for difference lines
+      let colorScale = d3.scaleOrdinal()
+        .domain(yDataNamesOriginal)
+        .range(colors);
+
       let xScale = d3.scaleLinear()
         .domain([xMin - xSetback, xMax])  // data points off axis
         .range([0, innerWidth]);
@@ -1392,11 +1402,6 @@ var yd3 = (function (exports, d3) {
       let yScale = d3.scaleLinear()
         .domain([yMin, yMax])  // data points off axis
         .range([innerHeight, 0]);
-
-      //colors for difference lines
-      let colorScale = d3.scaleOrdinal()
-        .domain(yDataNames)
-        .range(colors);
 
       // initialize legend position
       let legendx = legendX * width;
@@ -1437,9 +1442,9 @@ var yd3 = (function (exports, d3) {
       }
 
       // Add legend
-      if (yDataNames.length > 1) {
+      if (yDataNamesOriginal.length > 1) {
         // draw each y legend
-        for (let i = 0; i < yDataNames.length; i++) {
+        for (let i = 0; i < yDataNamesOriginal.length; i++) {
           let legend = svg
             .append("g")
             .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -1449,8 +1454,8 @@ var yd3 = (function (exports, d3) {
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 12}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNames[i]))
-            .text(yDataNames[i]);
+            .attr('fill', colorScale(yDataNamesOriginal[i]))
+            .text(yDataNamesOriginal[i]);
 
           let textWidth = legendText.node().getBBox().width;
           let textHeight = legendText.node().getBBox().height;
@@ -1459,17 +1464,17 @@ var yd3 = (function (exports, d3) {
             .append("circle")
             .attr("transform", `translate(${legendx + 4}, ${legendy + 4 + (textHeight - 12) / 2})`)
             .attr("r", 4)
-            .attr("fill", colorScale(yDataNames[i]));
+            .attr("fill", colorScale(yDataNamesOriginal[i]));
 
           // set up next legend x and y
           legendx += 12 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNames.length) {
+          if (i + 1 < yDataNamesOriginal.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNames[i + 1]);
+              .text(yDataNamesOriginal[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 
@@ -1581,6 +1586,8 @@ var yd3 = (function (exports, d3) {
       // use arrow function to automatically bind this.
       const draw = (dataValue, svg, order) => {
         let innerData;
+        console.log(order);
+
         switch (order) {
           case 'descending':
             // this creates a deep copy of data so the original data can be preserved
@@ -1599,7 +1606,7 @@ var yd3 = (function (exports, d3) {
         let dataMin = d3.min(innerData, element => element[yDataIndex]);
 
         // make tallest bar approximately 10% range off the range
-        let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding) ;
+        let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
 
         // if there is negative data, set y min. Otherwise choose 0 as default y min
         let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
@@ -1645,7 +1652,7 @@ var yd3 = (function (exports, d3) {
           })
           .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-        // remove old one if exist and draw a new one
+        // remove old axis group if exist and draw a new one
         d3.select('#' + id + 'xyl999').remove();
 
         //set the axis group
@@ -1660,19 +1667,19 @@ var yd3 = (function (exports, d3) {
           yScale = middleMan;
         }
 
-
         this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
           frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
-
-        this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
       };
 
       //initialize
       draw(dataValue, svg, 'default');
 
+      this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
+
+      // don't know why cannot use arrow function here??
       selection
-        .on('change', () => {
+        .on('change', function() {
           draw(dataValue, svg, this.value);
         });
 

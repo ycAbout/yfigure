@@ -64,7 +64,7 @@ class Scatter extends BaseSimpleGroupAxis {
     let yPadding = options.yPadding;
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
+    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
 
     // make highest number approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * yPadding;  //10% of data range
@@ -86,6 +86,11 @@ class Scatter extends BaseSimpleGroupAxis {
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
+    //colors for difference lines
+    let colorScale = d3.scaleOrdinal()
+      .domain(yDataNamesOriginal)
+      .range(colors);
+
     let xScale = d3.scaleLinear()
       .domain([xMin - xSetback, xMax])  // data points off axis
       .range([0, innerWidth]);
@@ -93,11 +98,6 @@ class Scatter extends BaseSimpleGroupAxis {
     let yScale = d3.scaleLinear()
       .domain([yMin, yMax])  // data points off axis
       .range([innerHeight, 0]);
-
-    //colors for difference lines
-    let colorScale = d3.scaleOrdinal()
-      .domain(yDataNames)
-      .range(colors);
 
     // initialize legend position
     let legendx = legendX * width;
@@ -138,9 +138,9 @@ class Scatter extends BaseSimpleGroupAxis {
     }
 
     // Add legend
-    if (yDataNames.length > 1) {
+    if (yDataNamesOriginal.length > 1) {
       // draw each y legend
-      for (let i = 0; i < yDataNames.length; i++) {
+      for (let i = 0; i < yDataNamesOriginal.length; i++) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -150,8 +150,8 @@ class Scatter extends BaseSimpleGroupAxis {
           .style('font', legendFont)
           .attr("transform", `translate(${legendx + 12}, ${legendy})`)
           .attr("dy", "0.8em")
-          .attr('fill', colorScale(yDataNames[i]))
-          .text(yDataNames[i]);
+          .attr('fill', colorScale(yDataNamesOriginal[i]))
+          .text(yDataNamesOriginal[i]);
 
         let textWidth = legendText.node().getBBox().width;
         let textHeight = legendText.node().getBBox().height;
@@ -160,17 +160,17 @@ class Scatter extends BaseSimpleGroupAxis {
           .append("circle")
           .attr("transform", `translate(${legendx + 4}, ${legendy + 4 + (textHeight - 12) / 2})`)
           .attr("r", 4)
-          .attr("fill", colorScale(yDataNames[i]));
+          .attr("fill", colorScale(yDataNamesOriginal[i]));
 
         // set up next legend x and y
         legendx += 12 + textWidth + 8;
 
         // if there is another
-        if (i + 1 < yDataNames.length) {
+        if (i + 1 < yDataNamesOriginal.length) {
           //test bbox for next one
           let nextLegendText = legend
             .append('text')
-            .text(yDataNames[i + 1]);
+            .text(yDataNamesOriginal[i + 1]);
           let nextTextWidth = nextLegendText.node().getBBox().width;
           nextLegendText.remove();
 

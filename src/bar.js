@@ -73,7 +73,7 @@ class Bar extends BaseSimpleGroupAxis {
     let yPadding = options.yPadding;
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
+    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
 
     // make data plot approximately 10% range off the range
     let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
@@ -94,6 +94,11 @@ class Bar extends BaseSimpleGroupAxis {
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
+    //colors for difference lines
+    let colorScale = d3.scaleOrdinal()
+      .domain(yDataNamesOriginal)
+      .range(colors);
+      
     let xScale = d3.scaleBand()
       .domain(dataValue.map((element) => element[xDataIndex]))
       .range([0, horizontal ? innerHeight : innerWidth])
@@ -108,10 +113,6 @@ class Bar extends BaseSimpleGroupAxis {
       .domain([yMin, yMax])
       .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
-    //colors for difference lines
-    let colorScale = d3.scaleOrdinal()
-      .domain(yDataNames)
-      .range(colors);
 
     // initialize legend position
     let legendx = legendX * width;
@@ -120,6 +121,7 @@ class Bar extends BaseSimpleGroupAxis {
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
 
+    // for stacked graph
     let lastPositive = [];
     let lastNegative = [];
     lastPositive.length = lastNegative.length = dataValue.length;
@@ -199,9 +201,9 @@ class Bar extends BaseSimpleGroupAxis {
     }
 
     // Add legend
-    if (yDataNames.length > 1) {
+    if (yDataNamesOriginal.length > 1) {
       // draw each y legend
-      for (let i = 0; i < yDataNames.length; i++) {
+      for (let i = 0; i < yDataNamesOriginal.length; i++) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -211,8 +213,8 @@ class Bar extends BaseSimpleGroupAxis {
           .style('font', legendFont)
           .attr("transform", `translate(${legendx + 12}, ${legendy})`)
           .attr("dy", "0.8em")
-          .attr('fill', colorScale(yDataNames[i]))
-          .text(yDataNames[i]);
+          .attr('fill', colorScale(yDataNamesOriginal[i]))
+          .text(yDataNamesOriginal[i]);
 
         let textWidth = legendText.node().getBBox().width;
         let textHeight = legendText.node().getBBox().height;
@@ -222,17 +224,17 @@ class Bar extends BaseSimpleGroupAxis {
           .attr("transform", `translate(${legendx}, ${legendy + (textHeight - 12) / 2})`)
           .attr("width", 8)
           .attr("height", 8)
-          .attr("fill", colorScale(yDataNames[i]));
+          .attr("fill", colorScale(yDataNamesOriginal[i]));
 
         // set up next legend x and y
         legendx += 12 + textWidth + 8;
 
         // if there is another
-        if (i + 1 < yDataNames.length) {
+        if (i + 1 < yDataNamesOriginal.length) {
           //test bbox for next one
           let nextLegendText = legend
             .append('text')
-            .text(yDataNames[i + 1]);
+            .text(yDataNamesOriginal[i + 1]);
           let nextTextWidth = nextLegendText.node().getBBox().width;
           nextLegendText.remove();
 

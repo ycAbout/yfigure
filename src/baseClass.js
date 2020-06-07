@@ -382,6 +382,8 @@ class BaseSimpleGroupAxis {
     //more than one y data columns
     let yDataNames = data[0].slice(1);
 
+    const yDataNamesOriginal = JSON.parse(JSON.stringify(yDataNames));
+
     let yDataName = (yDataNames.length == 1 ? data[0][1] : '');
 
     // get ride of column name, does not modify origin array
@@ -398,6 +400,7 @@ class BaseSimpleGroupAxis {
     let dataMax = d3.max(maxYArray);
     let dataMin = d3.min(minYArray);
 
+    // for stacked bar chart
     function sumArray(numberArray) {
       let sumNegative = 0;
       let sumPostive = 0;
@@ -416,7 +419,7 @@ class BaseSimpleGroupAxis {
     let dataMaxSum = sumArray(maxYArray)[0]
     let dataMinSum = sumArray(minYArray)[1]
 
-    return [xDataName, xDataIndex, yDataNames, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
+    return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
   }
 
   /**

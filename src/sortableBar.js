@@ -90,6 +90,8 @@ class SortableBar extends BaseSimpleGroupAxis {
     // use arrow function to automatically bind this.
     const draw = (dataValue, svg, order) => {
       let innerData;
+      console.log(order);
+
       switch (order) {
         case 'descending':
           // this creates a deep copy of data so the original data can be preserved
@@ -108,7 +110,7 @@ class SortableBar extends BaseSimpleGroupAxis {
       let dataMin = d3.min(innerData, element => element[yDataIndex]);
 
       // make tallest bar approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding) ;
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
       let yMin = (dataMin < 0 ? dataMin - ySetback : 0);
@@ -154,7 +156,7 @@ class SortableBar extends BaseSimpleGroupAxis {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
-      // remove old one if exist and draw a new one
+      // remove old axis group if exist and draw a new one
       d3.select('#' + id + 'xyl999').remove()
 
       //set the axis group
@@ -169,19 +171,19 @@ class SortableBar extends BaseSimpleGroupAxis {
         yScale = middleMan;
       }
 
-
       this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
-
-      this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
     }
 
     //initialize
     draw(dataValue, svg, 'default');
 
+    this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
+
+    // don't know why cannot use arrow function here??
     selection
-      .on('change', () => {
+      .on('change', function() {
         draw(dataValue, svg, this.value)
       });
 
