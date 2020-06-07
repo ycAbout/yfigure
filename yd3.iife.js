@@ -306,7 +306,7 @@ var yd3 = (function (exports, d3) {
       // make margin short cut for all margin
       if (options.axisStrokeWidth) {
         validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
-        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = ParseFloat(options.axisStrokeWidth);
+        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = parseFloat(options.axisStrokeWidth);
         // any one of the margin is set
       } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
         options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
@@ -662,7 +662,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), background multiple color, figure legend, area, pie chart commerical copyright, error bar, line hover, stack line
+  //to do, each bar each color(maybe group bar with 1 group?), value =0,background multiple color, figure legend(horizontal), area, pie chart commerical copyright, error bar, line hover, stack line, additional y
 
 
   /**
@@ -675,7 +675,6 @@ var yd3 = (function (exports, d3) {
      *                              common option key values pairs
      *                              graph specific key value pairs:
      *                                `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
-     *                                `barPadding: 0.1` Sets bar paddings between the bar, or bar group
      */
     constructor(data, options = {}) {
       super(data, options);
@@ -686,10 +685,25 @@ var yd3 = (function (exports, d3) {
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
+      this._options.legendX ? true: options.legendX = 0.18;
+      this._options.legendY ? true: options.legendY = 0.18;
+      this._options.legendWidth ? true: options.legendWidth = 600;
+      this._options.legendFont ? true: options.legendFont = '10px sans-serif';
+
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
+
+      function validateNumStr(numStrToBe, errorString) {
+        (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+      }
+      validateNumStr(options.legendX, 'legendX');
+      validateNumStr(options.legendY, 'legendY');
+      validateNumStr(options.legendWidth, 'legendWidth');
+
+      typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
+
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
@@ -706,11 +720,10 @@ var yd3 = (function (exports, d3) {
       let stacked = options.stacked;
       let horizontal = options.horizontal;
 
-      // initialize legend position
-      let legendX = 0.5;
-      let legendY = 0.96;
-      let legendWidth = 200;
-      let legendFont = '10px arial';
+      let legendX = parseFloat(options.legendX);
+      let legendY = parseFloat(options.legendY);
+      let legendWidth = parseFloat(options.legendWidth);
+      let legendFont = options.legendFont;
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -981,6 +994,7 @@ var yd3 = (function (exports, d3) {
         .attr('id', id)
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', backgroundColor)
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
@@ -1097,7 +1111,6 @@ var yd3 = (function (exports, d3) {
 
       let colors = options.colors;
       let dotRadius = options.dotRadius;
-      let linePadding = options.linePadding;
       let horizontal = options.horizontal;
 
       // set all the common options
@@ -1124,6 +1137,7 @@ var yd3 = (function (exports, d3) {
         .attr('id', id)
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', backgroundColor)
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
@@ -1261,9 +1275,23 @@ var yd3 = (function (exports, d3) {
       //set up graph specific option
       this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       this._options.dotRadius ? true : this._options.dotRadius = 4;
+      this._options.legendX ? true : options.legendX = 0.18;
+      this._options.legendY ? true : options.legendY = 0.18;
+      this._options.legendWidth ? true : options.legendWidth = 600;
+      this._options.legendFont ? true : options.legendFont = '10px sans-serif';
+
       //validate format
       if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
       if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
+
+      function validateNumStr(numStrToBe, errorString) {
+        (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+      }
+      validateNumStr(options.legendX, 'legendX');
+      validateNumStr(options.legendY, 'legendY');
+      validateNumStr(options.legendWidth, 'legendWidth');
+
+      typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
@@ -1277,6 +1305,12 @@ var yd3 = (function (exports, d3) {
 
       let colors = options.colors;
       let dotRadius = options.dotRadius;
+
+      let legendX = parseFloat(options.legendX);
+      let legendY = parseFloat(options.legendY);
+      let legendWidth = parseFloat(options.legendWidth);
+      let legendFont = options.legendFont;
+
 
       // set all the common options
       let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -1307,6 +1341,7 @@ var yd3 = (function (exports, d3) {
         .attr('id', id)
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', backgroundColor)
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
@@ -1324,8 +1359,8 @@ var yd3 = (function (exports, d3) {
         .range(colors);
 
       // initialize legend position
-      let legendx = 8;
-      let legendy = 8;
+      let legendx = legendX * width;
+      let legendy = legendY * height;
 
       // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
       let dataPointDisplayId = this._setDataPoint();
@@ -1360,31 +1395,74 @@ var yd3 = (function (exports, d3) {
           })
           .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
+        // Add legend
         if (yDataNames.length > 1) {
-          // Add legend
-          // if add current legend spill over innerWidth
-          if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
-            legendy += 16;    // start a new line
-            legendx = 8;
-          }
+          let legend = svg
+            .append("g")
+            .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
-          svg
-            .append("circle")
-            .attr("cx", legendx + 3)
-            .attr("cy", legendy)
-            .attr("r", 3)
-            .attr("fill", colorScale(yDataNames[i]));
-
-          svg
+          let legendText = legend
             .append('text')
-            .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-            .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+            .style('font', legendFont)
+            .attr("transform", `translate(${legendx + 12}, ${legendy})`)
+            .attr("dy", "0.8em")
             .attr('fill', colorScale(yDataNames[i]))
             .text(yDataNames[i]);
 
+          let textWidth = legendText.node().getBBox().width;
+          let textHeight = legendText.node().getBBox().height;
+
+          legend
+            .append("circle")
+            .attr("transform", `translate(${legendx + 4}, ${legendy + 4 + (textHeight - 12) / 2})`)
+            .attr("r", 4)
+            .attr("fill", colorScale(yDataNames[i]));
+
           // set up next legend x and y
-          legendx += yDataNames[i].length * 8 + 18;
+          legendx += 12 + textWidth + 8;
+
+          // if there is another
+          if (i + 1 < yDataNames.length) {
+            //test bbox for next one
+            let nextLegendText = legend
+              .append('text')
+              .text(yDataNames[i + 1]);
+            let nextTextWidth = nextLegendText.node().getBBox().width;
+            nextLegendText.remove();
+
+            // if add next legend spill over innerWidth
+            if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
+              legendy += textHeight;    // start a new line
+              legendx = legendX * width;
+            }
+          }
         }
+
+        //if (yDataNames.length > 1) {
+        //  // Add legend
+        //  // if add current legend spill over innerWidth
+        //  if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
+        //    legendy += 16;    // start a new line
+        //    legendx = 8;
+        //  }
+        //
+        //  svg
+        //    .append("circle")
+        //    .attr("cx", legendx + 3)
+        //    .attr("cy", legendy)
+        //    .attr("r", 3)
+        //    .attr("fill", colorScale(yDataNames[i]));
+        //
+        //  svg
+        //    .append('text')
+        //    .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
+        //    .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+        //    .attr('fill', colorScale(yDataNames[i]))
+        //    .text(yDataNames[i]);
+        //
+        //  // set up next legend x and y
+        //  legendx += yDataNames[i].length * 8 + 18;
+        //}
       }
       let horizontal = false;
       this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
@@ -1479,6 +1557,7 @@ var yd3 = (function (exports, d3) {
         .append('svg')
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', backgroundColor)
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 

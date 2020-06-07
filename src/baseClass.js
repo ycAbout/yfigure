@@ -287,7 +287,7 @@ class BaseSimpleGroupAxis {
     // make margin short cut for all margin
     if (options.axisStrokeWidth) {
       validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
-      xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = ParseFloat(options.axisStrokeWidth);
+      xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = parseFloat(options.axisStrokeWidth);
       // any one of the margin is set
     } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
       options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;

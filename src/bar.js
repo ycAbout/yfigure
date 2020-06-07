@@ -25,8 +25,8 @@ class Bar extends BaseSimpleGroupAxis {
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     this._options.legendX ? true: options.legendX = 0.18;
-    this._options.legendY ? true: options.legendY = 0.02;
-    this._options.legendWidth ? true: options.legendWidth = 240;
+    this._options.legendY ? true: options.legendY = 0.18;
+    this._options.legendWidth ? true: options.legendWidth = 600;
     this._options.legendFont ? true: options.legendFont = '10px sans-serif';
 
     //validate format

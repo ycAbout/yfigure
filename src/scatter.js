@@ -19,9 +19,23 @@ class Scatter extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.colors ? true : this._options.colors = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     this._options.dotRadius ? true : this._options.dotRadius = 4;
+    this._options.legendX ? true : options.legendX = 0.18;
+    this._options.legendY ? true : options.legendY = 0.18;
+    this._options.legendWidth ? true : options.legendWidth = 600;
+    this._options.legendFont ? true : options.legendFont = '10px sans-serif';
+
     //validate format
     if (typeof this._options.colors !== 'object') { throw new Error('Option colors need to be an array object!') }
     if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
+
+    function validateNumStr(numStrToBe, errorString) {
+      (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
+    }
+    validateNumStr(options.legendX, 'legendX');
+    validateNumStr(options.legendY, 'legendY');
+    validateNumStr(options.legendWidth, 'legendWidth');
+
+    typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -35,6 +49,12 @@ class Scatter extends BaseSimpleGroupAxis {
 
     let colors = options.colors;
     let dotRadius = options.dotRadius;
+
+    let legendX = parseFloat(options.legendX);
+    let legendY = parseFloat(options.legendY);
+    let legendWidth = parseFloat(options.legendWidth);
+    let legendFont = options.legendFont;
+
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -83,8 +103,8 @@ class Scatter extends BaseSimpleGroupAxis {
       .range(colors);
 
     // initialize legend position
-    let legendx = 8;
-    let legendy = 8;
+    let legendx = legendX * width;
+    let legendy = legendY * height;
 
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
@@ -119,31 +139,74 @@ class Scatter extends BaseSimpleGroupAxis {
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
 
+      // Add legend
       if (yDataNames.length > 1) {
-        // Add legend
-        // if add current legend spill over innerWidth
-        if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
-          legendy += 16;    // start a new line
-          legendx = 8;
-        }
+        let legend = svg
+          .append("g")
+          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
-        svg
-          .append("circle")
-          .attr("cx", legendx + 3)
-          .attr("cy", legendy)
-          .attr("r", 3)
-          .attr("fill", colorScale(yDataNames[i]));
-
-        svg
+        let legendText = legend
           .append('text')
-          .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-          .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+          .style('font', legendFont)
+          .attr("transform", `translate(${legendx + 12}, ${legendy})`)
+          .attr("dy", "0.8em")
           .attr('fill', colorScale(yDataNames[i]))
           .text(yDataNames[i]);
 
+        let textWidth = legendText.node().getBBox().width;
+        let textHeight = legendText.node().getBBox().height;
+
+        legend
+          .append("circle")
+          .attr("transform", `translate(${legendx + 4}, ${legendy + 4 + (textHeight - 12) / 2})`)
+          .attr("r", 4)
+          .attr("fill", colorScale(yDataNames[i]));
+
         // set up next legend x and y
-        legendx += yDataNames[i].length * 8 + 18;
+        legendx += 12 + textWidth + 8;
+
+        // if there is another
+        if (i + 1 < yDataNames.length) {
+          //test bbox for next one
+          let nextLegendText = legend
+            .append('text')
+            .text(yDataNames[i + 1]);
+          let nextTextWidth = nextLegendText.node().getBBox().width;
+          nextLegendText.remove();
+
+          // if add next legend spill over innerWidth
+          if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
+            legendy += textHeight;    // start a new line
+            legendx = legendX * width;
+          }
+        }
       }
+
+      //if (yDataNames.length > 1) {
+      //  // Add legend
+      //  // if add current legend spill over innerWidth
+      //  if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
+      //    legendy += 16;    // start a new line
+      //    legendx = 8;
+      //  }
+      //
+      //  svg
+      //    .append("circle")
+      //    .attr("cx", legendx + 3)
+      //    .attr("cy", legendy)
+      //    .attr("r", 3)
+      //    .attr("fill", colorScale(yDataNames[i]));
+      //
+      //  svg
+      //    .append('text')
+      //    .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
+      //    .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
+      //    .attr('fill', colorScale(yDataNames[i]))
+      //    .text(yDataNames[i]);
+      //
+      //  // set up next legend x and y
+      //  legendx += yDataNames[i].length * 8 + 18;
+      //}
     }
     let horizontal = false;
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
