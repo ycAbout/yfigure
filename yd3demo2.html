@@ -55,7 +55,7 @@
       dataScatter1.push(element)
     }
 
-    let dataScatter2 = [["age", "score1", "score2", "score3", "score4"]];
+    let dataScatter2 = [["age", "WWWWWWWiii", "score2", "gWggH", "i"]];
     for (i = 0; i < 60; i++) {
       let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
       dataScatter2.push(element)
@@ -353,16 +353,19 @@
     br();
     // example 3 
     let scatter3 = new yd3.Scatter(dataScatter3, {
-
       margin: 50,
       location: 'body',
       dotRadius: 4,
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      legendX: 0.81,
+      legendY: 0.28,
+      legendWidth: 10,
+      legendFont: '10px times',
     });
 
-    scatter1.update();
-    scatter2.update();
-    scatter3.update();
+    //scatter1.update();
+    //scatter2.update();
+    //scatter3.update();
 
   </script>
 </body>

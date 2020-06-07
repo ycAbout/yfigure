@@ -181,32 +181,6 @@ class Scatter extends BaseSimpleGroupAxis {
           }
         }
       }
-
-      //if (yDataNames.length > 1) {
-      //  // Add legend
-      //  // if add current legend spill over innerWidth
-      //  if (legendx + yDataNames[i].length * 8 + 10 > innerWidth) {
-      //    legendy += 16;    // start a new line
-      //    legendx = 8;
-      //  }
-      //
-      //  svg
-      //    .append("circle")
-      //    .attr("cx", legendx + 3)
-      //    .attr("cy", legendy)
-      //    .attr("r", 3)
-      //    .attr("fill", colorScale(yDataNames[i]));
-      //
-      //  svg
-      //    .append('text')
-      //    .attr("alignment-baseline", "middle")  // transform is applied to the middle anchor
-      //    .attr("transform", "translate(" + (legendx + 10) + "," + legendy + ")")  // evenly across inner width, at margin top 2/3
-      //    .attr('fill', colorScale(yDataNames[i]))
-      //    .text(yDataNames[i]);
-      //
-      //  // set up next legend x and y
-      //  legendx += yDataNames[i].length * 8 + 18;
-      //}
     }
     let horizontal = false;
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
