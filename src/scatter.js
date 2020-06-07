@@ -135,9 +135,12 @@ class Scatter extends BaseSimpleGroupAxis {
             .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+    }
 
-      // Add legend
-      if (yDataNames.length > 1) {
+    // Add legend
+    if (yDataNames.length > 1) {
+      // draw each y legend
+      for (let i = 0; i < yDataNames.length; i++) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning

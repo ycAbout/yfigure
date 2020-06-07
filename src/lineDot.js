@@ -145,9 +145,12 @@ class LineDot extends BaseSimpleGroupAxis {
             .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+    }
 
-      // Add legend
-      if (yDataNames.length > 1) {
+    // Add legend
+    if (yDataNames.length > 1) {
+      // draw each y legend
+      for (let i = 0; i < yDataNames.length; i++) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -174,7 +177,7 @@ class LineDot extends BaseSimpleGroupAxis {
         legend
           .append("circle")
           .attr("transform", `translate(${legendx + 10}, ${legendy + 4 + (textHeight - 12) / 2})`)
-          .attr("r", legendDotRadius)    
+          .attr("r", legendDotRadius)
           .attr("fill", colorScale(yDataNames[i]));
 
         // set up next legend x and y

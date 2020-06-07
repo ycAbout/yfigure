@@ -128,7 +128,6 @@ class Bar extends BaseSimpleGroupAxis {
 
     // draw each y data
     for (let i = 0; i < yDataNames.length; i++) {
-
       svg
         .append('g')
         .selectAll('rect')
@@ -197,9 +196,12 @@ class Bar extends BaseSimpleGroupAxis {
             .text(element[xDataIndex] + ': ' + element[i + 1]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+    }
 
-      // Add legend
-      if (yDataNames.length > 1) {
+    // Add legend
+    if (yDataNames.length > 1) {
+      // draw each y legend
+      for (let i = 0; i < yDataNames.length; i++) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
@@ -251,7 +253,6 @@ class Bar extends BaseSimpleGroupAxis {
       middleMan = xDataName;
       xDataName = yDataName;
       yDataName = middleMan;
-
     }
 
     this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
