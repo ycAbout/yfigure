@@ -1245,10 +1245,12 @@ var yd3 = (function (exports, d3) {
             .attr("stroke-width", 2)
             .attr("d", d3.line()([[legendx, legendy + 4 + (textHeight - 12) / 2], [legendx + 20, legendy + 4 + (textHeight - 12) / 2]]));
 
+          let legendDotRadius = Math.min(dotRadius, 5);  // what if dotRadius too large
+
           legend
             .append("circle")
             .attr("transform", `translate(${legendx + 10}, ${legendy + 4 + (textHeight - 12) / 2})`)
-            .attr("r", dotRadius)    // what if dotRadius too small or large ?
+            .attr("r", legendDotRadius)    
             .attr("fill", colorScale(yDataNames[i]));
 
           // set up next legend x and y
