@@ -54,8 +54,8 @@ var yd3 = (function (exports, d3) {
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
       options.titleColor ? true : options.titleColor = 'black';
-      options.titleX ? true : options.titleX = 0.5;   // 0 - 1
-      options.titleY ? true : options.titleY = 0.02;   // 0 - 1
+      (options.titleX || options.titleX == 0) ? true : options.titleX = 0.5;   // 0 - 1
+      (options.titleY || options.titleY == 0) ? true : options.titleY = 0.02;   // 0 - 1
       options.titleRotate ? true : options.titleRotate = 0;
 
       function makeError(msg) {
@@ -66,7 +66,7 @@ var yd3 = (function (exports, d3) {
       function validateString(stringToBe, errorString) {
         typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
       }
-      
+
       validateString(options.location, 'location');
       validateString(options.id, 'id');
       validateString(options.backgroundColor, 'backgroundColor');
@@ -85,8 +85,14 @@ var yd3 = (function (exports, d3) {
       validateNumStr(options.titleY, 'titleY');
       validateNumStr(options.titleRotate, 'titleRotate');
 
-      !(parseInt(options.titleX) <= 1 && parseInt(options.titleX) >= 0) ? makeError('Option titleX needs to be between 0 to 1!') : true;
-      !(parseInt(options.titleY) <= 1 && parseInt(options.titleY) >= 0) ? makeError('Option titleY needs to be between 0 to 1!') : true;
+      if (!(parseFloat(options.titleX) <= 1 && parseFloat(options.titleX) >= 0)) {
+        console.warn('Option titleX over maximum 1! It was reset to 1 (100%) !');
+        options.titleX = Math.min(options.titleX, 1);
+      }
+      if (!(parseFloat(options.titleY) <= 1 && parseFloat(options.titleY) >= 0)) {
+        console.warn('Option titleY over maximum 1! It was reset to 1 (100%) !');
+        options.titleY = Math.min(options.titleY, 1);
+      }
 
       !Array.isArray(options.colors) ? makeError(`Option colors needs to be an array!`) : true;
 
@@ -213,8 +219,8 @@ var yd3 = (function (exports, d3) {
       options.line0DashArray ? true : options.line0DashArray = '';
 
       //****************** not returned, assigned in each individual function */
-      options.xPadding ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-      options.yPadding ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+      (options.xPadding || options.xPadding == 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+      (options.yPadding || options.yPadding == 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
       function makeError(msg) {
         throw new Error(msg)
@@ -665,9 +671,8 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), 
+  //to do, each bar each color(maybe group bar with 1 group?), time series, 
   //number value = 0, background multiple color, figure legend(horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
-
 
   /**
   * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -684,14 +689,14 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
+      (this._options.withinGroupPadding || this._options.withinGroupPadding == 0) ? true : this._options.withinGroupPadding = 0;
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
-      this._options.legendX ? true: options.legendX = 0.18;
-      this._options.legendY ? true: options.legendY = 0.18;
-      this._options.legendWidth ? true: options.legendWidth = 600;
-      this._options.legendFont ? true: options.legendFont = '10px sans-serif';
+      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+      this._options.legendWidth ? true : options.legendWidth = 600;
+      this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
       //validate format
       if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
@@ -721,8 +726,8 @@ var yd3 = (function (exports, d3) {
       let stacked = options.stacked;
       let horizontal = options.horizontal;
 
-      let legendX = parseFloat(options.legendX);
-      let legendY = parseFloat(options.legendY);
+      let legendX = Math.min(parseFloat(options.legendX), 0.98);
+      let legendY = Math.min(parseFloat(options.legendY), 0.98);
       let legendWidth = parseFloat(options.legendWidth);
       let legendFont = options.legendFont;
 
@@ -882,7 +887,7 @@ var yd3 = (function (exports, d3) {
 
           legend
             .append("rect")
-            .attr("transform", `translate(${legendx}, ${legendy + (textHeight-12)/2})`)
+            .attr("transform", `translate(${legendx}, ${legendy + (textHeight - 12) / 2})`)
             .attr("width", 8)
             .attr("height", 8)
             .attr("fill", colorScale(yDataNames[i]));
@@ -1092,8 +1097,8 @@ var yd3 = (function (exports, d3) {
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
-      this._options.legendX ? true : options.legendX = 0.18;
-      this._options.legendY ? true : options.legendY = 0.18;
+      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -1123,8 +1128,8 @@ var yd3 = (function (exports, d3) {
       let dotRadius = options.dotRadius;
       let horizontal = options.horizontal;
 
-      let legendX = parseFloat(options.legendX);
-      let legendY = parseFloat(options.legendY);
+      let legendX = Math.min(parseFloat(options.legendX), 0.98);
+      let legendY = Math.min(parseFloat(options.legendY), 0.98);
       let legendWidth = parseFloat(options.legendWidth);
       let legendFont = options.legendFont;
 
@@ -1308,8 +1313,8 @@ var yd3 = (function (exports, d3) {
 
       //set up graph specific option
       this._options.dotRadius ? true : this._options.dotRadius = 4;
-      this._options.legendX ? true : options.legendX = 0.18;
-      this._options.legendY ? true : options.legendY = 0.18;
+      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -1337,8 +1342,8 @@ var yd3 = (function (exports, d3) {
 
       let dotRadius = options.dotRadius;
 
-      let legendX = parseFloat(options.legendX);
-      let legendY = parseFloat(options.legendY);
+      let legendX = Math.min(parseFloat(options.legendX), 0.98);
+      let legendY = Math.min(parseFloat(options.legendY), 0.98);
       let legendWidth = parseFloat(options.legendWidth);
       let legendFont = options.legendFont;
 

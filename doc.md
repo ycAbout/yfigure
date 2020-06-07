@@ -13,6 +13,7 @@ common options:
   `frameBottom: 25` Sets inside frame
   `location: 'body'` Sets the html location where to put the graph   // for id, use `location: '#<ID>'`
   `id: 'graph123456'`.  Sets the id of graph
+  `colors:['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D']` Sets colors
   `backgroundColor: ''` Sets the background color of the figure
   `title: ''` Sets figure title
   `titleFont: '20px sans-serif'` Sets figure title properties
@@ -50,8 +51,6 @@ common options:
   `yAxisStrokeWidth: 1` Sets individual line width
   `xTickStrokeWidth: 1` Sets individual line width
   `yTickStrokeWidth: 1` Sets individual line width
-
-  `tickInward = []` Sets which axis tick inward orientation // possible values: `['top', 'bottom', 'left', 'right']`
   `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
   `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)

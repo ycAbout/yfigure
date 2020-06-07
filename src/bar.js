@@ -1,9 +1,8 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), 
+//to do, each bar each color(maybe group bar with 1 group?), time series, 
 //number value = 0, background multiple color, figure legend(horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
-
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -20,14 +19,14 @@ class Bar extends BaseSimpleGroupAxis {
     super(data, options);
 
     //set up graph specific option
-    this._options.withinGroupPadding ? true : this._options.withinGroupPadding = 0.001;
+    (this._options.withinGroupPadding || this._options.withinGroupPadding == 0) ? true : this._options.withinGroupPadding = 0;
     this._options.stacked === true ? true : this._options.stacked = false;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
-    this._options.legendX ? true: options.legendX = 0.18;
-    this._options.legendY ? true: options.legendY = 0.18;
-    this._options.legendWidth ? true: options.legendWidth = 600;
-    this._options.legendFont ? true: options.legendFont = '10px sans-serif';
+    (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
+    (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+    this._options.legendWidth ? true : options.legendWidth = 600;
+    this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
     //validate format
     if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
@@ -57,8 +56,8 @@ class Bar extends BaseSimpleGroupAxis {
     let stacked = options.stacked;
     let horizontal = options.horizontal;
 
-    let legendX = parseFloat(options.legendX);
-    let legendY = parseFloat(options.legendY);
+    let legendX = Math.min(parseFloat(options.legendX), 0.98);
+    let legendY = Math.min(parseFloat(options.legendY), 0.98);
     let legendWidth = parseFloat(options.legendWidth);
     let legendFont = options.legendFont;
 
@@ -218,7 +217,7 @@ class Bar extends BaseSimpleGroupAxis {
 
         legend
           .append("rect")
-          .attr("transform", `translate(${legendx}, ${legendy + (textHeight-12)/2})`)
+          .attr("transform", `translate(${legendx}, ${legendy + (textHeight - 12) / 2})`)
           .attr("width", 8)
           .attr("height", 8)
           .attr("fill", colorScale(yDataNames[i]));

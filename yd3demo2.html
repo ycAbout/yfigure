@@ -188,7 +188,7 @@
     // example 4 change color, bar padding
     let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
       colors: ['#CC2529', '#1f9400'], // second for negative value
-      xPadding: 0.001,
+      xPadding: 0.01,
       xAxisFont: '16px times', yAxisFont: '16px times',
       xTitle: ' ',  // no xTitle
       xTickLabelRotate: -20,
@@ -206,7 +206,7 @@
       width: 800,
       height: 400,
       title: 'Canada Budget',
-      titleY: 0.99,
+      titleY: 1,
       titleFont: 'bold 28px times',
       frameBottom: 20,
       marginBottom: 10,
@@ -215,7 +215,6 @@
       xGridStrokeWidth: 0.2,
       yGridDashArray: '4 2',
       yGridStrokeWidth: 0.2,
-
     });
 
     br();
@@ -229,16 +228,19 @@
     createTitle("H2", "group bar");
 
     // example 1
-    let bar9 = new yd3.Bar(dataBar4, { stacked: false, xPadding: 0.001, withinGroupPadding: 0.001 });
+    let bar9 = new yd3.Bar(dataBar4, { stacked: false, xPadding: 0, withinGroupPadding: 0 });
     // example 2
     let bar10 = new yd3.Bar(dataBar5, {
-      stacked: true
+      stacked: true,
+      legendX: 1,
+      legendY: 0,
+
     });
     br();
     // example 3
     let bar11 = new yd3.Bar(dataBar6, {
       width: 600,
-      "margin-left": 60,
+      "marginLeft": 30,
       location: 'body',
       xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'],
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
@@ -332,8 +334,8 @@
       location: 'body',
       dotRadius: 10,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
-      legendX: 0.81,
-      legendY: 0.28,
+      legendX: 0,
+      legendY: 0,
       legendWidth: 10,
       legendFont: '10px times',
 

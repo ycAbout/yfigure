@@ -35,8 +35,8 @@ class BaseSimpleGroupAxis {
     options.title ? true : options.title = '';
     options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
     options.titleColor ? true : options.titleColor = 'black';
-    options.titleX ? true : options.titleX = 0.5;   // 0 - 1
-    options.titleY ? true : options.titleY = 0.02;   // 0 - 1
+    (options.titleX || options.titleX == 0) ? true : options.titleX = 0.5;   // 0 - 1
+    (options.titleY || options.titleY == 0) ? true : options.titleY = 0.02;   // 0 - 1
     options.titleRotate ? true : options.titleRotate = 0;
 
     function makeError(msg) {
@@ -47,7 +47,7 @@ class BaseSimpleGroupAxis {
     function validateString(stringToBe, errorString) {
       typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
-    
+
     validateString(options.location, 'location');
     validateString(options.id, 'id');
     validateString(options.backgroundColor, 'backgroundColor');
@@ -66,8 +66,14 @@ class BaseSimpleGroupAxis {
     validateNumStr(options.titleY, 'titleY');
     validateNumStr(options.titleRotate, 'titleRotate');
 
-    !(parseInt(options.titleX) <= 1 && parseInt(options.titleX) >= 0) ? makeError('Option titleX needs to be between 0 to 1!') : true;
-    !(parseInt(options.titleY) <= 1 && parseInt(options.titleY) >= 0) ? makeError('Option titleY needs to be between 0 to 1!') : true;
+    if (!(parseFloat(options.titleX) <= 1 && parseFloat(options.titleX) >= 0)) {
+      console.warn('Option titleX over maximum 1! It was reset to 1 (100%) !');
+      options.titleX = Math.min(options.titleX, 1);
+    }
+    if (!(parseFloat(options.titleY) <= 1 && parseFloat(options.titleY) >= 0)) {
+      console.warn('Option titleY over maximum 1! It was reset to 1 (100%) !');
+      options.titleY = Math.min(options.titleY, 1);
+    }
 
     !Array.isArray(options.colors) ? makeError(`Option colors needs to be an array!`) : true;
 
@@ -194,8 +200,8 @@ class BaseSimpleGroupAxis {
     options.line0DashArray ? true : options.line0DashArray = '';
 
     //****************** not returned, assigned in each individual function */
-    options.xPadding ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-    options.yPadding ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+    (options.xPadding || options.xPadding == 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+    (options.yPadding || options.yPadding == 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
     function makeError(msg) {
       throw new Error(msg)
