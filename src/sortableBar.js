@@ -10,7 +10,6 @@ class SortableBar extends BaseSimpleGroupAxis {
    * @param {object=} options An optional object contains following key value pairs:
    *                          common option key values pairs
    *                          graph specific key value pairs:
-   *                             `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
    *                             `barPadding: 0.1` Sets bar paddings between the bar, or bar group
    */
   constructor(data, options = {}) {
@@ -155,16 +154,15 @@ class SortableBar extends BaseSimpleGroupAxis {
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
         
       // remove old content group if exist and draw a new one
-      if (d3.select('#' + id + 'xyl999').node()) {
-        d3.select('#' + id + 'xyl999').remove();
+      if (svg.select('#' + id + 'xyl999').node()) {
+        svg.select('#' + id + 'xyl999').remove();
       }
 
       //set the axis group
       let axisGroup = svg
         .append('g')
         .attr('id', id + 'xyl999');
-
-
+        
       if (horizontal) {    // switch xScale and yScale to make axis
         let middleMan = xScale;
         xScale = yScale;
@@ -181,7 +179,7 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
-    // don't know why cannot use arrow function here??
+    // don't know why cannot use arrow function here
     selection
       .on('change', function () {
         draw(dataValue, svg, this.value)

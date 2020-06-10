@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //to do, each bar each color(maybe group bar with 1 group?), time series, 
-//number value = 0, background multiple color, figure legend(horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+//number value = 0, background multiple color, remove original, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -13,7 +13,6 @@ class Bar extends BaseSimpleGroupAxis {
    * @param {object=} options  An optional object contains following key value pairs:
    *                              common option key values pairs
    *                              graph specific key value pairs:
-   *                                `colors: ['steelblue', '#CC2529']` Sets color for positive or negative values, or colors for different y variables
    */
   constructor(data, options = {}) {
     super(data, options);
@@ -24,7 +23,7 @@ class Bar extends BaseSimpleGroupAxis {
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -73,17 +72,7 @@ class Bar extends BaseSimpleGroupAxis {
     let yPadding = options.yPadding;
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum] = this._setDataParameters(data);
-
-    // make data plot approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
-
-    let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
-
-    // if there is negative data, set y min. Otherwise choose 0 as default y min
-    let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
-    // when there is postive data, set y max. Otherwsie choose 0 as default y max
-    let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax > 0 ? dataMax + ySetback : 0);
+    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue] = this._setDataParameters(data);
 
     let svg = d3.select(location)
       .append('svg')
@@ -106,42 +95,79 @@ class Bar extends BaseSimpleGroupAxis {
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
 
-    // for stacked graph
-    let lastPositive = new Array(dataValue.length).fill(0);
-    let lastNegative = new Array(dataValue.length).fill(0);
-
-    // to hold legend click status
+    // to hold legend click status, the y data selection status
     let legendState = new Array(yDataNamesOriginal.length).fill(1);
 
-    // remain available outside of function
-    let xScale;
-    let xSubScale;
-    let yScale;
-    let scaleSwitch = 0;   // for horizontal
+    let scaleSwitch = 0;   // for horizontal, to make sure swtich only once
 
-    const elementDraw = () => {
+    const drawModule = () => {
 
-      console.log("inside draw: ", legendState);
+      let yNamesSelected = yDataNames.filter((name, index) => legendState[index] == 1);
 
-      xScale = d3.scaleBand()
+      //get max and min data for each y columns
+      let maxYArray = [];
+      let minYArray = [];
+      for (let j = 0; j < yDataNames.length; j++) {
+        if (yNamesSelected.length === 0) {         // no data selected, normal
+          maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+          minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
+        } else if (legendState[j]) {               // some data selected, only for selected data
+          maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+          minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
+        }
+      }
+
+      let dataMax = Math.max(d3.max(maxYArray), 0);
+      let dataMin = Math.min(d3.min(minYArray), 0);
+
+      console.log('dataMax', dataMax)
+      console.log('dataMin', dataMin)
+
+      // for stacked bar chart
+      let lastPositive = new Array(dataValue.length).fill(0);       // hold accumulated value for each y
+      let lastNegative = new Array(dataValue.length).fill(0);
+      // used to set accumulated scale
+      function sumArray(numberArray) {
+        let sumNegative = 0;
+        let sumPostive = 0;
+        for (let i = 0; i < numberArray.length; i++) {
+          if (numberArray[i] < 0) {
+            sumNegative += numberArray[i];
+          } else {
+            sumPostive += numberArray[i];
+          }
+        }
+        return [sumPostive, sumNegative];
+      }
+      let dataMaxSum = stacked ? sumArray(maxYArray)[0] : 0;
+      let dataMinSum = stacked ? sumArray(minYArray)[1] : 0;
+
+      // make data plot approximately 10% range off the range
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
+      let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
+
+      // if there is negative data, set y min. Otherwise choose 0 as default y min
+      let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
+      // when there is postive data, set y max. Otherwsie choose 0 as default y max
+      let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax > 0 ? dataMax + ySetback : 0);
+
+      let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
         .range([0, horizontal ? innerHeight : innerWidth])
         .padding((horizontal ? yPadding : xPadding));
 
-      let yNamesSelected = yDataNames.filter((name, index) => legendState[index] == 1);
-
-      xSubScale = d3.scaleBand()
+      let xSubScale = d3.scaleBand()
         .domain(stacked ? ['stack'] : yNamesSelected)
         .range([0, xScale.bandwidth()])
         .padding(withinGroupPadding);
 
-      yScale = d3.scaleLinear()
+      let yScale = d3.scaleLinear()
         .domain([yMin, yMax])
         .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
 
       // remove old content group if exist and draw a new one
-      if (d3.select('#' + id + 'sky999all').node()) {
-        d3.select('#' + id + 'sky999all').remove();
+      if (svg.select('#' + id + 'sky999all').node()) {
+        svg.select('#' + id + 'sky999all').remove();
       }
 
       //set the bar group, assign svg to content because there need something on the same level to make remove then add work, don't know why
@@ -162,7 +188,7 @@ class Bar extends BaseSimpleGroupAxis {
             .attr('x', (element, index) => {
               if (horizontal) {   // horizontal bar chart
                 if (stacked) {
-                  let baseline;
+                  let baseline = 0;
                   if (element[i + 1] >= 0) {
                     baseline = lastPositive[index];
                     lastPositive[index] += element[i + 1];    //update
@@ -246,8 +272,8 @@ class Bar extends BaseSimpleGroupAxis {
 
     }
 
-    // after legend, so legend will be in a different group with bar content
-    elementDraw();
+    // first draw
+    drawModule();
 
     // Add legend
     if (yDataNamesOriginal.length > 1) {
@@ -270,8 +296,7 @@ class Bar extends BaseSimpleGroupAxis {
           .on("click", function () {
             let position = parseInt(this.getAttribute('key'));
             legendState[position] = 1 - legendState[position];
-            console.log(legendState);
-            elementDraw();
+            drawModule();
           });
 
         let textWidth = legendText.node().getBBox().width;

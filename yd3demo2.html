@@ -160,18 +160,21 @@
     let Saskatoon2010to2019Avg = [['Month', 'High temperature (°C)'], ["January", -13.5], ["February", -14.5], ["March", -5.5], ["April", 3.5],
     ["May", 11.5], ["June", 16.5], ["July", 18.5], ["August", 17], ["September", 12], ["October", 4], ["November", -6.5], ["December", -12.5]]
 
+
     // example 1
-    dataBar1 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(dataBar1);
+    worldPopulation = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar1 = new yd3.Bar(worldPopulation);
 
     // example 2 rotate x tick lables, change layout, font
-    dataBar2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yd3.Bar(dataBar2, {
+    worldPopulation = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar2 = new yd3.Bar(worldPopulation, {
       title: 'World Population',
+      colors: ['#1f9400', '#1f9400'], // second for negative value
       xAxisPosition: ['bottom', 'top'],
       yAxisPosition: ['left', 'right'],
       axisLongLineRemove: ['top', 'right'],
-      xAxisFont: '14px times', yAxisFont: '14px times',
+      xAxisFont: '14px times',
+      yAxisFont: '14px times',
       backgroundColor: 'rgb(57,204,204, 0.1)',
     });
 
@@ -181,22 +184,18 @@
       title: 'Saskatoon temprature 2010 to 2019',
       titleY: 0.95,
       titleFont: 'bold 18px arial',
-    });
-
-    br();
-
-    // example 4 change color, bar padding
-    let bar4 = new yd3.Bar(Saskatoon2010to2019Low, {
-      colors: ['#CC2529', '#1f9400'], // second for negative value
       xPadding: 0.01,
-      xAxisFont: '16px times', yAxisFont: '16px times',
+      xAxisFont: '16px times',
+      yAxisFont: '16px times',
       xTitle: ' ',  // no xTitle
       xTickLabelRotate: -20,
       yTicks: 5,
       backgroundColor: 'rgba(50, 115, 220, 0.1)',
     });
 
-    // example 5, both positive and negative data
+    br();
+
+    // example 4 change color, bar padding
     let canadaBudget = [['year', 'Surplus/deficit (% GDP)'], ['1995', -4.64], ['1996', -3.62], ['1997', -1.02], ['1998', 0.33],
     ['1999', 0.62], ['2000', 1.42], ['2001', 1.94], ['2002', 0.71], ['2003', 0.55], ['2004', 0.73], ['2005', 0.11], ['2006', 0.93],
     ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
@@ -227,11 +226,48 @@
 
     createTitle("H2", "group bar");
 
+
+
+    let largestCompanies2020 = [
+      ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
+      ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
+    ]
     // example 1
-    let bar9 = new yd3.Bar(dataBar4, { stacked: false, xPadding: '', withinGroupPadding: '' });
+    let bar6 = new yd3.Bar(largestCompanies2020, {
+      frameLeft: 40,
+      xPadding: 0.01,
+      title: 'Largest Companies (click legend)',
+      yTitle: 'Market cap (us billion)',
+      xTitle: ' ', //?? need to modify
+      withinGroupPadding: 0.1
+    });
+
+    let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
+    ['First', 905, 836, 875],
+    ['Second', 1028, 911, 929],
+    ['Third', 1062, 1012, 857],
+    ['Fourth', 1203, 1305, 916]]
+
     // example 2
-    let bar10 = new yd3.Bar(dataBar5, {
-      stacked: true,
+    let bar7 = new yd3.Bar(techCompany2019, {
+      frameLeft: 40,
+      xPadding: 0.3,
+      title: '2019 MAA (Click legend)',
+      yTitle: 'Market cap (us billion)',
+      //withinGroupPadding: 0.1
+    });
+
+
+    let gdpRate2007to2009 = [['Year', 'US', 'China', 'EU', 'Canada'],
+    ['2007', 1.9, 14.2, 3.2, 6.9],
+    ['2008', -0.1, 9.7, 0.7, 1.0],
+    ['2009', -2.5, 9.4, -4.3, -2.9],
+    ['2010', 2.6, 10.6, 2.2, 3.1]
+    ]
+    let a = [2.6, 10.6, 2.2, 3.1]
+    // example 2
+    let bar10 = new yd3.Bar(gdpRate2007to2009, {
+      stacked: false,
       legendX: 0.5,
       legendY: 0,
 
@@ -251,6 +287,15 @@
     //bar6.update();
 
     createTitle("H2", "stack bar");
+
+    // example 2
+    let bar12 = new yd3.Bar(dataBar5, {
+      stacked: true,
+      legendX: 0.5,
+      legendY: 0,
+
+    });
+
 
     createTitle("H2", "horizontal bar");
 
@@ -300,10 +345,21 @@
 
     createTitle("H2", "line");
 
+    let gdpGrowth = [
+      ['year', 'Vietnam', 'Egypt', 'Canada'],
+      ['2013', 5.42, 2.19, 2.48,],
+      ['2014', 5.98, 2.92, 2.86,],
+      ['2015', 6.68, 4.37, 1.00,],
+      ['2016', 6.21, 4.35, 1.41,],
+      ['2017', 6.81, 4.18, 3.05,],
+      ['2018', 6.60, 5.30, 2.00,],
+      ['average', 6.28, 3.88, 2.13],
+    ]
+
     // example 1  
     let linedot1 = new yd3.LineDot(dataLineDot1, { dotRadius: 1 });
     // example 2
-    let linedot2 = new yd3.LineDot(dataLineDot2, {
+    let linedot2 = new yd3.LineDot(gdpGrowth, {
 
       dotRadius: 1
     });
@@ -320,10 +376,26 @@
 
     createTitle("H2", "lineDot");
 
+
+    gdpRate = [
+      ['year', 'China', 'US', 'Malaysia', 'Israel'],
+      ['2013', 7.76, 1.68, 4.69, 4.11],
+      ['2014', 7.30, 2.57, 6.01, 3.41],
+      ['2015', 6.90, 2.86, 5.03, 3.04],
+      ['2016', 6.70, 1.49, 4.22, 4.09],
+      ['2017', 6.90, 2.27, 5.90, 3.33],
+      ['2018', 6.50, 2.80, 4.70, 3.50],
+      ['average', 7.01, 2.28, 5.09, 3.58]
+    ]
+
     // example 1  
     let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5, yPadding: 5 });
     // example 2
-    let linedot5 = new yd3.LineDot(dataLineDot2, {
+    let linedot5 = new yd3.LineDot(gdpRate, {
+      dotRadius: 6,
+      xPadding: 0.4,
+      title: 'GDP growth 2013-2018',
+      yTitle: 'growth rate (%)'
 
     });
     br();

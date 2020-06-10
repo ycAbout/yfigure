@@ -8,8 +8,6 @@ class BaseSimpleGroupAxis {
    * @param {array} data       A 2d array data in the format of `[['columnXName', 'columnYName'],['a', n1],['b', n2]]`.  
    * @param {object=} options  An optional object contains following key value pairs:
    *                              common option key values pairs
-   *                              graph specific key value pairs:
-   *                                colors, describing the colors used for positive bars and negative bars in the format of `colors: ['steelblue', '#CC2529']`.   
    */
   constructor(data, options) {
     this._options = options;    //_ does not have any real effect, just visually indicate private variables.
@@ -389,37 +387,7 @@ class BaseSimpleGroupAxis {
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1)
 
-    //get max and min data for each y columns
-    let maxYArray = [];
-    let minYArray = [];
-    for (let j = 0; j < yDataNames.length; j++) {
-      maxYArray.push(d3.max(dataValue, d => +d[j + 1]))  //parse float
-      minYArray.push(d3.min(dataValue, d => +d[j + 1]))  //parse float
-    }
-
-    let dataMax = d3.max(maxYArray);
-    let dataMin = d3.min(minYArray);
-
-    // for stacked bar chart
-    function sumArray(numberArray) {
-      let sumNegative = 0;
-      let sumPostive = 0;
-
-      for (let i = 0; i < numberArray.length; i++) {
-        if (numberArray[i] < 0) {
-          sumNegative += numberArray[i];
-        } else {
-          sumPostive += numberArray[i];
-        }
-      }
-
-      return [sumPostive, sumNegative];
-    }
-
-    let dataMaxSum = sumArray(maxYArray)[0]
-    let dataMinSum = sumArray(minYArray)[1]
-
-    return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin, dataMaxSum, dataMinSum]
+    return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue]
   }
 
   /**
@@ -459,9 +427,9 @@ class BaseSimpleGroupAxis {
     ))
 
     // if user not specified xTitle
-    if (xTitle.length == 0) xTitle = xDataName;
+    if (xTitle.length === 0) xTitle = xDataName;
     // if user not specified yTitle
-    if (yTitle.length == 0) yTitle = yDataName;
+    if (yTitle.length === 0) yTitle = yDataName;
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {

@@ -11,7 +11,6 @@ class Scatter extends BaseSimpleGroupAxis {
    *                          common option key values pairs
    *                          graph specific key value pairs:
    *                            `dotRadius: 4` Sets the radius of the dot.
-   *                            `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`. Sets the colors for difference lines.
    */
   constructor(data, options = {}) {
     super(data, options);
@@ -19,7 +18,7 @@ class Scatter extends BaseSimpleGroupAxis {
     //set up graph specific option
     this._options.dotRadius ? true : this._options.dotRadius = 4;
     (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 

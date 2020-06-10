@@ -11,7 +11,6 @@ class LineDot extends BaseSimpleGroupAxis {
    *                          common option key values pairs
    *                          graph specific key value pairs:
    *                            `dotRadius: 4` Sets the radius of the dot, value `1` produce a line graph.
-   *                            `colors: ['#396AB1','#DA7C30','#3E9651','#CC2529','#535154','#6B4C9A','#922428','#948B3D']`. Sets the colors for difference lines
    */
   constructor(data, options = {}) {
     super(data, options);
@@ -21,7 +20,7 @@ class LineDot extends BaseSimpleGroupAxis {
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
     (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -67,13 +66,7 @@ class LineDot extends BaseSimpleGroupAxis {
     let yPadding = options.yPadding;
 
     // set data parameters
-    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue, dataMax, dataMin] = this._setDataParameters(data);
-
-    // make highest number approximately 10% range off the range
-    let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);  //10% of data range
-
-    let yMin = dataMin - ySetback;
-    let yMax = dataMax + ySetback;
+    let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue] = this._setDataParameters(data);
 
     let svg = d3.select(location)
       .append('svg')
@@ -89,17 +82,6 @@ class LineDot extends BaseSimpleGroupAxis {
       .domain(yDataNamesOriginal)
       .range(colors);
 
-    //scalePoint can use padding but not scaleOrdinal
-    let xScale = d3.scalePoint()
-      .domain(dataValue.map((element) => element[xDataIndex]))
-      .range([0, horizontal ? innerHeight : innerWidth])
-      .padding((horizontal ? yPadding : xPadding));
-
-    let yScale = d3.scaleLinear()
-      .domain([yMin, yMax])  // data points off axis
-      .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
-
-
     // initialize legend position
     let legendx = legendX * width;
     let legendy = legendY * height;
@@ -107,45 +89,126 @@ class LineDot extends BaseSimpleGroupAxis {
     // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
     let dataPointDisplayId = this._setDataPoint();
 
-    // draw each y data
-    for (let i = 0; i < yDataNames.length; i++) {
-      // draw a line
-      svg.append("path")
-        .datum(dataValue)
-        .attr("fill", "none")
-        .attr("stroke", colorScale(yDataNames[i]))
-        .attr("stroke-width", 2)
-        .attr("d", d3.line()
-          .x(element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
-          .y(element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
-        );
+    // to hold legend click status, the y data selection status
+    let legendState = new Array(yDataNamesOriginal.length).fill(1);
 
-      // Add the points
-      svg
-        .append("g")
-        .selectAll("circle")
-        .data(dataValue)
-        .join("circle")
-        .attr("cx", element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
-        .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
-        .attr("r", dotRadius)
-        .attr("fill", colorScale(yDataNames[i]))
-        .on('mouseover', (element) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mousemove', (element) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[i + 1]);
-        })
-        .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+    let scaleSwitch = 0;   // for horizontal, to make sure swtich only once
+
+    const drawModule = () => {
+
+      let yNamesSelected = yDataNames.filter((name, index) => legendState[index] == 1);
+
+      //get max and min data for each y columns
+      let maxYArray = [];
+      let minYArray = [];
+      for (let j = 0; j < yDataNames.length; j++) {
+        if (yNamesSelected.length === 0) {         // no data selected, normal
+          maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+          minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
+        } else if (legendState[j]) {               // some data selected, only for selected data
+          maxYArray.push(d3.max(dataValue, d => +d[j + 1]));  //parse float
+          minYArray.push(d3.min(dataValue, d => +d[j + 1]));  //parse float
+        }
+      }
+
+      let dataMax = d3.max(maxYArray);
+      let dataMin = d3.min(minYArray);
+
+      // make highest number approximately 10% range off the range
+      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);  //10% of data range
+
+      let yMin = dataMin - ySetback;
+      let yMax = dataMax + ySetback;
+
+      //scalePoint can use padding but not scaleOrdinal
+      let xScale = d3.scalePoint()
+        .domain(dataValue.map((element) => element[xDataIndex]))
+        .range([0, horizontal ? innerHeight : innerWidth])
+        .padding((horizontal ? yPadding : xPadding));
+
+      let yScale = d3.scaleLinear()
+        .domain([yMin, yMax])  // data points off axis
+        .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
+
+      // remove old content group if exist and draw a new one
+      if (svg.select('#' + id + 'sky999all').node()) {
+        console.log("found 1")
+        svg.select('#' + id + 'sky999all').remove();
+      }
+
+      //set the bar group, assign svg to content because there need something on the same level to make remove then add work, don't know why
+      let content = svg
+        .append('g')
+        .attr('id', id + 'sky999all');
+
+      // draw each y data
+      for (let i = 0; i < yDataNames.length; i++) {
+        // if legend is unclicked
+        if (legendState[i]) {
+          // draw a line
+          content
+            .append("path")
+            .datum(dataValue)
+            .attr("fill", "none")
+            .attr("stroke", colorScale(yDataNames[i]))
+            .attr("stroke-width", 2)
+            .attr("d", d3.line()
+              .x(element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
+              .y(element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
+            );
+
+          // Add the points
+          content
+            .append("g")
+            .selectAll("circle")
+            .data(dataValue)
+            .join("circle")
+            .attr("cx", element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
+            .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
+            .attr("r", dotRadius)
+            .attr("fill", colorScale(yDataNames[i]))
+            .on('mouseover', (element) => {
+              d3.select('#' + dataPointDisplayId)
+                .style('display', null)
+                .style('top', (d3.event.pageY - 20) + 'px')
+                .style('left', (d3.event.pageX + 'px'))
+                .text(element[xDataIndex] + ': ' + element[i + 1]);
+            })
+            .on('mousemove', (element) => {
+              d3.select('#' + dataPointDisplayId)
+                .style('display', null)
+                .style('top', (d3.event.pageY - 20) + 'px')
+                .style('left', (d3.event.pageX + 'px'))
+                .text(element[xDataIndex] + ': ' + element[i + 1]);
+            })
+            .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+        }
+      }
+
+      if (horizontal) {    // switch xScale and yScale to make axis
+        let middleMan = xScale;
+        xScale = yScale;
+        yScale = middleMan;
+
+        middleMan = xDataName;
+        xDataName = yDataName;
+        yDataName = middleMan;
+
+        scaleSwitch = 1;
+      }
+
+      //add the axis to content group
+      content = content
+        .append('g')
+        .attr('id', id + 'xyl999');
+
+      this._drawAxis(...[content, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+        frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
+
     }
+
+    // first draw
+    drawModule();
 
     // Add legend
     if (yDataNamesOriginal.length > 1) {
@@ -162,7 +225,14 @@ class LineDot extends BaseSimpleGroupAxis {
           .attr("transform", `translate(${legendx + 24}, ${legendy})`)
           .attr("dy", "0.8em")
           .attr('fill', colorScale(yDataNamesOriginal[i]))
-          .text(yDataNamesOriginal[i]);
+          .text(yDataNamesOriginal[i])
+          .attr("key", i)
+          .on("click", function () {
+            let position = parseInt(this.getAttribute('key'));
+            legendState[position] = 1 - legendState[position];
+            console.log('clicked: ', legendState);
+            drawModule();
+          });
 
         let textWidth = legendText.node().getBBox().width;
         let textHeight = legendText.node().getBBox().height;
@@ -201,20 +271,6 @@ class LineDot extends BaseSimpleGroupAxis {
         }
       }
     }
-
-    if (horizontal) {    // switch xScale and yScale to make axis
-      let middleMan = xScale;
-      xScale = yScale;
-      yScale = middleMan;
-
-      middleMan = xDataName;
-      xDataName = yDataName;
-      yDataName = middleMan;
-
-    }
-
-    this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
-      frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
