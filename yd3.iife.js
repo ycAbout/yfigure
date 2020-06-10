@@ -54,8 +54,8 @@ var yd3 = (function (exports, d3) {
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
       options.titleColor ? true : options.titleColor = 'black';
-      (options.titleX || options.titleX == 0) ? true : options.titleX = 0.5;   // 0 - 1
-      (options.titleY || options.titleY == 0) ? true : options.titleY = 0.02;   // 0 - 1
+      (options.titleX || parseInt(options.titleX) === 0) ? true : options.titleX = 0.5;   // 0 - 1
+      (options.titleY || parseInt(options.titleY) === 0) ? true : options.titleY = 0.02;   // 0 - 1
       options.titleRotate ? true : options.titleRotate = 0;
 
       function makeError(msg) {
@@ -219,8 +219,8 @@ var yd3 = (function (exports, d3) {
       options.line0DashArray ? true : options.line0DashArray = '';
 
       //****************** not returned, assigned in each individual function */
-      (options.xPadding || options.xPadding == 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-      (options.yPadding || options.yPadding == 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+      (options.xPadding || parseInt(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+      (options.yPadding || parseInt(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
       function makeError(msg) {
         throw new Error(msg)
@@ -692,12 +692,12 @@ var yd3 = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      (this._options.withinGroupPadding || this._options.withinGroupPadding == 0) ? true : this._options.withinGroupPadding = 0;
+      (this._options.withinGroupPadding || parseInt(this._options.withinGroupPadding) === 0) ? true : this._options.withinGroupPadding = 0;
       this._options.stacked === true ? true : this._options.stacked = false;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
-      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
-      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+      (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -771,21 +771,6 @@ var yd3 = (function (exports, d3) {
       let colorScale = d3.scaleOrdinal()
         .domain(yDataNamesOriginal)
         .range(colors);
-        
-      let xScale = d3.scaleBand()
-        .domain(dataValue.map((element) => element[xDataIndex]))
-        .range([0, horizontal ? innerHeight : innerWidth])
-        .padding((horizontal ? yPadding : xPadding));
-
-      let xSubScale = d3.scaleBand()
-        .domain(stacked ? ['stack'] : yDataNames)
-        .range([0, xScale.bandwidth()])
-        .padding(withinGroupPadding);
-
-      let yScale = d3.scaleLinear()
-        .domain([yMin, yMax])
-        .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
-
 
       // initialize legend position
       let legendx = legendX * width;
@@ -795,91 +780,157 @@ var yd3 = (function (exports, d3) {
       let dataPointDisplayId = this._setDataPoint();
 
       // for stacked graph
-      let lastPositive = [];
-      let lastNegative = [];
-      lastPositive.length = lastNegative.length = dataValue.length;
-      lastPositive.fill(0);
-      lastNegative.fill(0);
+      let lastPositive = new Array(dataValue.length).fill(0);
+      let lastNegative = new Array(dataValue.length).fill(0);
 
-      // draw each y data
-      for (let i = 0; i < yDataNames.length; i++) {
-        svg
+      // to hold legend click status
+      let legendState = new Array(yDataNamesOriginal.length).fill(1);
+
+      // remain available outside of function
+      let xScale;
+      let xSubScale;
+      let yScale;
+      let scaleSwitch = 0;   // for horizontal
+
+      const elementDraw = () => {
+
+        console.log("inside draw: ", legendState);
+
+        xScale = d3.scaleBand()
+          .domain(dataValue.map((element) => element[xDataIndex]))
+          .range([0, horizontal ? innerHeight : innerWidth])
+          .padding((horizontal ? yPadding : xPadding));
+
+        let yNamesSelected = yDataNames.filter((name, index) => legendState[index] == 1);
+
+        xSubScale = d3.scaleBand()
+          .domain(stacked ? ['stack'] : yNamesSelected)
+          .range([0, xScale.bandwidth()])
+          .padding(withinGroupPadding);
+
+        yScale = d3.scaleLinear()
+          .domain([yMin, yMax])
+          .range(horizontal ? [0, innerWidth] : [innerHeight, 0]);
+
+        // remove old content group if exist and draw a new one
+        if (d3.select('#' + id + 'sky999all').node()) {
+          d3.select('#' + id + 'sky999all').remove();
+        }
+
+        //set the bar group, assign svg to content because there need something on the same level to make remove then add work, don't know why
+        let content = svg
           .append('g')
-          .selectAll('rect')
-          .data(dataValue)
-          .join('rect')
-          .attr("transform", element => horizontal ? `translate(0, ${xScale(element[xDataIndex])})` : `translate(${xScale(element[xDataIndex])}, 0)`)
-          .attr('x', (element, index) => {
-            if (horizontal) {   // horizontal bar chart
-              if (stacked) {
-                let baseline;
-                if (element[i + 1] >= 0) {
-                  baseline = lastPositive[index];
-                  lastPositive[index] += element[i + 1];    //update
+          .attr('id', id + 'sky999all');
+
+        // draw each y data
+        for (let i = 0; i < yDataNames.length; i++) {
+          // if legend is unclicked
+          if (legendState[i]) {
+            content
+              .append('g')
+              .selectAll('rect')
+              .data(dataValue)
+              .join('rect')
+              .attr("transform", element => horizontal ? `translate(0, ${xScale(element[xDataIndex])})` : `translate(${xScale(element[xDataIndex])}, 0)`)
+              .attr('x', (element, index) => {
+                if (horizontal) {   // horizontal bar chart
+                  if (stacked) {
+                    let baseline;
+                    if (element[i + 1] >= 0) {
+                      baseline = lastPositive[index];
+                      lastPositive[index] += element[i + 1];    //update
+                    } else {
+                      baseline = lastNegative[index];
+                      lastNegative[index] += element[i + 1];
+                    }
+                    return yScale(Math.min(baseline + element[i + 1], baseline));
+                  } else {
+                    return yScale(Math.min(element[i + 1], 0))
+                  }
                 } else {
-                  baseline = lastNegative[index];
-                  lastNegative[index] += element[i + 1];
+                  return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
                 }
-                return yScale(Math.min(baseline + element[i + 1], baseline));
-              } else {
-                return yScale(Math.min(element[i + 1], 0))
-              }
-            } else {
-              return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
-            }
-          })
-          .attr('width', element => horizontal ? Math.abs(yScale(element[i + 1]) - yScale(0)) : xSubScale.bandwidth())
-          .attr('y', (element, index) => {
-            if (horizontal) {   // horizontal bar chart
-              return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
-            } else {
-              if (stacked) {
-                let baseline;
-                if (element[i + 1] >= 0) {
-                  baseline = lastPositive[index];
-                  lastPositive[index] += element[i + 1];    //update
+              })
+              .attr('width', element => horizontal ? Math.abs(yScale(element[i + 1]) - yScale(0)) : xSubScale.bandwidth())
+              .attr('y', (element, index) => {
+                if (horizontal) {   // horizontal bar chart
+                  return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
                 } else {
-                  baseline = lastNegative[index];
-                  lastNegative[index] += element[i + 1];
+                  if (stacked) {
+                    let baseline;
+                    if (element[i + 1] >= 0) {
+                      baseline = lastPositive[index];
+                      lastPositive[index] += element[i + 1];    //update
+                    } else {
+                      baseline = lastNegative[index];
+                      lastNegative[index] += element[i + 1];
+                    }
+                    return yScale(Math.max(baseline + element[i + 1], baseline));
+                  } else {
+                    return yScale(Math.max(element[i + 1], 0))   // if negative, use y(0) as starting point
+                  }
                 }
-                return yScale(Math.max(baseline + element[i + 1], baseline));
-              } else {
-                return yScale(Math.max(element[i + 1], 0))   // if negative, use y(0) as starting point
-              }
-            }
-          })
-          .attr('height', element => horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0) 
-          .attr('fill', element => {
-            if (yDataNames.length == 1) {
-              return element[i + 1] > 0 ? colors[0] : colors[1]       //only one y, positive vs. negative
-            } else {
-              return colorScale(yDataNames[i])              // two and more ys, no postive vs. negative
-            }
-          })
-          .on('mouseover', (element) => {
-            d3.select('#' + dataPointDisplayId)
-              .style('display', null)
-              .style('top', (d3.event.pageY - 20) + 'px')
-              .style('left', (d3.event.pageX + 'px'))
-              .text(element[xDataIndex] + ': ' + element[i + 1]);
-          })
-          .on('mousemove', (element) => {
-            d3.select('#' + dataPointDisplayId)
-              .style('display', null)
-              .style('top', (d3.event.pageY - 20) + 'px')
-              .style('left', (d3.event.pageX + 'px'))
-              .text(element[xDataIndex] + ': ' + element[i + 1]);
-          })
-          .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
-      }
+              })
+              .attr('height', element => horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0) 
+              .attr('fill', element => {
+                if (yDataNames.length == 1) {
+                  return element[i + 1] > 0 ? colorScale(yDataNames[i]) : colors[1]       //only one y, positive vs. negative
+                } else {
+                  return colorScale(yDataNames[i])              // two and more ys, no postive vs. negative
+                }
+              })
+              .on('mouseover', (element) => {
+                d3.select('#' + dataPointDisplayId)
+                  .style('display', null)
+                  .style('top', (d3.event.pageY - 20) + 'px')
+                  .style('left', (d3.event.pageX + 'px'))
+                  .text(element[xDataIndex] + ': ' + element[i + 1]);
+              })
+              .on('mousemove', (element) => {
+                d3.select('#' + dataPointDisplayId)
+                  .style('display', null)
+                  .style('top', (d3.event.pageY - 20) + 'px')
+                  .style('left', (d3.event.pageX + 'px'))
+                  .text(element[xDataIndex] + ': ' + element[i + 1]);
+              })
+              .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+          }
+        }
+
+        if (horizontal && !scaleSwitch) {    // switch xScale and yScale to make axis
+          let middleMan = xScale;
+          xScale = yScale;
+          yScale = middleMan;
+
+          middleMan = xDataName;
+          xDataName = yDataName;
+          yDataName = middleMan;
+
+          scaleSwitch = 1;
+        }
+
+        //add the axis to content group
+        content = content
+          .append('g')
+          .attr('id', id + 'xyl999');
+
+        this._drawAxis(...[content, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+          frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
+
+      };
+
+      // after legend, so legend will be in a different group with bar content
+      elementDraw();
 
       // Add legend
       if (yDataNamesOriginal.length > 1) {
+
+        let legend = svg
+          .append("g")
+          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
+
         // draw each y legend
         for (let i = 0; i < yDataNamesOriginal.length; i++) {
-          let legend = svg
-            .append("g")
-            .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
           let legendText = legend
             .append('text')
@@ -887,7 +938,14 @@ var yd3 = (function (exports, d3) {
             .attr("transform", `translate(${legendx + 12}, ${legendy})`)
             .attr("dy", "0.8em")
             .attr('fill', colorScale(yDataNamesOriginal[i]))
-            .text(yDataNamesOriginal[i]);
+            .text(yDataNamesOriginal[i])
+            .attr("key", i)
+            .on("click", function () {
+              let position = parseInt(this.getAttribute('key'));
+              legendState[position] = 1 - legendState[position];
+              console.log(legendState);
+              elementDraw();
+            });
 
           let textWidth = legendText.node().getBBox().width;
           let textHeight = legendText.node().getBBox().height;
@@ -919,20 +977,6 @@ var yd3 = (function (exports, d3) {
           }
         }
       }
-
-      if (horizontal) {    // switch xScale and yScale to make axis
-        let middleMan = xScale;
-        xScale = yScale;
-        yScale = middleMan;
-
-        middleMan = xDataName;
-        xDataName = yDataName;
-        yDataName = middleMan;
-      }
-
-      this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
-        frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
-
 
       this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
@@ -1103,8 +1147,8 @@ var yd3 = (function (exports, d3) {
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
-      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
-      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+      (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -1232,12 +1276,13 @@ var yd3 = (function (exports, d3) {
 
       // Add legend
       if (yDataNamesOriginal.length > 1) {
+
+        let legend = svg
+          .append("g")
+          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
+
         // draw each y legend
         for (let i = 0; i < yDataNamesOriginal.length; i++) {
-          let legend = svg
-            .append("g")
-            .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
-
           let legendText = legend
             .append('text')
             .style('font', legendFont)
@@ -1322,8 +1367,8 @@ var yd3 = (function (exports, d3) {
 
       //set up graph specific option
       this._options.dotRadius ? true : this._options.dotRadius = 4;
-      (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
-      (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+      (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
+      (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -1443,12 +1488,11 @@ var yd3 = (function (exports, d3) {
 
       // Add legend
       if (yDataNamesOriginal.length > 1) {
+        let legend = svg
+          .append("g")
+          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
         // draw each y legend
         for (let i = 0; i < yDataNamesOriginal.length; i++) {
-          let legend = svg
-            .append("g")
-            .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
-
           let legendText = legend
             .append('text')
             .style('font', legendFont)
@@ -1586,8 +1630,6 @@ var yd3 = (function (exports, d3) {
       // use arrow function to automatically bind this.
       const draw = (dataValue, svg, order) => {
         let innerData;
-        console.log(order);
-
         switch (order) {
           case 'descending':
             // this creates a deep copy of data so the original data can be preserved
@@ -1651,12 +1693,14 @@ var yd3 = (function (exports, d3) {
               .text(element[xDataIndex] + ': ' + element[yDataIndex]);
           })
           .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
-
-        // remove old axis group if exist and draw a new one
-        d3.select('#' + id + 'xyl999').remove();
+          
+        // remove old content group if exist and draw a new one
+        if (d3.select('#' + id + 'xyl999').node()) {
+          d3.select('#' + id + 'xyl999').remove();
+        }
 
         //set the axis group
-        svg = svg
+        let axisGroup = svg
           .append('g')
           .attr('id', id + 'xyl999');
 
@@ -1667,7 +1711,7 @@ var yd3 = (function (exports, d3) {
           yScale = middleMan;
         }
 
-        this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+        this._drawAxis(...[axisGroup, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
           frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
       };
@@ -1679,7 +1723,7 @@ var yd3 = (function (exports, d3) {
 
       // don't know why cannot use arrow function here??
       selection
-        .on('change', function() {
+        .on('change', function () {
           draw(dataValue, svg, this.value);
         });
 

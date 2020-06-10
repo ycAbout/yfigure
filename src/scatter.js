@@ -18,8 +18,8 @@ class Scatter extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.dotRadius ? true : this._options.dotRadius = 4;
-    (this._options.legendX || this._options.legendX == 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || this._options.legendY == 0) ? true : options.legendY = 0.18;
+    (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.18;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -139,12 +139,11 @@ class Scatter extends BaseSimpleGroupAxis {
 
     // Add legend
     if (yDataNamesOriginal.length > 1) {
+      let legend = svg
+        .append("g")
+        .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
       // draw each y legend
       for (let i = 0; i < yDataNamesOriginal.length; i++) {
-        let legend = svg
-          .append("g")
-          .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
-
         let legendText = legend
           .append('text')
           .style('font', legendFont)

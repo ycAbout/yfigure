@@ -90,8 +90,6 @@ class SortableBar extends BaseSimpleGroupAxis {
     // use arrow function to automatically bind this.
     const draw = (dataValue, svg, order) => {
       let innerData;
-      console.log(order);
-
       switch (order) {
         case 'descending':
           // this creates a deep copy of data so the original data can be preserved
@@ -155,14 +153,16 @@ class SortableBar extends BaseSimpleGroupAxis {
             .text(element[xDataIndex] + ': ' + element[yDataIndex]);
         })
         .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
-
-      // remove old axis group if exist and draw a new one
-      d3.select('#' + id + 'xyl999').remove()
+        
+      // remove old content group if exist and draw a new one
+      if (d3.select('#' + id + 'xyl999').node()) {
+        d3.select('#' + id + 'xyl999').remove();
+      }
 
       //set the axis group
-      svg = svg
+      let axisGroup = svg
         .append('g')
-        .attr('id', id + 'xyl999')
+        .attr('id', id + 'xyl999');
 
 
       if (horizontal) {    // switch xScale and yScale to make axis
@@ -171,7 +171,7 @@ class SortableBar extends BaseSimpleGroupAxis {
         yScale = middleMan;
       }
 
-      this._drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
+      this._drawAxis(...[axisGroup, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
 
     }
@@ -183,7 +183,7 @@ class SortableBar extends BaseSimpleGroupAxis {
 
     // don't know why cannot use arrow function here??
     selection
-      .on('change', function() {
+      .on('change', function () {
         draw(dataValue, svg, this.value)
       });
 

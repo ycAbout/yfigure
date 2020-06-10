@@ -35,8 +35,8 @@ class BaseSimpleGroupAxis {
     options.title ? true : options.title = '';
     options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
     options.titleColor ? true : options.titleColor = 'black';
-    (options.titleX || options.titleX == 0) ? true : options.titleX = 0.5;   // 0 - 1
-    (options.titleY || options.titleY == 0) ? true : options.titleY = 0.02;   // 0 - 1
+    (options.titleX || parseInt(options.titleX) === 0) ? true : options.titleX = 0.5;   // 0 - 1
+    (options.titleY || parseInt(options.titleY) === 0) ? true : options.titleY = 0.02;   // 0 - 1
     options.titleRotate ? true : options.titleRotate = 0;
 
     function makeError(msg) {
@@ -200,8 +200,8 @@ class BaseSimpleGroupAxis {
     options.line0DashArray ? true : options.line0DashArray = '';
 
     //****************** not returned, assigned in each individual function */
-    (options.xPadding || options.xPadding == 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-    (options.yPadding || options.yPadding == 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+    (options.xPadding || parseInt(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+    (options.yPadding || parseInt(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
     function makeError(msg) {
       throw new Error(msg)
