@@ -241,7 +241,7 @@
       yTitle: 'Market cap (us billion)',
       xTitle: ' ', //?? need to modify
       withinGroupPadding: 0.1
-      
+
     });
 
     let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
@@ -266,19 +266,19 @@
 
 
     let gdpRate2007to2009 = [['Year', 'US', 'EU', 'World'],
-    ['2007', 1.9,  3.2, 4.3],
+    ['2007', 1.9, 3.2, 4.3],
     ['2008', -0.1, 0.7, 1.9],
     ['2009', -2.5, -4.3, -1.7],
-    ['2010', 2.6,  2.2, 4.3]
+    ['2010', 2.6, 2.2, 4.3]
     ]
 
-//    gdpRate2007to2009 = 
-//    [['Country', '2007', '2008', '2009', '2010'],
-////    ['China', 14.2, 9.7, 9.4, 10.6],
-//    ['EU', 3.2, 0.7, -4.3, 2.2],
-//    ['US', 1.9, -0.1, -2.5, 2.6],
-//    ['Canada', 6.9, 1.0, -2.9, 3.1],
-//    ]
+    //    gdpRate2007to2009 = 
+    //    [['Country', '2007', '2008', '2009', '2010'],
+    ////    ['China', 14.2, 9.7, 9.4, 10.6],
+    //    ['EU', 3.2, 0.7, -4.3, 2.2],
+    //    ['US', 1.9, -0.1, -2.5, 2.6],
+    //    ['Canada', 6.9, 1.0, -2.9, 3.1],
+    //    ]
 
     // example 2
     let bar10 = new yd3.Bar(gdpRate2007to2009, {
@@ -315,6 +315,30 @@
 
 
     createTitle("H2", "horizontal bar");
+
+    // example 2
+    let bar13 = new yd3.Bar(dataBar2, {
+      horizontal: true,
+    });
+
+
+    let bar013 = new yd3.Bar(dataBar4, {
+      horizontal: true,
+    });
+
+    let bar14 = new yd3.Bar(dataBar5, {
+      horizontal: true,
+    });
+
+    // example 2
+    let bar15 = new yd3.Bar(dataBar5, {
+      stacked: true,
+      horizontal: true,
+      legendX: 0.5,
+      legendY: 0,
+
+    });
+
 
 
     createTitle("H2", "sortableBar");

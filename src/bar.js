@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //to do, each bar each color(maybe group bar with 1 group?), time series, 
-//number values = 0, background multiple color, remove original, click legend grey out, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+//number values = 0, background multiple color, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -98,7 +98,7 @@ class Bar extends BaseSimpleGroupAxis {
     // to hold legend click status, the y data selection status
     let legendState = new Array(yDataNames.length).fill(1);
 
-    let scaleSwitch = 0;   // for horizontal, to make sure swtich only once
+    let scaleSwitch = 0;  // for horizontal, to make sure swtich only once
 
     const drawModule = () => {
 
@@ -247,16 +247,17 @@ class Bar extends BaseSimpleGroupAxis {
         }
       }
 
-      if (horizontal && !scaleSwitch) {    // switch xScale and yScale to make axis
+      if (horizontal) {    // switch xScale and yScale to make axis
         let middleMan = xScale;
         xScale = yScale;
         yScale = middleMan;
 
-        middleMan = xDataName;
-        xDataName = yDataName;
-        yDataName = middleMan;
-
-        scaleSwitch = 1;
+        if (!scaleSwitch) {
+          middleMan = xDataName;
+          xDataName = yDataName;
+          yDataName = middleMan;
+          scaleSwitch = 1;
+        }
       }
 
       //add the axis to content group

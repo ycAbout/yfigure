@@ -189,11 +189,12 @@ class LineDot extends BaseSimpleGroupAxis {
         xScale = yScale;
         yScale = middleMan;
 
-        middleMan = xDataName;
-        xDataName = yDataName;
-        yDataName = middleMan;
-
-        scaleSwitch = 1;
+        if (!scaleSwitch) {
+          middleMan = xDataName;
+          xDataName = yDataName;
+          yDataName = middleMan;
+          scaleSwitch = 1;
+        }
       }
 
       //add the axis to content group
