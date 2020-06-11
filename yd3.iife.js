@@ -399,14 +399,12 @@ var yd3 = (function (exports, d3) {
       //more than one y data columns
       let yDataNames = data[0].slice(1);
 
-      const yDataNamesOriginal = JSON.parse(JSON.stringify(yDataNames));
-
       let yDataName = (yDataNames.length == 1 ? data[0][1] : '');
 
       // get ride of column name, does not modify origin array
       let dataValue = data.slice(1);
 
-      return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue]
+      return [xDataName, xDataIndex, yDataNames, yDataName, dataValue]
     }
 
     /**
@@ -643,7 +641,7 @@ var yd3 = (function (exports, d3) {
   }
 
   //to do, each bar each color(maybe group bar with 1 group?), time series, 
-  //number value = 0, background multiple color, remove original, click legend grey out, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+  //number values = 0, background multiple color, remove original, click legend grey out, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
   /**
   * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -713,7 +711,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue] = this._setDataParameters(data);
 
       let svg = d3.select(location)
         .append('svg')
@@ -726,7 +724,7 @@ var yd3 = (function (exports, d3) {
 
       //colors for difference lines
       let colorScale = d3.scaleOrdinal()
-        .domain(yDataNamesOriginal)
+        .domain(yDataNames)
         .range(colors);
 
       // initialize legend position
@@ -737,7 +735,7 @@ var yd3 = (function (exports, d3) {
       let dataPointDisplayId = this._setDataPoint();
 
       // to hold legend click status, the y data selection status
-      let legendState = new Array(yDataNamesOriginal.length).fill(1);
+      let legendState = new Array(yDataNames.length).fill(1);
 
       let scaleSwitch = 0;   // for horizontal, to make sure swtich only once
 
@@ -913,22 +911,22 @@ var yd3 = (function (exports, d3) {
       drawModule();
 
       // Add legend
-      if (yDataNamesOriginal.length > 1) {
+      if (yDataNames.length > 1) {
 
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
         // draw each y legend
-        for (let i = 0; i < yDataNamesOriginal.length; i++) {
+        for (let i = 0; i < yDataNames.length; i++) {
 
           let legendText = legend
             .append('text')
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 12}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNamesOriginal[i]))
-            .text(yDataNamesOriginal[i])
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i])
             .attr("key", i)
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
@@ -945,17 +943,17 @@ var yd3 = (function (exports, d3) {
             .attr("transform", `translate(${legendx}, ${legendy + (textHeight - 12) / 2})`)
             .attr("width", 8)
             .attr("height", 8)
-            .attr("fill", colorScale(yDataNamesOriginal[i]));
+            .attr("fill", colorScale(yDataNames[i]));
 
           // set up next legend x and y
           legendx += 12 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNamesOriginal.length) {
+          if (i + 1 < yDataNames.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNamesOriginal[i + 1]);
+              .text(yDataNames[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 
@@ -1183,7 +1181,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue] = this._setDataParameters(data);
 
       let svg = d3.select(location)
         .append('svg')
@@ -1196,7 +1194,7 @@ var yd3 = (function (exports, d3) {
 
       //colors for difference lines
       let colorScale = d3.scaleOrdinal()
-        .domain(yDataNamesOriginal)
+        .domain(yDataNames)
         .range(colors);
 
       // initialize legend position
@@ -1207,7 +1205,7 @@ var yd3 = (function (exports, d3) {
       let dataPointDisplayId = this._setDataPoint();
 
       // to hold legend click status, the y data selection status
-      let legendState = new Array(yDataNamesOriginal.length).fill(1);
+      let legendState = new Array(yDataNames.length).fill(1);
 
       const drawModule = () => {
 
@@ -1247,7 +1245,6 @@ var yd3 = (function (exports, d3) {
 
         // remove old content group if exist and draw a new one
         if (svg.select('#' + id + 'sky999all').node()) {
-          console.log("found 1");
           svg.select('#' + id + 'sky999all').remove();
         }
 
@@ -1324,21 +1321,21 @@ var yd3 = (function (exports, d3) {
       drawModule();
 
       // Add legend
-      if (yDataNamesOriginal.length > 1) {
+      if (yDataNames.length > 1) {
 
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
 
         // draw each y legend
-        for (let i = 0; i < yDataNamesOriginal.length; i++) {
+        for (let i = 0; i < yDataNames.length; i++) {
           let legendText = legend
             .append('text')
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 24}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNamesOriginal[i]))
-            .text(yDataNamesOriginal[i])
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i])
             .attr("key", i)
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
@@ -1352,7 +1349,7 @@ var yd3 = (function (exports, d3) {
 
           legend
             .append('path')
-            .attr("stroke", colorScale(yDataNamesOriginal[i]))
+            .attr("stroke", colorScale(yDataNames[i]))
             .attr("stroke-width", 2)
             .attr("d", d3.line()([[legendx, legendy + 4 + (textHeight - 12) / 2], [legendx + 20, legendy + 4 + (textHeight - 12) / 2]]));
 
@@ -1362,17 +1359,17 @@ var yd3 = (function (exports, d3) {
             .append("circle")
             .attr("transform", `translate(${legendx + 10}, ${legendy + 4 + (textHeight - 12) / 2})`)
             .attr("r", legendDotRadius)
-            .attr("fill", colorScale(yDataNamesOriginal[i]));
+            .attr("fill", colorScale(yDataNames[i]));
 
           // set up next legend x and y
           legendx += 24 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNamesOriginal.length) {
+          if (i + 1 < yDataNames.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNamesOriginal[i + 1]);
+              .text(yDataNames[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 
@@ -1454,7 +1451,7 @@ var yd3 = (function (exports, d3) {
       let yPadding = options.yPadding;
 
       // set data parameters
-      let [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue] = this._setDataParameters(data);
+      let [xDataName, xDataIndex, yDataNames, yDataName, dataValue] = this._setDataParameters(data);
 
       let svg = d3.select(location)
         .append('svg')
@@ -1467,7 +1464,7 @@ var yd3 = (function (exports, d3) {
 
       //colors for difference lines
       let colorScale = d3.scaleOrdinal()
-        .domain(yDataNamesOriginal)
+        .domain(yDataNames)
         .range(colors);
 
       // initialize legend position
@@ -1478,7 +1475,7 @@ var yd3 = (function (exports, d3) {
       let dataPointDisplayId = this._setDataPoint();
 
       // to hold legend click status, the y data selection status
-      let legendState = new Array(yDataNamesOriginal.length).fill(1);
+      let legendState = new Array(yDataNames.length).fill(1);
 
       const drawModule = () => {
 
@@ -1576,19 +1573,19 @@ var yd3 = (function (exports, d3) {
       drawModule();
 
       // Add legend
-      if (yDataNamesOriginal.length > 1) {
+      if (yDataNames.length > 1) {
         let legend = svg
           .append("g")
           .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`);  // move to the beginning
         // draw each y legend
-        for (let i = 0; i < yDataNamesOriginal.length; i++) {
+        for (let i = 0; i < yDataNames.length; i++) {
           let legendText = legend
             .append('text')
             .style('font', legendFont)
             .attr("transform", `translate(${legendx + 12}, ${legendy})`)
             .attr("dy", "0.8em")
-            .attr('fill', colorScale(yDataNamesOriginal[i]))
-            .text(yDataNamesOriginal[i])
+            .attr('fill', colorScale(yDataNames[i]))
+            .text(yDataNames[i])
             .attr("key", i)
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
@@ -1604,17 +1601,17 @@ var yd3 = (function (exports, d3) {
             .append("circle")
             .attr("transform", `translate(${legendx + 4}, ${legendy + 4 + (textHeight - 12) / 2})`)
             .attr("r", 4)
-            .attr("fill", colorScale(yDataNamesOriginal[i]));
+            .attr("fill", colorScale(yDataNames[i]));
 
           // set up next legend x and y
           legendx += 12 + textWidth + 8;
 
           // if there is another
-          if (i + 1 < yDataNamesOriginal.length) {
+          if (i + 1 < yDataNames.length) {
             //test bbox for next one
             let nextLegendText = legend
               .append('text')
-              .text(yDataNamesOriginal[i + 1]);
+              .text(yDataNames[i + 1]);
             let nextTextWidth = nextLegendText.node().getBBox().width;
             nextLegendText.remove();
 

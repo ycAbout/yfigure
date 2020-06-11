@@ -380,14 +380,12 @@ class BaseSimpleGroupAxis {
     //more than one y data columns
     let yDataNames = data[0].slice(1);
 
-    const yDataNamesOriginal = JSON.parse(JSON.stringify(yDataNames));
-
     let yDataName = (yDataNames.length == 1 ? data[0][1] : '');
 
     // get ride of column name, does not modify origin array
     let dataValue = data.slice(1)
 
-    return [xDataName, xDataIndex, yDataNames, yDataNamesOriginal, yDataName, dataValue]
+    return [xDataName, xDataIndex, yDataNames, yDataName, dataValue]
   }
 
   /**
