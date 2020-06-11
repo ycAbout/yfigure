@@ -132,7 +132,6 @@ class LineDot extends BaseSimpleGroupAxis {
 
       // remove old content group if exist and draw a new one
       if (svg.select('#' + id + 'sky999all').node()) {
-        console.log("found 1")
         svg.select('#' + id + 'sky999all').remove();
       }
 
@@ -230,7 +229,7 @@ class LineDot extends BaseSimpleGroupAxis {
           .on("click", function () {
             let position = parseInt(this.getAttribute('key'));
             legendState[position] = 1 - legendState[position];
-            console.log('clicked: ', legendState);
+            this.setAttribute("opacity", Math.max(legendState[position], 0.5));
             drawModule();
           });
 
@@ -265,7 +264,7 @@ class LineDot extends BaseSimpleGroupAxis {
 
           // if add next legend spill over innerWidth
           if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
-            legendy += textHeight;    // start a new line
+            legendy += textHeight + 2;    // start a new line
             legendx = legendX * width;
           }
         }

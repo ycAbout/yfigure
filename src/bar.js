@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //to do, each bar each color(maybe group bar with 1 group?), time series, 
-//number value = 0, background multiple color, remove original, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+//number value = 0, background multiple color, remove original, click legend grey out, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -119,9 +119,6 @@ class Bar extends BaseSimpleGroupAxis {
 
       let dataMax = Math.max(d3.max(maxYArray), 0);
       let dataMin = Math.min(d3.min(minYArray), 0);
-
-      console.log('dataMax', dataMax)
-      console.log('dataMin', dataMin)
 
       // for stacked bar chart
       let lastPositive = new Array(dataValue.length).fill(0);       // hold accumulated value for each y
@@ -269,7 +266,6 @@ class Bar extends BaseSimpleGroupAxis {
 
       this._drawAxis(...[content, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight,
         frameTop, frameBottom, frameRight, frameLeft, horizontal], ...axisOptionArray);
-
     }
 
     // first draw
@@ -296,6 +292,7 @@ class Bar extends BaseSimpleGroupAxis {
           .on("click", function () {
             let position = parseInt(this.getAttribute('key'));
             legendState[position] = 1 - legendState[position];
+            this.setAttribute("opacity", Math.max(legendState[position], 0.5));
             drawModule();
           });
 
@@ -323,7 +320,7 @@ class Bar extends BaseSimpleGroupAxis {
 
           // if add next legend spill over innerWidth
           if (legendx + 12 + nextTextWidth > Math.min(legendX * width + legendWidth, width)) {
-            legendy += textHeight;    // start a new line
+            legendy += textHeight + 2;    // start a new line
             legendx = legendX * width;
           }
         }

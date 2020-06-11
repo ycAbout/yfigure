@@ -224,8 +224,7 @@
     //bar4.update();
     //bar5.update();
 
-    createTitle("H2", "group bar");
-
+    createTitle("H2", "group bar (clickable legend)");
 
 
     let largestCompanies2020 = [
@@ -236,10 +235,13 @@
     let bar6 = new yd3.Bar(largestCompanies2020, {
       frameLeft: 40,
       xPadding: 0.01,
-      title: 'Largest Companies (click legend)',
+      title: 'World Largest Companies',
+      titleY: 0.98,
+      frameTop: 0,
       yTitle: 'Market cap (us billion)',
       xTitle: ' ', //?? need to modify
       withinGroupPadding: 0.1
+      
     });
 
     let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
@@ -252,24 +254,39 @@
     let bar7 = new yd3.Bar(techCompany2019, {
       frameLeft: 40,
       xPadding: 0.3,
-      title: '2019 MAA (Click legend)',
+      yPadding: 0.25,
+      title: '2019 Microsoft Apple Amazon',
       yTitle: 'Market cap (us billion)',
+      legendX: 0.20,
+      legendY: 0.18,
+      legendWidth: 10,
+      legendFont: '12px times'
       //withinGroupPadding: 0.1
     });
 
 
-    let gdpRate2007to2009 = [['Year', 'US', 'China', 'EU', 'Canada'],
-    ['2007', 1.9, 14.2, 3.2, 6.9],
-    ['2008', -0.1, 9.7, 0.7, 1.0],
-    ['2009', -2.5, 9.4, -4.3, -2.9],
-    ['2010', 2.6, 10.6, 2.2, 3.1]
+    let gdpRate2007to2009 = [['Year', 'US', 'EU', 'World'],
+    ['2007', 1.9,  3.2, 4.3],
+    ['2008', -0.1, 0.7, 1.9],
+    ['2009', -2.5, -4.3, -1.7],
+    ['2010', 2.6,  2.2, 4.3]
     ]
-    let a = [2.6, 10.6, 2.2, 3.1]
+
+//    gdpRate2007to2009 = 
+//    [['Country', '2007', '2008', '2009', '2010'],
+////    ['China', 14.2, 9.7, 9.4, 10.6],
+//    ['EU', 3.2, 0.7, -4.3, 2.2],
+//    ['US', 1.9, -0.1, -2.5, 2.6],
+//    ['Canada', 6.9, 1.0, -2.9, 3.1],
+//    ]
+
     // example 2
     let bar10 = new yd3.Bar(gdpRate2007to2009, {
-      stacked: false,
-      legendX: 0.5,
-      legendY: 0,
+      colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
+      xPadding: 0.25,
+      legendX: 0.4,
+      title: 'GDP Growth During 08 Financial Crisis',
+      yTitle: 'Growth rate (%)'
 
     });
     br();
@@ -401,7 +418,6 @@
     br();
     // example 3 
     let linedot6 = new yd3.LineDot(dataLineDot3, {
-
       margin: 50,
       location: 'body',
       dotRadius: 10,
@@ -422,6 +438,14 @@
     //linedot6.update();
 
     createTitle("H2", "scatter");
+
+
+    dataScatter2 = [["age", "WWWWWWWiii", "score2", "gWggH", "i2654"]];
+    for (i = 0; i < 60; i++) {
+      let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
+      dataScatter2.push(element)
+    }
+
 
     // example 1  
     let scatter1 = new yd3.Scatter(dataScatter1);
