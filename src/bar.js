@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//to do, each bar each color(maybe group bar with 1 group?), time series, 
-//number values = 0, background multiple color, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+//time series axis, area, pie chart, stack line, additional y, scatter x category, line bar x continuous (x tick number)?
+//number values = 0, error bar, line hover, background multiple color, figure legend default (horizontal), commerical copyright,
+
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -39,7 +40,6 @@ class Bar extends BaseSimpleGroupAxis {
     validateNumStr(options.legendWidth, 'legendWidth');
 
     typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
-
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);

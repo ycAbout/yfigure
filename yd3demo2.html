@@ -78,7 +78,6 @@
     createTitle("H1", "yd3 Demo");
     createTitle("H2", "bar");
 
-
     let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];
     let dataBar3 = [["group", "score"]];
     for (let i = 0; i < 50; i++) {
@@ -105,51 +104,6 @@
       dataBar6.push(element)
     }
 
-    let worldPopulation2020 = [
-      ['Country', 'Population(million)'],
-      ['China', 1439],
-      ['India', 1380],
-      ['US', 331],
-      ['Indones', 274],
-      ['Pakist', 221],
-      ['Brazil', 213],
-      ['Nigeri', 206],
-      ['Bangladesh', 165],
-      ['Russia', 146],
-      ['Mexico', 129],
-      ["Japan", 126],
-      ["Ethiopia", 115],
-      ["Philippines", 110],
-      ["Egypt", 102],
-      ["Vietnam", 97],
-      ["DR Congo", 90],
-      ["Turkey", 84],
-      ["Iran", 84],
-      ["Germany", 84],
-      ["Thailand", 70],
-      ["UK", 68],
-      ["France", 65],
-      ["Italy", 60],
-      ["Tanzania", 60],
-      ["South Africa", 59],
-      ["Myanmar", 54],
-      ["Kenya", 54],
-      ["South Korea", 51],
-      ["Colombia", 51],
-      ["Spain", 47],
-    ]
-
-    let canadaTemprature = [['Provinces', 'Record high (°C)', 'Record low (°C)'],
-    ['Alberta', 43.3, -61.1],
-    ['British Columbia', 44.4, -58.9],
-    ['Manitoba', 44.4, -52.8],
-    ['New Brunswick', 39.4, -46.7],
-    ['Nova Scotia', 38.3, -41.1],
-    ['Ontario', 42.2, -58.3],
-    ['PEI', 36.7, -37.2],
-    ['Quebec', 40.0, -54.4],
-    ['Saskatchewan', 45.0, -56.7]
-    ]
 
     let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3],
     ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
@@ -162,12 +116,12 @@
 
 
     // example 1
-    worldPopulation = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(worldPopulation);
+    let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar1 = new yd3.Bar(population);
 
     // example 2 rotate x tick lables, change layout, font
-    worldPopulation = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yd3.Bar(worldPopulation, {
+    let populationFourCountry = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar2 = new yd3.Bar(populationFourCountry, {
       title: 'World Population',
       colors: ['#1f9400', '#1f9400'], // second for negative value
       xAxisPosition: ['bottom', 'top'],
@@ -203,7 +157,7 @@
 
     let bar5 = new yd3.Bar(canadaBudget, {
       width: 800,
-      height: 400,
+      height: 350,
       title: 'Canada Budget',
       titleY: 1,
       titleFont: 'bold 28px times',
@@ -225,7 +179,6 @@
     //bar5.update();
 
     createTitle("H2", "group bar (clickable legend)");
-
 
     let largestCompanies2020 = [
       ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
@@ -265,37 +218,41 @@
     });
 
 
-    let gdpRate2007to2009 = [['Year', 'US', 'EU', 'World'],
+    let gdpRate2007to2010 = [['Year', 'US', 'EU', 'World'],
     ['2007', 1.9, 3.2, 4.3],
     ['2008', -0.1, 0.7, 1.9],
     ['2009', -2.5, -4.3, -1.7],
     ['2010', 2.6, 2.2, 4.3]
     ]
 
-    //    gdpRate2007to2009 = 
-    //    [['Country', '2007', '2008', '2009', '2010'],
-    ////    ['China', 14.2, 9.7, 9.4, 10.6],
-    //    ['EU', 3.2, 0.7, -4.3, 2.2],
-    //    ['US', 1.9, -0.1, -2.5, 2.6],
-    //    ['Canada', 6.9, 1.0, -2.9, 3.1],
-    //    ]
-
     // example 2
-    let bar10 = new yd3.Bar(gdpRate2007to2009, {
+    let bar10 = new yd3.Bar(gdpRate2007to2010, {
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
       xPadding: 0.25,
       legendX: 0.4,
       title: 'GDP Growth During 08 Financial Crisis',
       yTitle: 'Growth rate (%)'
-
     });
     br();
+
+
+    let gdp2007to2010 = [
+      ['Country', '2007', '2008', '2009', '2010'],
+      ['China', 14.2, 9.7, 9.4, 10.6],
+      ['EU', 3.2, 0.7, -4.3, 2.2],
+      ['US', 1.9, -0.1, -2.5, 2.6],
+      ['Canada', 6.9, 1.0, -2.9, 3.1],
+    ]
+
     // example 3
-    let bar11 = new yd3.Bar(dataBar6, {
-      width: 600,
-      "marginLeft": 30,
-      location: 'body',
-      xPosition: ['bottom'], yPosition: ['right'], xTitlePosition: ['bottom'], yTitlePosition: ['right'],
+    let bar11 = new yd3.Bar(gdp2007to2010, {
+      width: 800,
+      yTitle: "abc ",
+      //yGridDashArray: '4 2',
+      yGridStrokeWidth: 0.2,
+      xPadding: 0.4,
+      yAxisPosition: ['left', 'right'], yTitlePosition: ['right'],
+      axisLongLineRemove: ['bottom'],
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
 
@@ -303,22 +260,87 @@
     //bar5.update();
     //bar6.update();
 
+
+
     createTitle("H2", "stack bar");
 
-    // example 2
-    let bar12 = new yd3.Bar(dataBar5, {
-      stacked: true,
-      legendX: 0.5,
-      legendY: 0,
+    canadaTemprature = [['Provinces', 'High', 'Low'],
+    ['Saskatchewan', 45.0, -56.7],
+    ['Alberta', 43.3, -61.1],
+    ['British Columbia', 44.4, -58.9],
+    ['Manitoba', 44.4, -52.8],
+    ['New Brunswick', 39.4, -46.7],
+    ['Nova Scotia', 38.3, -41.1],
+    ['Ontario', 42.2, -58.3],
+    ['Quebec', 40.0, -54.4],
+    ['PEI', 36.7, -37.2],
+    ['NL', 38.3, -51.1],
+    ['NT', 39.4, -59.4],
+    ['Nunavut', 34.9, -57.8],
+    ['Yukon', 36.5, -63.0]]
 
+    // example 2
+    let bar12 = new yd3.Bar(canadaTemprature, {
+      stacked: true,
+      legendX: 0.88,
+      legendY: 0.42,
+      legendFont: '15px sans-serif',
+      xPadding: 0.3,
+      yPadding: 0.08,
+      frameBottom: 50,
+      xTickLabelRotate: 30,
+      xTitle: ' ',
+      yTitle: 'Temprature (°C)',
+      title: "Canada Record Temprature",
+      titleY: 1,
+      colors: ['#CC2529', '#009fe1', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D']
     });
 
 
     createTitle("H2", "horizontal bar");
 
+    let worldPopulation2020 = [
+      ['Country', 'Population(million)'], ['US', 331], ['Indones', 274], ['Pakist', 221], ['Brazil', 213], ['Nigeri', 206], ['Bangladesh', 165],
+      ['Russia', 146], ['Mexico', 129], ["Japan", 126], ["Ethiopia", 115], ["Philippines", 110], ["Egypt", 102], ["Vietnam", 97], ["DR Congo", 90],
+      ["Turkey", 84], ["Iran", 84], ["Germany", 84], ["Thailand", 70], ["UK", 68], ["France", 65], ["Italy", 60],
+    ]
+
+    let p = [['China', 1439],
+    ['India', 1380],
+    ["Tanzania", 60],
+    ["South Africa", 59],
+    ["Myanmar", 54],
+    ["Kenya", 54],
+    ["South Korea", 51],
+    ["Colombia", 51],
+    ["Spain", 47],]
+
     // example 2
-    let bar13 = new yd3.Bar(dataBar2, {
+    let bar13a = new yd3.Bar(worldPopulation2020, {
       horizontal: true,
+      height: 400,
+      width: 300,
+      xPadding: 0,
+      frameLeft: 60,
+      frameRight: 0,
+      marginRight: 0
+    });
+    
+    let AnotherWorldPopulation2020 = [
+      ['Country', 'Population(million)'], ['US', -331], ['Indones', -274], ['Pakist', -221], ['Brazil', -213], ['Nigeri', -206], ['Bangladesh', -165],
+      ['Russia', -146], ['Mexico', -129], ["Japan", -126], ["Ethiopia", -115], ["Philippines", -110], ["Egypt", -102], ["Vietnam", -97], ["DR Congo", -90],
+      ["Turkey", -84], ["Iran", -84], ["Germany", -84], ["Thailand", -70], ["UK", -68], ["France", -65], ["Italy", -60],
+    ]
+
+    // example 2
+    let bar13b = new yd3.Bar(AnotherWorldPopulation2020, {
+      horizontal: true,
+      height: 400,
+      width: 300,
+      xPadding: 0,
+      frameRight: 60,
+      frameLeft: 0,
+      marginLeft: 0,
     });
 
 
@@ -472,7 +494,7 @@
 
 
     // example 1  
-    let scatter1 = new yd3.Scatter(dataScatter1);
+    let scatter1 = new yd3.Scatter(Saskatoon2010to2019Low);
     // example 2 
     let scatter2 = new yd3.Scatter(dataScatter2, {
 

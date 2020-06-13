@@ -112,15 +112,19 @@ var yd3 = (function (exports, d3) {
       let marginTop, marginLeft, marginBottom, marginRight;
 
       // make margin short cut for all margin
-      if (options.margin) {
+      if (options.margin || parseInt(options.margin) === 0) {
         validateNumStr(options.margin, 'margin');
         marginTop = marginLeft = marginBottom = marginRight = parseInt(options.margin);
         // any one of the margin is set
-      } else if (options['marginLeft'] || options['marginTop'] || options['marginRight'] || options['marginBottom']) {
-        options['marginLeft'] ? true : options['marginLeft'] = 25;
-        options['marginTop'] ? true : options['marginTop'] = 25;
-        options['marginRight'] ? true : options['marginRight'] = 25;
-        options['marginBottom'] ? true : options['marginBottom'] = 25;
+      } else if ((options['marginLeft'] || parseInt(options.marginLeft) === 0)
+        || (options['marginTop'] || parseInt(options.marginTop) === 0)
+        || (options['marginRight'] || parseInt(options.marginRight) === 0)
+        || (options['marginBottom'] || parseInt(options.marginBottom) === 0)
+      ) {
+        (options['marginLeft'] || parseInt(options.marginLeft) === 0) ? true : options['marginLeft'] = 25;
+        (options['marginTop'] || parseInt(options.marginTop) === 0) ? true : options['marginTop'] = 25;
+        (options['marginRight'] || parseInt(options.marginRight) === 0) ? true : options['marginRight'] = 25;
+        (options['marginBottom'] || parseInt(options.marginBottom) === 0) ? true : options['marginBottom'] = 25;
 
         //validate format
         validateNumStr(options.marginLeft, 'marginLeft');
@@ -141,15 +145,19 @@ var yd3 = (function (exports, d3) {
       let frameTop, frameLeft, frameBottom, frameRight;
 
       // make frame short cut for all frames
-      if (options.frame) {
+      if (options.frame || parseInt(options.frame) === 0) {
         validateNumStr(options.frame, 'frame');
         frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
         // any one of the frame is set
-      } else if (options.frameLeft || options.frameTop || options.frameRight || options.frameBottom) {
-        options.frameLeft ? true : options.frameLeft = 30;
-        options.frameTop ? true : options.frameTop = 30;
-        options.frameRight ? true : options.frameRight = 30;
-        options.frameBottom ? true : options.frameBottom = 30;
+      } else if ((options.frameLeft || parseInt(options.frameLeft) === 0)
+        || (options.frameTop || parseInt(options.frameTop) === 0)
+        || (options.frameRight || parseInt(options.frameRight) === 0)
+        || (options.frameBottom|| parseInt(options.frameBottom) === 0)
+        ) {
+        (options.frameLeft || parseInt(options.frameLeft) === 0) ? true : options.frameLeft = 30;
+        (options.frameTop || parseInt(options.frameTop) === 0) ? true : options.frameTop = 30;
+        (options.frameRight || parseInt(options.frameRight) === 0) ? true : options.frameRight = 30;
+        (options.frameBottom || parseInt(options.frameBottom) === 0) ? true : options.frameBottom = 30;
 
         //validate format
         validateNumStr(options.frameLeft, 'frameLeft');
@@ -640,8 +648,9 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //to do, each bar each color(maybe group bar with 1 group?), time series, 
-  //number values = 0, background multiple color, figure legend default (horizontal), area, pie chart, commerical copyright, error bar, line hover, stack line, additional y
+  //time series axis, area, pie chart, stack line, additional y, scatter x category, line bar x continuous (x tick number)?
+  //number values = 0, error bar, line hover, background multiple color, figure legend default (horizontal), commerical copyright,
+
 
   /**
   * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -678,7 +687,6 @@ var yd3 = (function (exports, d3) {
       validateNumStr(options.legendWidth, 'legendWidth');
 
       typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
-
 
       this._validate2dArray(this._data);
       this._draw(this._data, this._options);
