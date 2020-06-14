@@ -8,6 +8,7 @@ class CombinedBar {
 
   _draw(data, options) {
 
+    let dataBreak = [70, 80]
 
     let location = 'body';
     let width = 400;
@@ -19,6 +20,7 @@ class CombinedBar {
       .append('span')       //non-block container
       .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
       .attr('id', id)
+      .append('div')
       .attr('style', `margin: ${marginTop}px 0 0 ${marginLeft}px`);       //px need to be specified, otherwise not working
 
     combined
@@ -29,20 +31,46 @@ class CombinedBar {
       .append("div")
       .attr('id', id + 'major')
 
-    options.location = '#' + id + 'minor'
-    options.height = 200
-    options.frameBottom = 0
-    options.marginBottom = 0
-    options.xAxisPostion = []
-    options.xTitlePostion = []
-    let barMinor = new Bar(data, options)
 
-    options.height = 200
-    options.location = '#' + id + 'major'
-    options.frameTop = 0
-    options.marginTop = 0
-    options.yPadding = 0
-    let barMajor = new Bar(data, options)
+    let innerDataMajor = JSON.parse(JSON.stringify(data));
+    innerDataMajor.map((element, index) => {
+      if (index > 0) {
+        element.map((ele, index) => {
+          if (index > 0) {  // excluded first column which holds x value
+            if (ele > dataBreak[0]) element[index] = dataBreak[0];
+          }
+        })
+      }
+    })
+
+    let innerDataMinor = JSON.parse(JSON.stringify(data));
+    innerDataMinor.map((element, index) => {
+      if (index > 0) {
+        element.map((ele, index) => {
+          if (index > 0) {
+            if (ele < dataBreak[1]) element[index] = dataBreak[1];
+          }
+        })
+      }
+    })
+
+
+    let barMinor = new Bar(innerDataMinor, {
+      location: '#' + id + 'minor',
+      height: 200,
+      frameBottom: 0,
+      marginBottom: 0,
+      xAxisPostion: [],
+      xTitlePostion: [],
+    })
+
+    let barMajor = new Bar(innerDataMajor, {
+      height: 200,
+      location: '#' + id + 'major',
+      frameTop: 0,
+      marginTop: 0,
+      yPadding: 0,
+    })
   }
 
 }
