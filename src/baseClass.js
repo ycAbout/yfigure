@@ -26,8 +26,8 @@ class BaseSimpleGroupAxis {
     // set defaul values so no need to feed options in a way none or all
     options.location ? true : options.location = 'body';
     options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
-    options.width ? true : options.width = 400;
-    options.height ? true : options.height = 300;
+    (options.width || parseInt(options.width) === 0) ? true : options.width = 400;
+    (options.height || parseInt(options.height) === 0) ? true : options.height = 300;
     options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
     options.backgroundColor ? true : options.backgroundColor = '';
     options.title ? true : options.title = '';
@@ -201,7 +201,7 @@ class BaseSimpleGroupAxis {
     options.yGridDashArray ? true : options.yGridDashArray = '';
     options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
     options.line0 === false ? true : options.line0 = true;
-    (options.line0Stroke || options.line0Stroke === '')? true : options.line0Stroke = 'black';
+    (options.line0Stroke || options.line0Stroke === '') ? true : options.line0Stroke = 'black';
     (options.line0StrokeWidth || parseInt(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
     options.line0DashArray ? true : options.line0DashArray = '';
 
