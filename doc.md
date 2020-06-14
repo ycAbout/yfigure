@@ -62,7 +62,7 @@ common options:
   `yGridStrokeWidth: 0` Sets the x grid line properties, 0 no show, change to 1 to show
   `line0: true` Sets whether line 0 (on x or y) will show if there is positive and negative data
   `line0Stroke: 'black'` Sets line0 properties
-  `line0StrokeWidth: 1` Sets line0 properties
+  `line0StrokeWidth: 1` Sets line0 properties   // 0 also no show
   `line0DashArray: ''` Sets line0 properties
 
 

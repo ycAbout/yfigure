@@ -133,8 +133,8 @@ class BaseSimpleGroupAxis {
     } else if ((options.frameLeft || parseInt(options.frameLeft) === 0)
       || (options.frameTop || parseInt(options.frameTop) === 0)
       || (options.frameRight || parseInt(options.frameRight) === 0)
-      || (options.frameBottom|| parseInt(options.frameBottom) === 0)
-      ) {
+      || (options.frameBottom || parseInt(options.frameBottom) === 0)
+    ) {
       (options.frameLeft || parseInt(options.frameLeft) === 0) ? true : options.frameLeft = 30;
       (options.frameTop || parseInt(options.frameTop) === 0) ? true : options.frameTop = 30;
       (options.frameRight || parseInt(options.frameRight) === 0) ? true : options.frameRight = 30;
@@ -181,17 +181,17 @@ class BaseSimpleGroupAxis {
     options.yAxisPosition ? yAxisPositionSet = true : options.yAxisPosition = ['left'];
     options.xTitlePosition ? xTitlePositionSet = true : options.xTitlePosition = ['bottom'];
     options.yTitlePosition ? yTitlePositionSet = true : options.yTitlePosition = ['left'];
-    options.xTitle ? true : options.xTitle = '';             // for user specified x title
-    options.yTitle ? true : options.yTitle = '';             // for user sepcified y title
+    (options.xTitle || options.xTitle === '') ? true : options.xTitle = false;             // if false, use default from dataset
+    (options.yTitle || options.yTitle === '') ? true : options.yTitle = false;             // if false, use default from dataset
     options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
     options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
     options.xTitleFont ? true : options.xTitleFont = '12px sans-serif';
     options.yTitleFont ? true : options.yTitleFont = '12px sans-serif';
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
-    options.xTicks ? true : options.xTicks = null;
-    options.yTicks ? true : options.yTicks = null;
-    options.xTickSize ? true : options.xTickSize = 6;
-    options.yTickSize ? true : options.yTickSize = 6;
+    (options.xTicks || parseInt(options.xTicks) === 0) ? true : options.xTicks = null;
+    (options.yTicks || parseInt(options.yTicks) === 0) ? true : options.yTicks = null;
+    (options.xTickSize || parseInt(options.xTickSize) === 0) ? true : options.xTickSize = 6;
+    (options.yTickSize || parseInt(options.yTickSize) === 0) ? true : options.yTickSize = 6;
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
     options.xGridColor ? true : options.xGridColor = '';
@@ -201,8 +201,8 @@ class BaseSimpleGroupAxis {
     options.yGridDashArray ? true : options.yGridDashArray = '';
     options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
     options.line0 === false ? true : options.line0 = true;
-    options.line0Stroke ? true : options.line0Stroke = 'black';
-    options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
+    (options.line0Stroke || options.line0Stroke === '')? true : options.line0Stroke = 'black';
+    (options.line0StrokeWidth || parseInt(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
     options.line0DashArray ? true : options.line0DashArray = '';
 
     //****************** not returned, assigned in each individual function */
@@ -433,9 +433,9 @@ class BaseSimpleGroupAxis {
     ))
 
     // if user not specified xTitle
-    if (xTitle.length === 0) xTitle = xDataName;
+    if (xTitle === false) xTitle = xDataName;
     // if user not specified yTitle
-    if (yTitle.length === 0) yTitle = yDataName;
+    if (yTitle === false) yTitle = yDataName;
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
