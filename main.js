@@ -6,4 +6,5 @@ export { Histogram } from './src/histogram.js';
 export { LineDot } from './src/lineDot.js';
 export { Scatter } from './src/scatter.js';
 export { SortableBar } from './src/sortableBar.js';
+export { CombinedBar } from './src/combinedBar.js';
 
