@@ -229,18 +229,18 @@ class BaseSimpleGroupAxis {
       typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
 
-    validateString(options.xTitle, 'xTitle');
-    validateString(options.yTitle, 'yTitle');
-    validateString(options.xAxisFont, 'xAxisFont');
-    validateString(options.yAxisFont, 'yAxisFont');
-    validateString(options.xTitleFont, 'xTitleFont');
-    validateString(options.yTitleFont, 'yTitleFont');
-    validateString(options.xGridColor, 'xGridColor');
-    validateString(options.xGridDashArray, 'xGridDashArray');
-    validateString(options.yGridColor, 'yGridColor');
-    validateString(options.yGridDashArray, 'yGridDashArray');
-    validateString(options.line0Stroke, 'line0Stroke');
-    validateString(options.line0DashArray, 'line0DashArray');
+    validateString(options.xTitle.toString(), 'xTitle');
+    validateString(options.yTitle.toString(), 'yTitle');
+    validateString(options.xAxisFont.toString(), 'xAxisFont');
+    validateString(options.yAxisFont.toString(), 'yAxisFont');
+    validateString(options.xTitleFont.toString(), 'xTitleFont');
+    validateString(options.yTitleFont.toString(), 'yTitleFont');
+    validateString(options.xGridColor.toString(), 'xGridColor');
+    validateString(options.xGridDashArray.toString(), 'xGridDashArray');
+    validateString(options.yGridColor.toString(), 'yGridColor');
+    validateString(options.yGridDashArray.toString(), 'yGridDashArray');
+    validateString(options.line0Stroke.toString(), 'line0Stroke');
+    validateString(options.line0DashArray.toString(), 'line0DashArray');
 
     function validateNumStr(numStrToBe, errorString) {
       (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
@@ -330,12 +330,12 @@ class BaseSimpleGroupAxis {
     let yAxisPosition = options.yAxisPosition;
     let xTitlePosition = options.xTitlePosition;
     let yTitlePosition = options.yTitlePosition;
-    let xTitle = options.xTitle;
-    let yTitle = options.yTitle;
-    let xAxisFont = options.xAxisFont;
-    let yAxisFont = options.yAxisFont;
-    let xTitleFont = options.xTitleFont;
-    let yTitleFont = options.yTitleFont;
+    let xTitle = options.xTitle.toString();
+    let yTitle = options.yTitle.toString();
+    let xAxisFont = options.xAxisFont.toString();
+    let yAxisFont = options.yAxisFont.toString();
+    let xTitleFont = options.xTitleFont.toString();
+    let yTitleFont = options.yTitleFont.toString();
     let xTickLabelRotate = parseInt(options.xTickLabelRotate);
     let xTicks = options.xTicks;
     let yTicks = options.yTicks;
@@ -343,18 +343,19 @@ class BaseSimpleGroupAxis {
     let yTickSize = parseFloat(options.yTickSize);
     let tickLabelRemove = options.tickLabelRemove;
     let axisLongLineRemove = options.axisLongLineRemove;
-    let xGridColor = options.xGridColor;
-    let xGridDashArray = options.xGridDashArray;
+    let xGridColor = options.xGridColor.toString();
+    let xGridDashArray = options.xGridDashArray.toString();
+    let yGridColor = options.yGridColor.toString();
+    let yGridDashArray = options.yGridDashArray.toString();
     let xGridStrokeWidth = parseFloat(options.xGridStrokeWidth);
-    let yGridColor = options.yGridColor;
-    let yGridDashArray = options.yGridDashArray;
     let yGridStrokeWidth = parseFloat(options.yGridStrokeWidth);
 
     let line0 = options.line0;
 
-    let line0Stroke = options.line0Stroke;
+    let line0Stroke = options.line0Stroke.toString();
+    let line0DashArray = options.line0DashArray.toString();
     let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
-    let line0DashArray = options.line0DashArray;
+
 
     return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
       xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,

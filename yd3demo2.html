@@ -190,12 +190,44 @@
       xPadding: 0.01,
       title: 'World Largest Companies',
       titleY: 0.98,
-      frameTop: 0,
+      //frameTop: 0,
       yTitle: 'Market cap (us billion)',
-      xTitle: ' ', //?? need to modify
+      xTitle: '',
       withinGroupPadding: 0.1
-
     });
+
+
+    let bar6a = new yd3.Bar(largestCompanies2020, {
+      frameLeft: 40,
+      xPadding: 0.01,
+      height: 150,
+      title: 'World Largest Companies',
+      frameBottom: 0,
+      marginBottom: 0,
+      xAxisPosition: [],
+      line0: false ,
+      yTitle: 'Market cap (us billion)',
+      xTitle: '',
+      withinGroupPadding: 0.1
+    });
+
+
+    // example 1
+    let bar6b = new yd3.Bar(largestCompanies2020, {
+      frameLeft: 40,
+      yPadding: 0,
+      xPadding: 0.01,
+      legendX: 1,
+      legendY: 1,
+      title: 'World Largest Companies',
+      titleY: 0.98,
+      frameTop: 0,
+      marginTop: 0,
+      yTitle: 'Market cap (us billion)',
+      xTitle: '',
+      withinGroupPadding: 0.1
+    });
+
 
     let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
     ['First', 905, 836, 875],

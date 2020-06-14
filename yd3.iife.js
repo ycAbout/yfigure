@@ -45,8 +45,8 @@ var yd3 = (function (exports, d3) {
       // set defaul values so no need to feed options in a way none or all
       options.location ? true : options.location = 'body';
       options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
-      options.width ? true : options.width = 400;
-      options.height ? true : options.height = 300;
+      (options.width || parseInt(options.width) === 0) ? true : options.width = 400;
+      (options.height || parseInt(options.height) === 0) ? true : options.height = 300;
       options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
       options.backgroundColor ? true : options.backgroundColor = '';
       options.title ? true : options.title = '';
@@ -152,8 +152,8 @@ var yd3 = (function (exports, d3) {
       } else if ((options.frameLeft || parseInt(options.frameLeft) === 0)
         || (options.frameTop || parseInt(options.frameTop) === 0)
         || (options.frameRight || parseInt(options.frameRight) === 0)
-        || (options.frameBottom|| parseInt(options.frameBottom) === 0)
-        ) {
+        || (options.frameBottom || parseInt(options.frameBottom) === 0)
+      ) {
         (options.frameLeft || parseInt(options.frameLeft) === 0) ? true : options.frameLeft = 30;
         (options.frameTop || parseInt(options.frameTop) === 0) ? true : options.frameTop = 30;
         (options.frameRight || parseInt(options.frameRight) === 0) ? true : options.frameRight = 30;
@@ -200,17 +200,17 @@ var yd3 = (function (exports, d3) {
       options.yAxisPosition ? yAxisPositionSet = true : options.yAxisPosition = ['left'];
       options.xTitlePosition ? xTitlePositionSet = true : options.xTitlePosition = ['bottom'];
       options.yTitlePosition ? yTitlePositionSet = true : options.yTitlePosition = ['left'];
-      options.xTitle ? true : options.xTitle = '';             // for user specified x title
-      options.yTitle ? true : options.yTitle = '';             // for user sepcified y title
+      (options.xTitle || options.xTitle === '') ? true : options.xTitle = false;             // if false, use default from dataset
+      (options.yTitle || options.yTitle === '') ? true : options.yTitle = false;             // if false, use default from dataset
       options.xAxisFont ? true : options.xAxisFont = '10px sans-serif';
       options.yAxisFont ? true : options.yAxisFont = '10px sans-serif';
       options.xTitleFont ? true : options.xTitleFont = '12px sans-serif';
       options.yTitleFont ? true : options.yTitleFont = '12px sans-serif';
       options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
-      options.xTicks ? true : options.xTicks = null;
-      options.yTicks ? true : options.yTicks = null;
-      options.xTickSize ? true : options.xTickSize = 6;
-      options.yTickSize ? true : options.yTickSize = 6;
+      (options.xTicks || parseInt(options.xTicks) === 0) ? true : options.xTicks = null;
+      (options.yTicks || parseInt(options.yTicks) === 0) ? true : options.yTicks = null;
+      (options.xTickSize || parseInt(options.xTickSize) === 0) ? true : options.xTickSize = 6;
+      (options.yTickSize || parseInt(options.yTickSize) === 0) ? true : options.yTickSize = 6;
       options.tickLabelRemove ? true : options.tickLabelRemove = [];
       options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
       options.xGridColor ? true : options.xGridColor = '';
@@ -220,8 +220,8 @@ var yd3 = (function (exports, d3) {
       options.yGridDashArray ? true : options.yGridDashArray = '';
       options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
       options.line0 === false ? true : options.line0 = true;
-      options.line0Stroke ? true : options.line0Stroke = 'black';
-      options.line0StrokeWidth ? true : options.line0StrokeWidth = 1;
+      (options.line0Stroke || options.line0Stroke === '') ? true : options.line0Stroke = 'black';
+      (options.line0StrokeWidth || parseInt(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
       options.line0DashArray ? true : options.line0DashArray = '';
 
       //****************** not returned, assigned in each individual function */
@@ -248,18 +248,18 @@ var yd3 = (function (exports, d3) {
         typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
       }
 
-      validateString(options.xTitle, 'xTitle');
-      validateString(options.yTitle, 'yTitle');
-      validateString(options.xAxisFont, 'xAxisFont');
-      validateString(options.yAxisFont, 'yAxisFont');
-      validateString(options.xTitleFont, 'xTitleFont');
-      validateString(options.yTitleFont, 'yTitleFont');
-      validateString(options.xGridColor, 'xGridColor');
-      validateString(options.xGridDashArray, 'xGridDashArray');
-      validateString(options.yGridColor, 'yGridColor');
-      validateString(options.yGridDashArray, 'yGridDashArray');
-      validateString(options.line0Stroke, 'line0Stroke');
-      validateString(options.line0DashArray, 'line0DashArray');
+      validateString(options.xTitle.toString(), 'xTitle');
+      validateString(options.yTitle.toString(), 'yTitle');
+      validateString(options.xAxisFont.toString(), 'xAxisFont');
+      validateString(options.yAxisFont.toString(), 'yAxisFont');
+      validateString(options.xTitleFont.toString(), 'xTitleFont');
+      validateString(options.yTitleFont.toString(), 'yTitleFont');
+      validateString(options.xGridColor.toString(), 'xGridColor');
+      validateString(options.xGridDashArray.toString(), 'xGridDashArray');
+      validateString(options.yGridColor.toString(), 'yGridColor');
+      validateString(options.yGridDashArray.toString(), 'yGridDashArray');
+      validateString(options.line0Stroke.toString(), 'line0Stroke');
+      validateString(options.line0DashArray.toString(), 'line0DashArray');
 
       function validateNumStr(numStrToBe, errorString) {
         (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
@@ -349,12 +349,12 @@ var yd3 = (function (exports, d3) {
       let yAxisPosition = options.yAxisPosition;
       let xTitlePosition = options.xTitlePosition;
       let yTitlePosition = options.yTitlePosition;
-      let xTitle = options.xTitle;
-      let yTitle = options.yTitle;
-      let xAxisFont = options.xAxisFont;
-      let yAxisFont = options.yAxisFont;
-      let xTitleFont = options.xTitleFont;
-      let yTitleFont = options.yTitleFont;
+      let xTitle = options.xTitle.toString();
+      let yTitle = options.yTitle.toString();
+      let xAxisFont = options.xAxisFont.toString();
+      let yAxisFont = options.yAxisFont.toString();
+      let xTitleFont = options.xTitleFont.toString();
+      let yTitleFont = options.yTitleFont.toString();
       let xTickLabelRotate = parseInt(options.xTickLabelRotate);
       let xTicks = options.xTicks;
       let yTicks = options.yTicks;
@@ -362,18 +362,19 @@ var yd3 = (function (exports, d3) {
       let yTickSize = parseFloat(options.yTickSize);
       let tickLabelRemove = options.tickLabelRemove;
       let axisLongLineRemove = options.axisLongLineRemove;
-      let xGridColor = options.xGridColor;
-      let xGridDashArray = options.xGridDashArray;
+      let xGridColor = options.xGridColor.toString();
+      let xGridDashArray = options.xGridDashArray.toString();
+      let yGridColor = options.yGridColor.toString();
+      let yGridDashArray = options.yGridDashArray.toString();
       let xGridStrokeWidth = parseFloat(options.xGridStrokeWidth);
-      let yGridColor = options.yGridColor;
-      let yGridDashArray = options.yGridDashArray;
       let yGridStrokeWidth = parseFloat(options.yGridStrokeWidth);
 
       let line0 = options.line0;
 
-      let line0Stroke = options.line0Stroke;
+      let line0Stroke = options.line0Stroke.toString();
+      let line0DashArray = options.line0DashArray.toString();
       let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
-      let line0DashArray = options.line0DashArray;
+
 
       return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
         xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
@@ -452,9 +453,9 @@ var yd3 = (function (exports, d3) {
       ));
 
       // if user not specified xTitle
-      if (xTitle.length === 0) xTitle = xDataName;
+      if (xTitle === false) xTitle = xDataName;
       // if user not specified yTitle
-      if (yTitle.length === 0) yTitle = yDataName;
+      if (yTitle === false) yTitle = yDataName;
 
       //x axis
       for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -648,8 +649,8 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //time series axis, area, pie chart, stack line, additional y, scatter x category, line bar x continuous (x tick number)?
-  //number values = 0, error bar, line hover, background multiple color, figure legend default (horizontal), commerical copyright,
+  //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)?
+  //error bar, line hover, background multiple color, y break, commerical copyright,
 
 
   /**
