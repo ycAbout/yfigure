@@ -248,8 +248,8 @@ var yd3 = (function (exports, d3) {
         typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
       }
 
-      validateString(options.xTitle.toString(), 'xTitle');
-      validateString(options.yTitle.toString(), 'yTitle');
+      if (options.xTitle !== false) validateString(options.xTitle.toString(), 'xTitle');  // cannot to string, default false value given
+      if (options.yTitle !== false) validateString(options.yTitle.toString(), 'yTitle');  // cannot to string, default false value given
       validateString(options.xAxisFont.toString(), 'xAxisFont');
       validateString(options.yAxisFont.toString(), 'yAxisFont');
       validateString(options.xTitleFont.toString(), 'xTitleFont');
@@ -349,8 +349,8 @@ var yd3 = (function (exports, d3) {
       let yAxisPosition = options.yAxisPosition;
       let xTitlePosition = options.xTitlePosition;
       let yTitlePosition = options.yTitlePosition;
-      let xTitle = options.xTitle.toString();
-      let yTitle = options.yTitle.toString();
+      let xTitle = (options.xTitle === false ? options.xTitle : options.xTitle.toString());
+      let yTitle = (options.yTitle === false ? options.yTitle : options.yTitle.toString());
       let xAxisFont = options.xAxisFont.toString();
       let yAxisFont = options.yAxisFont.toString();
       let xTitleFont = options.xTitleFont.toString();
