@@ -210,7 +210,7 @@ class Bar extends BaseSimpleGroupAxis {
               }
             })
             .attr('width', element => {
-              return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(baseNumber)) : xSubScale.bandwidth());
+              return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(scaleStart ? baseNumber : 0)) : xSubScale.bandwidth());
             })
             .attr('y', (element, index) => {
               if (horizontal) {   // horizontal bar chart
@@ -227,12 +227,12 @@ class Bar extends BaseSimpleGroupAxis {
                   }
                   return yScale(Math.max(baseline + element[i + 1], baseline));
                 } else {
-                  return yScale(Math.max(element[i + 1], baseNumber));   // if negative, use y(start) as starting point
+                  return yScale(Math.max(element[i + 1], (scaleStart ? baseNumber : 0)));   // if negative, use y(start) as starting point
                 }
               }
             })
             .attr('height', element => {
-              return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(baseNumber)));
+              return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(scaleStart ? baseNumber : 0)));
             })  // height = distance to y(scaleStart) 
             .attr('fill', element => {
               if (yDataNames.length == 1) {
