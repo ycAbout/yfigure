@@ -27,6 +27,7 @@ class Bar extends BaseSimpleGroupAxis {
     (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
+    this._options.scaleStart ? true : options.scaleStart = 0;
 
     //validate format
     if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
@@ -38,6 +39,7 @@ class Bar extends BaseSimpleGroupAxis {
     validateNumStr(options.legendX, 'legendX');
     validateNumStr(options.legendY, 'legendY');
     validateNumStr(options.legendWidth, 'legendWidth');
+    validateNumStr(options.scaleStart, 'scaleStart');
 
     typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
@@ -59,6 +61,8 @@ class Bar extends BaseSimpleGroupAxis {
     let legendY = Math.min(parseFloat(options.legendY), 0.98);
     let legendWidth = parseFloat(options.legendWidth);
     let legendFont = options.legendFont;
+
+    let scaleStart = parseFloat(options.scaleStart);
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -117,8 +121,8 @@ class Bar extends BaseSimpleGroupAxis {
         }
       }
 
-      let dataMax = Math.max(d3.max(maxYArray), 0);
-      let dataMin = Math.min(d3.min(minYArray), 0);
+      let dataMax = d3.max(maxYArray);
+      let dataMin = d3.min(minYArray);
 
       // for stacked bar chart
       let lastPositive = new Array(dataValue.length).fill(0);       // hold accumulated value for each y
@@ -140,13 +144,17 @@ class Bar extends BaseSimpleGroupAxis {
       let dataMinSum = stacked ? sumArray(minYArray)[1] : 0;
 
       // make data plot approximately 10% range off the range
-      let ySetback = (dataMax - dataMin) * (horizontal ? xPadding : yPadding);
+      let ySetback = Math.abs(dataMax <= 0 ? dataMin : (dataMin > 0 ? dataMax - scaleStart : dataMax - dataMin)) * (horizontal ? xPadding : yPadding);
       let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
 
+      // scaleStart only works for all postive or all negative data
+      let baseNumber = ((dataMin > 0 && scaleStart <= dataMin && scaleStart > 0) || (dataMax < 0 && scaleStart >= dataMax && scaleStart < 0)) ? scaleStart : 0;   // if all postive data, scaleStart works
+
       // if there is negative data, set y min. Otherwise choose 0 as default y min
-      let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : 0);
+      let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
       // when there is postive data, set y max. Otherwsie choose 0 as default y max
-      let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax > 0 ? dataMax + ySetback : 0);
+      let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
+
 
       let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
@@ -195,13 +203,15 @@ class Bar extends BaseSimpleGroupAxis {
                   }
                   return yScale(Math.min(baseline + element[i + 1], baseline));
                 } else {
-                  return yScale(Math.min(element[i + 1], 0))
+                  return yScale(Math.min(element[i + 1], baseNumber));
                 }
               } else {
                 return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
               }
             })
-            .attr('width', element => horizontal ? Math.abs(yScale(element[i + 1]) - yScale(0)) : xSubScale.bandwidth())
+            .attr('width', element => {
+              return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(baseNumber)) : xSubScale.bandwidth());
+            })
             .attr('y', (element, index) => {
               if (horizontal) {   // horizontal bar chart
                 return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
@@ -217,11 +227,13 @@ class Bar extends BaseSimpleGroupAxis {
                   }
                   return yScale(Math.max(baseline + element[i + 1], baseline));
                 } else {
-                  return yScale(Math.max(element[i + 1], 0))   // if negative, use y(0) as starting point
+                  return yScale(Math.max(element[i + 1], baseNumber));   // if negative, use y(start) as starting point
                 }
               }
             })
-            .attr('height', element => horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(0)))  // height = distance to y(0) 
+            .attr('height', element => {
+              return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(baseNumber)));
+            })  // height = distance to y(scaleStart) 
             .attr('fill', element => {
               if (yDataNames.length == 1) {
                 return element[i + 1] > 0 ? colorScale(yDataNames[i]) : colors[1]       //only one y, positive vs. negative
