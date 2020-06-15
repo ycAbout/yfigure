@@ -8,7 +8,7 @@ class CombinedBar {
 
   _draw(data, options) {
 
-    let dataBreak = [70, 80]
+    let dataBreak = [85, 120]
 
     let location = 'body';
     let width = 400;
@@ -57,11 +57,14 @@ class CombinedBar {
 
     let barMinor = new Bar(innerDataMinor, {
       location: '#' + id + 'minor',
-      height: 200,
+      height: 80,
       frameBottom: 0,
       marginBottom: 0,
+      scaleStart: 120,
+      yTicks: 2,
       xAxisPostion: [],
       xTitlePostion: [],
+      yTitlePosition: [],
     })
 
     let barMajor = new Bar(innerDataMajor, {
