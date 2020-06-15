@@ -796,12 +796,15 @@ var yd3 = (function (exports, d3) {
         let ySetbackStack = (dataMaxSum - dataMinSum) * (horizontal ? xPadding : yPadding);
 
         // scaleStart only works for all postive or all negative data
-        let baseNumber = ((dataMin > 0 && scaleStart <= dataMin && scaleStart > 0) || (dataMax < 0 && scaleStart >= dataMax && scaleStart < 0)) ? scaleStart : 0;   // if all postive data, scaleStart works
+        let baseNumber = (
+          (dataMin > 0 && scaleStart <= dataMin && scaleStart > 0)
+          || (dataMax < 0 && scaleStart >= dataMax && scaleStart < 0)
+        ) ? scaleStart : 0;   // if all postive data, scaleStart works
 
         // if there is negative data, set y min. Otherwise choose 0 as default y min
-        let yMin = stacked ? (dataMinSum < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
+        let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
         // when there is postive data, set y max. Otherwsie choose 0 as default y max
-        let yMax = stacked ? (dataMaxSum > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
+        let yMax = stacked ? (dataMax > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
 
 
         let xScale = d3.scaleBand()
@@ -858,7 +861,7 @@ var yd3 = (function (exports, d3) {
                 }
               })
               .attr('width', element => {
-                return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(scaleStart ? baseNumber : 0)) : xSubScale.bandwidth());
+                return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(stacked ? 0 : baseNumber)) : xSubScale.bandwidth());
               })
               .attr('y', (element, index) => {
                 if (horizontal) {   // horizontal bar chart
@@ -880,7 +883,7 @@ var yd3 = (function (exports, d3) {
                 }
               })
               .attr('height', element => {
-                return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(scaleStart ? baseNumber : 0)));
+                return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(stacked ? 0 : baseNumber)));
               })  // height = distance to y(scaleStart) 
               .attr('fill', element => {
                 if (yDataNames.length == 1) {
