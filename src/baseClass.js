@@ -229,8 +229,8 @@ class BaseSimpleGroupAxis {
       typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
     }
 
-    validateString(options.xTitle.toString(), 'xTitle');
-    validateString(options.yTitle.toString(), 'yTitle');
+    validateString(options.xTitle, 'xTitle');  // cannot to string, default false value given
+    validateString(options.yTitle, 'yTitle');  // cannot to string, default false value given
     validateString(options.xAxisFont.toString(), 'xAxisFont');
     validateString(options.yAxisFont.toString(), 'yAxisFont');
     validateString(options.xTitleFont.toString(), 'xTitleFont');
@@ -330,8 +330,8 @@ class BaseSimpleGroupAxis {
     let yAxisPosition = options.yAxisPosition;
     let xTitlePosition = options.xTitlePosition;
     let yTitlePosition = options.yTitlePosition;
-    let xTitle = options.xTitle.toString();
-    let yTitle = options.yTitle.toString();
+    let xTitle = options.xTitle;
+    let yTitle = options.yTitle;
     let xAxisFont = options.xAxisFont.toString();
     let yAxisFont = options.yAxisFont.toString();
     let xTitleFont = options.xTitleFont.toString();
