@@ -384,15 +384,37 @@
       horizontal: true,
     });
 
+
     // example 2
     let bar15 = new yd3.Bar(dataBar5, {
+      stacked: true,
+      horizontal: false,
+      legendX: 0.5,
+      legendY: 0,
+      scaleStart: 5,
+
+    });
+
+
+
+    let dataBar40 = [["group", "gWHg", "score2"],
+    [1, -50, -50 + 20],
+    [2, -16, -16 - 20],
+    [3, -30, -30 + 20],
+    [4, -80, -80 + 20],
+    ];
+
+
+
+        // example 2
+      let bar150 = new yd3.Bar(dataBar40, {
       stacked: true,
       horizontal: true,
       legendX: 0.5,
       legendY: 0,
+      scaleStart: -10,
 
     });
-
 
 
     createTitle("H2", "sortableBar");

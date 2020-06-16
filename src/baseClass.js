@@ -408,22 +408,22 @@ class BaseSimpleGroupAxis {
     yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
     line0StrokeWidth, line0DashArray]) {
 
+    // set default x axis to top if y max is 0
     if (!xAxisPositionSet && !horizontal) {
-      // set default x axis to top if y max is 0
-      if (yMax == 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
+      if (yMax <= 0 && xAxisPosition.length == 1 && xAxisPosition[0] == 'bottom') xAxisPosition = ['top'];
     }
 
     if (!yAxisPositionSet && horizontal) {
-      if (yMax == 0 && yAxisPosition.length == 1 && yAxisPosition[0] == 'left') yAxisPosition = ['right'];
+      if (yMax <= 0 && yAxisPosition.length == 1 && yAxisPosition[0] == 'left') yAxisPosition = ['right'];
     }
 
     if (!xTitlePositionSet && !horizontal) {
       // set default x axisTitle to top if y max is 0
-      if (yMax == 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
+      if (yMax <= 0 && xTitlePosition.length == 1 && xTitlePosition[0] == 'bottom') xTitlePosition = ['top'];
     }
 
     if (!yTitlePositionSet && horizontal) {
-      if (yMax == 0 && yTitlePosition.length == 1 && yTitlePosition[0] == 'left') yTitlePosition = ['right'];
+      if (yMax <= 0 && yTitlePosition.length == 1 && yTitlePosition[0] == 'left') yTitlePosition = ['right'];
     }
 
     // add line at y = 0 when there is negative data

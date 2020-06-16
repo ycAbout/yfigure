@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)?
-//error bar, line hover, background multiple color, y break (top add a small figure?), commerical copyright,
+//error bar, line hover, background multiple color, y break (top add a small figure), yScaleStart axis postion change normal stacked, commerical copyright,
 
 
 /**
@@ -14,6 +14,7 @@ class Bar extends BaseSimpleGroupAxis {
    * @param {object=} options  An optional object contains following key value pairs:
    *                              common option key values pairs
    *                              graph specific key value pairs:
+   *                                scaleStart, only works for all positive or all negative data, works for simple bar, grouped bar, stacked bar.
    */
   constructor(data, options = {}) {
     super(data, options);
@@ -151,13 +152,18 @@ class Bar extends BaseSimpleGroupAxis {
       let baseNumber = (
         (dataMin > 0 && scaleStart <= dataMin && scaleStart > 0)
         || (dataMax < 0 && scaleStart >= dataMax && scaleStart < 0)
-      ) ? scaleStart : 0;   // if all postive data, scaleStart works
+      ) ? scaleStart : 0;   // if all postive or all negative data, scaleStart works
+
+      let baseNumberStack = (
+        (dataMin > 0 && scaleStart <= minYArray[0] && scaleStart > 0)
+        || (dataMax < 0 && scaleStart >= maxYArray[0] && scaleStart < 0)
+      ) ? scaleStart : 0;   // if all postive or all negative data, scaleStart works
+
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
-      let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : 0) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
+      let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : (baseNumberStack > 0 ? baseNumberStack : 0)) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
       // when there is postive data, set y max. Otherwsie choose 0 as default y max
-      let yMax = stacked ? (dataMax > 0 ? dataMaxSum + ySetbackStack : 0) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
-
+      let yMax = stacked ? (dataMax > 0 ? dataMaxSum + ySetbackStack : (baseNumberStack < 0 ? baseNumberStack : 0)) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
 
       let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
@@ -183,6 +189,8 @@ class Bar extends BaseSimpleGroupAxis {
         .append('g')
         .attr('id', id + 'sky999all');
 
+      let firstTime = 0;  // first bar draw indicator for stacked bar, used for stacked bar scale start
+
       // draw each y data
       for (let i = 0; i < yDataNames.length; i++) {
         // if legend is unclicked
@@ -204,7 +212,12 @@ class Bar extends BaseSimpleGroupAxis {
                     baseline = lastNegative[index];
                     lastNegative[index] += element[i + 1];
                   }
-                  return yScale(Math.min(baseline + element[i + 1], baseline));
+                  // change scale start scaleStart only works for the first bar
+                  if (baseline === 0) {
+                    return yScale(Math.min(element[i + 1], baseNumberStack));
+                  } else {
+                    return yScale(Math.min(baseline + element[i + 1], baseline));
+                  }
                 } else {
                   return yScale(Math.min(element[i + 1], baseNumber));
                 }
@@ -212,8 +225,8 @@ class Bar extends BaseSimpleGroupAxis {
                 return stacked ? xSubScale('stack') : xSubScale(yDataNames[i])
               }
             })
-            .attr('width', element => {
-              return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(stacked ? 0 : baseNumber)) : xSubScale.bandwidth());
+            .attr('width', (element, index) => {
+              return (horizontal ? Math.abs(yScale(element[i + 1]) - yScale(stacked ? (firstTime === 0 ? baseNumberStack : 0) : baseNumber)) : xSubScale.bandwidth());
             })
             .attr('y', (element, index) => {
               if (horizontal) {   // horizontal bar chart
@@ -228,14 +241,19 @@ class Bar extends BaseSimpleGroupAxis {
                     baseline = lastNegative[index];
                     lastNegative[index] += element[i + 1];
                   }
-                  return yScale(Math.max(baseline + element[i + 1], baseline));
+                  // change scale start scaleStart only works for the first bar
+                  if (baseline === 0) {
+                    return yScale(Math.max(element[i + 1], baseNumberStack));
+                  } else {
+                    return yScale(Math.max(baseline + element[i + 1], baseline));
+                  }
                 } else {
                   return yScale(Math.max(element[i + 1], (scaleStart ? baseNumber : 0)));   // if negative, use y(start) as starting point
                 }
               }
             })
-            .attr('height', element => {
-              return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale(stacked ? 0 : baseNumber)));
+            .attr('height', (element, index) => {
+              return (horizontal ? xSubScale.bandwidth() : Math.abs(yScale(element[i + 1]) - yScale((stacked ? (firstTime === 0 ? baseNumberStack : 0) : baseNumber))));
             })  // height = distance to y(scaleStart) 
             .attr('fill', element => {
               if (yDataNames.length == 1) {
@@ -259,6 +277,8 @@ class Bar extends BaseSimpleGroupAxis {
                 .text(element[xDataIndex] + ': ' + element[i + 1]);
             })
             .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+
+          firstTime = 1;
         }
       }
 
