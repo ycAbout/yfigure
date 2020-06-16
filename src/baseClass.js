@@ -37,6 +37,7 @@ class BaseSimpleGroupAxis {
     (options.titleY || parseInt(options.titleY) === 0) ? true : options.titleY = 0.02;   // 0 - 1
     options.titleRotate ? true : options.titleRotate = 0;
 
+
     function makeError(msg) {
       throw new Error(msg)
     }
@@ -88,7 +89,6 @@ class BaseSimpleGroupAxis {
     let titleX = parseFloat(options.titleX);
     let titleY = parseFloat(options.titleY);
     let titleRotate = parseInt(options.titleRotate);
-
 
     let marginTop, marginLeft, marginBottom, marginRight;
 
@@ -356,7 +356,6 @@ class BaseSimpleGroupAxis {
     let line0DashArray = options.line0DashArray.toString();
     let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
 
-
     return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
       xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
       xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
@@ -589,8 +588,6 @@ class BaseSimpleGroupAxis {
       .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
       .text(title);
   }
-
-
 
 
   /**

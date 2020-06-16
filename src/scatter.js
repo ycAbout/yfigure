@@ -17,10 +17,10 @@ class Scatter extends BaseSimpleGroupAxis {
 
     //set up graph specific option
     this._options.dotRadius ? true : this._options.dotRadius = 4;
-    (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
-    this._options.legendWidth ? true : options.legendWidth = 600;
-    this._options.legendFont ? true : options.legendFont = '10px sans-serif';
+    (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : this._options.legendX = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : this._options.legendY = 0.12;
+    this._options.legendWidth ? true :this._options.legendWidth = 600;
+    this._options.legendFont ? true : this._options.legendFont = '10px sans-serif';
 
     //validate format
     if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
@@ -28,11 +28,11 @@ class Scatter extends BaseSimpleGroupAxis {
     function validateNumStr(numStrToBe, errorString) {
       (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
     }
-    validateNumStr(options.legendX, 'legendX');
-    validateNumStr(options.legendY, 'legendY');
-    validateNumStr(options.legendWidth, 'legendWidth');
+    validateNumStr(this._options.legendX, 'legendX');
+    validateNumStr(this._options.legendY, 'legendY');
+    validateNumStr(this._options.legendWidth, 'legendWidth');
 
-    typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
+    typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);

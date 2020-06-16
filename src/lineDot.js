@@ -19,8 +19,8 @@ class LineDot extends BaseSimpleGroupAxis {
     this._options.dotRadius ? true : this._options.dotRadius = 4;
     this._options.horizontal === true ? true : this._options.horizontal = false;
 
-    (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
-    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
+    (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : this._options.legendX = 0.18;
+    (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : this._options.legendY = 0.12;
     this._options.legendWidth ? true : options.legendWidth = 600;
     this._options.legendFont ? true : options.legendFont = '10px sans-serif';
 
@@ -31,11 +31,11 @@ class LineDot extends BaseSimpleGroupAxis {
     function validateNumStr(numStrToBe, errorString) {
       (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
     }
-    validateNumStr(options.legendX, 'legendX');
-    validateNumStr(options.legendY, 'legendY');
-    validateNumStr(options.legendWidth, 'legendWidth');
+    validateNumStr(this._options.legendX, 'legendX');
+    validateNumStr(this._options.legendY, 'legendY');
+    validateNumStr(this._options.legendWidth, 'legendWidth');
 
-    typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
+    typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);

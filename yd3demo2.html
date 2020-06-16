@@ -197,38 +197,6 @@
     });
 
 
-    let bar6a = new yd3.Bar(largestCompanies2020, {
-      frameLeft: 40,
-      xPadding: 0.01,
-      height: 150,
-      title: 'World Largest Companies',
-      frameBottom: 0,
-      marginBottom: 0,
-      xAxisPosition: [],
-      line0: false ,
-      yTitle: 'Market cap (us billion)',
-      xTitle: '',
-      withinGroupPadding: 0.1
-    });
-
-
-    // example 1
-    let bar6b = new yd3.Bar(largestCompanies2020, {
-      frameLeft: 40,
-      yPadding: 0,
-      xPadding: 0.01,
-      legendX: 1,
-      legendY: 1,
-      title: 'World Largest Companies',
-      titleY: 0.98,
-      frameTop: 0,
-      marginTop: 0,
-      yTitle: 'Market cap (us billion)',
-      xTitle: '',
-      withinGroupPadding: 0.1
-    });
-
-
     let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
     ['First', 905, 836, 875],
     ['Second', 1028, 911, 929],
@@ -249,7 +217,6 @@
       //withinGroupPadding: 0.1
     });
 
-
     let gdpRate2007to2010 = [['Year', 'US', 'EU', 'World'],
     ['2007', 1.9, 3.2, 4.3],
     ['2008', -0.1, 0.7, 1.9],
@@ -262,39 +229,67 @@
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
       xPadding: 0.25,
       legendX: 0.4,
+      yGridStrokeWidth: 0.2,
       title: 'GDP Growth During 08 Financial Crisis',
       yTitle: 'Growth rate (%)'
     });
     br();
 
-
-    let gdp2007to2010 = [
-      ['Country', '2007', '2008', '2009', '2010'],
-      ['China', 14.2, 9.7, 9.4, 10.6],
-      ['EU', 3.2, 0.7, -4.3, 2.2],
-      ['US', 1.9, -0.1, -2.5, 2.6],
-      ['Canada', 6.9, 1.0, -2.9, 3.1],
-    ]
+    let OwnerOccupiedExpenditures = [['Provinces', '2014', '2015', '2016', '2017', '2018'],
+    //    ['Canada', 10191, 10513, 11075, 11477, 11784],
+    ['NL', 184, 186, 182, 186, 183],
+    ['PEI', 37, 38, 37, 40, 41],
+    ['Nova Scotia', 360, 369, 399, 385, 390],
+    ['New Brunswick', 302, 313, 308, 312, 315],
+    ['Quebec', 2196, 2238, 2376, 2563, 2664],
+    ['Ontario', 4135, 4303, 4592, 4648, 4718],
+    ['Manitoba', 328, 344, 356, 378, 390],
+    ['Saskatchewan', 300, 308, 316, 334, 340],
+    ['Alberta', 1097, 1112, 1131, 1142, 1163],
+    ['British Columbia', 1237, 1287, 1362, 1471, 1561],
+    ['Yukon, NT and NV', 15, 15, 16, 18, 19],
+    ]  // https://doi.org/10.25318/3410009501-eng
 
     // example 3
-    let bar11 = new yd3.Bar(gdp2007to2010, {
+    let bar11 = new yd3.Bar(OwnerOccupiedExpenditures, {
       width: 800,
-      yTitle: "abc ",
+      yTitle: "dollar",
       //yGridDashArray: '4 2',
       yGridStrokeWidth: 0.2,
       xPadding: 0.4,
-      yAxisPosition: ['left', 'right'], yTitlePosition: ['right'],
+      legendX: 0.1,
+      frameLeft: 40,
+      yAxisPosition: ['left', 'right'],
       axisLongLineRemove: ['bottom'],
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+      xTickLabelRotate: -20,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      backgroundColor: 'rgba(50, 115, 220, 0.1)',
+      title: 'Canada Home Owner-occupied Expenditures'
     });
 
     //bar4.update();
     //bar5.update();
     //bar6.update();
 
+    createTitle("H2", "stacked bar");
 
+    let CanadaSpendScicence = [['year', 'Natural sciences research', 'Social sciences research', 'Natural sciences related', 'Social sciences related'],
+    ['2016/2017', 6124, 968, 2517, 1818],
+    ['2017/2018', 6666, 1076, 2690, 1622],
+    ['2018/2019', 6435, 1119, 3040, 1665],
+    ['2019/2020', 6743, 1204, 3223, 1540],
+    ['2020/2021', 6705, 1237, 3168, 1554],
+    ] // https://doi.org/10.25318/2710000601-eng
 
-    createTitle("H2", "stack bar");
+    // example 2
+    let stackedBar1 = new yd3.Bar(CanadaSpendScicence, {
+      stacked: true,
+      frameLeft: 45,
+      //legendX: 0.4,
+      title: 'Canada Federal expenditures on science',
+      yTitle: 'Intentions (million)'
+    });
+
 
     canadaTemprature = [['Provinces', 'High', 'Low'],
     ['Saskatchewan', 45.0, -56.7],
@@ -312,7 +307,7 @@
     ['Yukon', 36.5, -63.0]]
 
     // example 2
-    let bar12 = new yd3.Bar(canadaTemprature, {
+    let stackedBar2 = new yd3.Bar(canadaTemprature, {
       stacked: true,
       legendX: 0.88,
       legendY: 0.42,
@@ -329,16 +324,71 @@
     });
 
 
+    let gdp2007to2010 = [
+      ['Country', '2007', '2008', '2009', '2010'],
+      // ['China', 14.2, 9.7, 9.4, 10.6],
+      ['EU', 3.2, 0.7, -4.3, 2.2],
+      ['US', 1.9, -0.1, -2.5, 2.6],
+      ['Canada', 6.9, 1.0, -2.9, 3.1],
+      ['Austrilia', 3.8, 3.7, 1.9, 2.1]
+    ]
+
+    // example 2
+    let stackedBar3 = new yd3.Bar(gdp2007to2010, {
+      stacked: true,
+      frameLeft: 45,
+      //legendX: 0.4,
+      title: 'GDP growth Rate',
+      yTitle: '(%)'
+    });
+
+
+
     createTitle("H2", "horizontal bar");
 
     let worldPopulation2020 = [
       ['Country', 'Population(million)'], ['US', 331], ['Indones', 274], ['Pakist', 221], ['Brazil', 213], ['Nigeri', 206], ['Bangladesh', 165],
       ['Russia', 146], ['Mexico', 129], ["Japan", 126], ["Ethiopia", 115], ["Philippines", 110], ["Egypt", 102], ["Vietnam", 97], ["DR Congo", 90],
-      ["Turkey", 84], ["Iran", 84], ["Germany", 84], ["Thailand", 70], ["UK", 68], ["France", 65], ["Italy", 60],
+      ["Turkey", 84], ["Iran", 84], ["Germany", 84],
     ]
+
+    // example 2
+    let horizontalBar1 = new yd3.Bar(worldPopulation2020, {
+      horizontal: true,
+      //  height: 400,
+      //width: 300,
+      xPadding: 0,
+      frameLeft: 60,
+      frameTop: 5,
+
+      title: 'World population'
+    });
+
+
+    let OwnerOccupiedExpenditures3 = [['Provinces', '2016', '2017', '2018'],
+    ['Quebec', 2376, 2563, 2664],
+    ['Ontario', 4592, 4648, 4718],
+    ['British Columbia', 1362, 1471, 1561],
+    ]  // https://doi.org/10.25318/3410009501-eng
+
+
+    let horizontalBar2 = new yd3.Bar(OwnerOccupiedExpenditures3, {
+      horizontal: true,
+      scaleStart: 500,
+      xGridStrokeWidth: 0.2,
+      frameLeft: 60,
+      yTitle: '',
+      title: 'Home Owner expenses'
+    });
+
+
 
     let p = [['China', 1439],
     ['India', 1380],
+    ["Thailand", 70], 
+    ["UK", 68], 
+    ["France", 65], 
+    ["Italy", 60]
     ["Tanzania", 60],
     ["South Africa", 59],
     ["Myanmar", 54],
@@ -347,17 +397,7 @@
     ["Colombia", 51],
     ["Spain", 47],]
 
-    // example 2
-    let bar13a = new yd3.Bar(worldPopulation2020, {
-      horizontal: true,
-      height: 400,
-      width: 300,
-      xPadding: 0,
-      frameLeft: 60,
-      frameRight: 0,
-      marginRight: 0
-    });
-    
+
     let AnotherWorldPopulation2020 = [
       ['Country', 'Population(million)'], ['US', -331], ['Indones', -274], ['Pakist', -221], ['Brazil', -213], ['Nigeri', -206], ['Bangladesh', -165],
       ['Russia', -146], ['Mexico', -129], ["Japan", -126], ["Ethiopia", -115], ["Philippines", -110], ["Egypt", -102], ["Vietnam", -97], ["DR Congo", -90],
@@ -375,10 +415,6 @@
       marginLeft: 0,
     });
 
-
-    let bar013 = new yd3.Bar(dataBar4, {
-      horizontal: true,
-    });
 
     let bar14 = new yd3.Bar(dataBar5, {
       horizontal: true,
@@ -406,8 +442,8 @@
 
 
 
-        // example 2
-      let bar150 = new yd3.Bar(dataBar40, {
+    // example 2
+    let bar150 = new yd3.Bar(dataBar40, {
       stacked: true,
       horizontal: true,
       legendX: 0.5,

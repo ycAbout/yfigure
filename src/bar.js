@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)?
-//error bar, line hover, background multiple color, y break (two figures, top add a small figure), commerical copyright,
+//error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
@@ -25,23 +25,29 @@ class Bar extends BaseSimpleGroupAxis {
 
     (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
     (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
-    this._options.legendWidth ? true : options.legendWidth = 600;
-    this._options.legendFont ? true : options.legendFont = '10px sans-serif';
-    this._options.scaleStart ? true : options.scaleStart = 0;
+    this._options.legendWidth ? true :this._options.legendWidth = 600;
+    this._options.legendFont ? true : this._options.legendFont = '10px sans-serif';
+    this._options.scaleStart ? true : this._options.scaleStart = 0;
+    this._options.legendOn === false ? true : this._options.legendOn = true;          // an option of omit legend when graphs are combined
+
+    function makeError(msg) {
+      throw new Error(msg)
+    }
 
     //validate format
-    if (typeof this._options.stacked !== 'boolean') { throw new Error('Option stacked need to be a boolean!') }
-    if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
+    if (typeof this._options.stacked !== 'boolean') { makeError('Option stacked need to be a boolean!') }
+    if (typeof this._options.horizontal !== 'boolean') { makeError('Option horizontal need to be a boolean!') }
+    if (typeof this._options.legendOn !== 'boolean') makeError('Option legendOn needs to be a boolean!');
 
     function validateNumStr(numStrToBe, errorString) {
       (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
     }
-    validateNumStr(options.legendX, 'legendX');
-    validateNumStr(options.legendY, 'legendY');
-    validateNumStr(options.legendWidth, 'legendWidth');
-    validateNumStr(options.scaleStart, 'scaleStart');
+    validateNumStr(this._options.legendX, 'legendX');
+    validateNumStr(this._options.legendY, 'legendY');
+    validateNumStr(this._options.legendWidth, 'legendWidth');
+    validateNumStr(this._options.scaleStart, 'scaleStart');
 
-    typeof options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
+    typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
     this._draw(this._data, this._options);
@@ -63,6 +69,8 @@ class Bar extends BaseSimpleGroupAxis {
     let legendFont = options.legendFont;
 
     let scaleStart = parseFloat(options.scaleStart);
+
+    let legendOn = options.legendOn;
 
     // set all the common options
     let [width, height, marginTop, marginLeft, marginBottom, marginRight, frameTop, frameLeft, frameBottom, frameRight,
@@ -160,9 +168,9 @@ class Bar extends BaseSimpleGroupAxis {
 
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
-      let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : (baseNumberStack > 0 ? baseNumberStack : 0)) : (dataMin < 0 ? dataMin - ySetback : (baseNumber > 0 ? baseNumber : 0));
+      let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : Math.max(baseNumberStack, 0)) : (dataMin < 0 ? dataMin - ySetback : Math.max(baseNumber, 0));
       // when there is postive data, set y max. Otherwsie choose 0 as default y max
-      let yMax = stacked ? (dataMax > 0 ? dataMaxSum + ySetbackStack : (baseNumberStack < 0 ? baseNumberStack : 0)) : (dataMax <= 0 ? (baseNumber < 0 ? baseNumber : 0) : dataMax + ySetback);
+      let yMax = stacked ? (dataMax > 0 ? dataMaxSum + ySetbackStack : Math.min(baseNumberStack, 0)) : (dataMax <= 0 ? Math.min(baseNumber, 0) : dataMax + ySetback);
 
       let xScale = d3.scaleBand()
         .domain(dataValue.map((element) => element[xDataIndex]))
@@ -247,7 +255,7 @@ class Bar extends BaseSimpleGroupAxis {
                     return yScale(Math.max(baseline + element[i + 1], baseline));
                   }
                 } else {
-                  return yScale(Math.max(element[i + 1], (scaleStart ? baseNumber : 0)));   // if negative, use y(start) as starting point
+                  return yScale(Math.max(element[i + 1], baseNumber));   // if negative, use y(start) as starting point
                 }
               }
             })
@@ -307,7 +315,7 @@ class Bar extends BaseSimpleGroupAxis {
     drawModule();
 
     // Add legend
-    if (yDataNames.length > 1) {
+    if (yDataNames.length > 1  && legendOn) {
 
       let legend = svg
         .append("g")
