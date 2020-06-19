@@ -1916,8 +1916,6 @@ var yd3 = (function (exports, d3) {
       let dataBreak = options.dataBreak;
       let height = parseInt(options.height);
 
-
-
       let combined = d3.select(location)
         .append('span')       //non-block container
         .attr('style', `display:inline-block; width: ${width}px`)        //px need to be specified, otherwise not working
@@ -1927,11 +1925,11 @@ var yd3 = (function (exports, d3) {
       combined
         .append("div")
         .attr('id', id + 'minor');
-
+   
       combined
         .append("div")
         .attr('id', id + 'major');
-
+   
       let innerDataMajor = JSON.parse(JSON.stringify(data));
       innerDataMajor.map((element, index) => {
         if (index > 0) {
@@ -1960,7 +1958,7 @@ var yd3 = (function (exports, d3) {
         height: height*dataBreak[2],
         width: width,
         frameBottom: 0,
-        marginBottom: 10,
+        marginBottom: 5,
         scaleStart: dataBreak[1],
         yTicks: dataBreak[2] * 10,
         xAxisPosition: [],
@@ -1973,8 +1971,8 @@ var yd3 = (function (exports, d3) {
         height: height - height*dataBreak[2],
         location: '#' + id + 'major',
         width: width,
-        frameTop: 10,
-        marginTop: 0,
+        frameTop: 0,
+        marginTop: 5,
         yPadding: 0,
         legendOn: false,
       });
