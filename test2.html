@@ -43,7 +43,14 @@
 ]  // https://doi.org/10.25318/3410009501-eng
 
 
-let bar03 = new yd3.CombinedBar(OwnerOccupiedExpenditures, {width: 800, height: 600, xPadding: 0.3, dataBreak: [400, 1000, 0.4]});
+
+
+
+let bar03 = new yd3.CombinedBar(OwnerOccupiedExpenditures, {
+  width: 800, height: 600, xPadding: 0.3, dataBreak: [400, 1000, 0.4],
+  xTickLabelRotate: -20,
+  yAxisPosition: ['right'],
+});
 
 
 

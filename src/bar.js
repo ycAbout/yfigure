@@ -25,7 +25,7 @@ class Bar extends BaseSimpleGroupAxis {
 
     (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
     (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
-    this._options.legendWidth ? true :this._options.legendWidth = 600;
+    this._options.legendWidth ? true : this._options.legendWidth = 600;
     this._options.legendFont ? true : this._options.legendFont = '10px sans-serif';
     this._options.scaleStart ? true : this._options.scaleStart = 0;
     this._options.legendOn === false ? true : this._options.legendOn = true;          // an option of omit legend when graphs are combined
@@ -136,20 +136,33 @@ class Bar extends BaseSimpleGroupAxis {
       let lastPositive = new Array(dataValue.length).fill(0);       // hold accumulated value for each y
       let lastNegative = new Array(dataValue.length).fill(0);
       // used to set accumulated scale
-      function sumArray(numberArray) {
-        let sumNegative = 0;
+      let dataSumPostiveArray = [];       // to hold positve for each row
+      let dataSumNegativeArray = [];
+      for (let j = 0; j < dataValue.length; j++) {
         let sumPostive = 0;
-        for (let i = 0; i < numberArray.length; i++) {
-          if (numberArray[i] < 0) {
-            sumNegative += numberArray[i];
-          } else {
-            sumPostive += numberArray[i];
+        let sumNegative = 0;
+        [x, 1, 2, 3, -1, -2, -3]
+        for (let k = 1; k < dataValue[j].length; k++) {
+          if (yNamesSelected.length === 0) {
+            if (dataValue[j][k] < 0) {
+              sumNegative += dataValue[j][k];
+            } else {
+              sumPostive += dataValue[j][k];
+            }
+          } else if (legendState[k - 1]) {               // some data selected, only for selected data
+            if (dataValue[j][k] < 0) {
+              sumNegative += dataValue[j][k];
+            } else {
+              sumPostive += dataValue[j][k];
+            }
           }
         }
-        return [sumPostive, sumNegative];
+        dataSumPostiveArray.push(sumPostive);
+        dataSumNegativeArray.push(sumNegative);
       }
-      let dataMaxSum = stacked ? sumArray(maxYArray)[0] : 0;
-      let dataMinSum = stacked ? sumArray(minYArray)[1] : 0;
+
+      let dataMaxSum = stacked ? Math.max(...dataSumPostiveArray) : 0;
+      let dataMinSum = stacked ? Math.min(...dataSumNegativeArray) : 0;
 
       // make data plot approximately 10% range off the range
       let ySetback = Math.abs(dataMax <= 0 ? dataMin : (dataMin > 0 ? dataMax - scaleStart : dataMax - dataMin)) * (horizontal ? xPadding : yPadding);
@@ -315,7 +328,7 @@ class Bar extends BaseSimpleGroupAxis {
     drawModule();
 
     // Add legend
-    if (yDataNames.length > 1  && legendOn) {
+    if (yDataNames.length > 1 && legendOn) {
 
       let legend = svg
         .append("g")

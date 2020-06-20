@@ -47,7 +47,8 @@ var yd3 = (function (exports, d3) {
       options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
       (options.width || parseInt(options.width) === 0) ? true : options.width = 400;
       (options.height || parseInt(options.height) === 0) ? true : options.height = 300;
-      options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+      options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D', 
+      'orange', 'blue', 'violet', '#6a2c70', '#b83b5e', '#f08a5d', '#fbc687', '#ea907a'];
       options.backgroundColor ? true : options.backgroundColor = '';
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
@@ -209,8 +210,8 @@ var yd3 = (function (exports, d3) {
       options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
       (options.xTicks || parseInt(options.xTicks) === 0) ? true : options.xTicks = null;
       (options.yTicks || parseInt(options.yTicks) === 0) ? true : options.yTicks = null;
-      (options.xTickSize || parseInt(options.xTickSize) === 0) ? true : options.xTickSize = 6;
-      (options.yTickSize || parseInt(options.yTickSize) === 0) ? true : options.yTickSize = 6;
+      (options.xTickSize || parseFloat(options.xTickSize) === 0) ? true : options.xTickSize = 6;
+      (options.yTickSize || parseFloat(options.yTickSize) === 0) ? true : options.yTickSize = 6;
       options.tickLabelRemove ? true : options.tickLabelRemove = [];
       options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
       options.xGridColor ? true : options.xGridColor = '';
@@ -221,12 +222,12 @@ var yd3 = (function (exports, d3) {
       options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
       options.line0 === false ? true : options.line0 = true;
       (options.line0Stroke || options.line0Stroke === '') ? true : options.line0Stroke = 'black';
-      (options.line0StrokeWidth || parseInt(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
+      (options.line0StrokeWidth || parseFloat(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
       options.line0DashArray ? true : options.line0DashArray = '';
 
       //****************** not returned, assigned in each individual function */
-      (options.xPadding || parseInt(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-      (options.yPadding || parseInt(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+      (options.xPadding || parseFloat(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+      (options.yPadding || parseFloat(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
       function makeError(msg) {
         throw new Error(msg)
@@ -670,7 +671,7 @@ var yd3 = (function (exports, d3) {
 
       (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : options.legendX = 0.18;
       (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : options.legendY = 0.12;
-      this._options.legendWidth ? true :this._options.legendWidth = 600;
+      this._options.legendWidth ? true : this._options.legendWidth = 600;
       this._options.legendFont ? true : this._options.legendFont = '10px sans-serif';
       this._options.scaleStart ? true : this._options.scaleStart = 0;
       this._options.legendOn === false ? true : this._options.legendOn = true;          // an option of omit legend when graphs are combined
@@ -781,20 +782,33 @@ var yd3 = (function (exports, d3) {
         let lastPositive = new Array(dataValue.length).fill(0);       // hold accumulated value for each y
         let lastNegative = new Array(dataValue.length).fill(0);
         // used to set accumulated scale
-        function sumArray(numberArray) {
-          let sumNegative = 0;
+        let dataSumPostiveArray = [];       // to hold positve for each row
+        let dataSumNegativeArray = [];
+        for (let j = 0; j < dataValue.length; j++) {
           let sumPostive = 0;
-          for (let i = 0; i < numberArray.length; i++) {
-            if (numberArray[i] < 0) {
-              sumNegative += numberArray[i];
-            } else {
-              sumPostive += numberArray[i];
+          let sumNegative = 0;
+          [x, 1, 2, 3, -1, -2, -3];
+          for (let k = 1; k < dataValue[j].length; k++) {
+            if (yNamesSelected.length === 0) {
+              if (dataValue[j][k] < 0) {
+                sumNegative += dataValue[j][k];
+              } else {
+                sumPostive += dataValue[j][k];
+              }
+            } else if (legendState[k - 1]) {               // some data selected, only for selected data
+              if (dataValue[j][k] < 0) {
+                sumNegative += dataValue[j][k];
+              } else {
+                sumPostive += dataValue[j][k];
+              }
             }
           }
-          return [sumPostive, sumNegative];
+          dataSumPostiveArray.push(sumPostive);
+          dataSumNegativeArray.push(sumNegative);
         }
-        let dataMaxSum = stacked ? sumArray(maxYArray)[0] : 0;
-        let dataMinSum = stacked ? sumArray(minYArray)[1] : 0;
+
+        let dataMaxSum = stacked ? Math.max(...dataSumPostiveArray) : 0;
+        let dataMinSum = stacked ? Math.min(...dataSumNegativeArray) : 0;
 
         // make data plot approximately 10% range off the range
         let ySetback = Math.abs(dataMax <= 0 ? dataMin : (dataMin > 0 ? dataMax - scaleStart : dataMax - dataMin)) * (horizontal ? xPadding : yPadding);
@@ -960,7 +974,7 @@ var yd3 = (function (exports, d3) {
       drawModule();
 
       // Add legend
-      if (yDataNames.length > 1  && legendOn) {
+      if (yDataNames.length > 1 && legendOn) {
 
         let legend = svg
           .append("g")

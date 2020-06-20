@@ -28,7 +28,8 @@ class BaseSimpleGroupAxis {
     options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
     (options.width || parseInt(options.width) === 0) ? true : options.width = 400;
     (options.height || parseInt(options.height) === 0) ? true : options.height = 300;
-    options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'];
+    options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D', 
+    'orange', 'blue', 'violet', '#6a2c70', '#b83b5e', '#f08a5d', '#fbc687', '#ea907a'];
     options.backgroundColor ? true : options.backgroundColor = '';
     options.title ? true : options.title = '';
     options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
@@ -190,8 +191,8 @@ class BaseSimpleGroupAxis {
     options.xTickLabelRotate ? true : options.xTickLabelRotate = 0;
     (options.xTicks || parseInt(options.xTicks) === 0) ? true : options.xTicks = null;
     (options.yTicks || parseInt(options.yTicks) === 0) ? true : options.yTicks = null;
-    (options.xTickSize || parseInt(options.xTickSize) === 0) ? true : options.xTickSize = 6;
-    (options.yTickSize || parseInt(options.yTickSize) === 0) ? true : options.yTickSize = 6;
+    (options.xTickSize || parseFloat(options.xTickSize) === 0) ? true : options.xTickSize = 6;
+    (options.yTickSize || parseFloat(options.yTickSize) === 0) ? true : options.yTickSize = 6;
     options.tickLabelRemove ? true : options.tickLabelRemove = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
     options.xGridColor ? true : options.xGridColor = '';
@@ -202,12 +203,12 @@ class BaseSimpleGroupAxis {
     options.yGridStrokeWidth ? true : options.yGridStrokeWidth = 0;
     options.line0 === false ? true : options.line0 = true;
     (options.line0Stroke || options.line0Stroke === '') ? true : options.line0Stroke = 'black';
-    (options.line0StrokeWidth || parseInt(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
+    (options.line0StrokeWidth || parseFloat(options.line0StrokeWidth) === 0) ? true : options.line0StrokeWidth = 1;
     options.line0DashArray ? true : options.line0DashArray = '';
 
     //****************** not returned, assigned in each individual function */
-    (options.xPadding || parseInt(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
-    (options.yPadding || parseInt(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
+    (options.xPadding || parseFloat(options.xPadding) === 0) ? options.xPadding = parseFloat(options.xPadding) : options.xPadding = 0.1;  // just set up, not returned in array
+    (options.yPadding || parseFloat(options.yPadding) === 0) ? options.yPadding = parseFloat(options.yPadding) : options.yPadding = 0.1;  // jsut set up, not returned in array
 
     function makeError(msg) {
       throw new Error(msg)
