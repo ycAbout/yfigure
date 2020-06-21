@@ -276,7 +276,7 @@ class BaseSimpleGroupAxis {
       options['xTitleColor'] ? true : options['xTitleColor'] = 'black';
       options['yTitleColor'] ? true : options['yTitleColor'] = 'black';
       options['xTickLabelColor'] ? true : options['xTickLabelColor'] = 'black';
-      options['yTickLabelColor '] ? true : options['yTickLabelColor '] = 'black';
+      options['yTickLabelColor'] ? true : options['yTickLabelColor'] = 'black';
 
       //validate format
       validateString(options.xAxisColor, 'xAxisColor');

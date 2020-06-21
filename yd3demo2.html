@@ -75,45 +75,9 @@
     }
 
 
-    createTitle("H1", "yd3 Demo");
-    createTitle("H2", "bar");
-
-    let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];
-    let dataBar3 = [["group", "score"]];
-    for (let i = 0; i < 50; i++) {
-      let element = [i + 1, Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)]
-      dataBar3.push(element)
-    }
-
-    let dataBar4 = [["group", "gWHg", "score2"],
-    [1, 50, 50 + 20],
-    [2, 16, 16 + 20],
-    [3, 30, 30 + 20],
-    [4, 80, 80 + 20],
-    ];
-
-    let dataBar5 = [["group", "i", "Score2", "score3", "score4"],
-    [1, 50, 30, -70, -50 + 40],
-    [2, 80, 60, -100, -80 + 40],
-    [3, 30, 10, -50, -30 + 40],
-    ];
-
-    let dataBar6 = [["group", "score1", "score2", "score3", "score4", "score5"]];
-    for (i = 0; i < 16; i++) {
-      let element = [i, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)];
-      dataBar6.push(element)
-    }
-
-
-    let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3],
-    ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
-
-    let Saskatoon2010to2019High = [['Month', 'High temperature (°C)'], ['January', -8], ['February', -9], ['March', 0], ['April', 10],
-    ['May', 19], ['June', 23], ['July', 25], ['August', 24], ['September', 19], ['October', 10], ['November', -2], ['December', -8]]
-
-    let Saskatoon2010to2019Avg = [['Month', 'High temperature (°C)'], ["January", -13.5], ["February", -14.5], ["March", -5.5], ["April", 3.5],
-    ["May", 11.5], ["June", 16.5], ["July", 18.5], ["August", 17], ["September", 12], ["October", 4], ["November", -6.5], ["December", -12.5]]
-
+    createTitle("H1", "YFigure Demo");
+    createTitle("H2", "Bar graph");
+    createTitle("H3", "Simple bar");
 
     // example 1
     let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
@@ -123,8 +87,8 @@
     });
 
     // example 2 rotate x tick lables, change layout, font
-    let populationFourCountry = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yd3.Bar(populationFourCountry, {
+    let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar2 = new yd3.Bar(population2, {
       title: 'World Population',
       colors: ['#1f9400', '#1f9400'], // second for negative value
       xAxisPosition: ['bottom', 'top'],
@@ -135,7 +99,8 @@
       backgroundColor: 'rgb(57,204,204, 0.1)',
     });
 
-    Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
+
+    let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
     let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {
       title: 'Saskatoon temprature 2010 to 2019',
@@ -158,7 +123,7 @@
     ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
     ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
 
-    let bar5 = new yd3.Bar(canadaBudget, {
+    let bar4 = new yd3.Bar(canadaBudget, {
       width: 800,
       height: 350,
       title: 'Canada Budget',
@@ -175,20 +140,15 @@
 
     br();
 
-    //bar1.update();
-    //bar2.update();
-    //bar3.update();
-    //bar4.update();
-    //bar5.update();
 
-    createTitle("H2", "group bar (clickable legend)");
+    createTitle("H3", "Grouped bar (clickable legend)");
 
     let largestCompanies2020 = [
       ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
       ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
     ]
     // example 1
-    let bar6 = new yd3.Bar(largestCompanies2020, {
+    let groupBar1 = new yd3.Bar(largestCompanies2020, {
       frameLeft: 40,
       xPadding: 0.01,
       title: 'World Largest Companies',
@@ -207,7 +167,7 @@
     ['Fourth', 1203, 1305, 916]]
 
     // example 2
-    let bar7 = new yd3.Bar(techCompany2019, {
+    let groupBar2 = new yd3.Bar(techCompany2019, {
       frameLeft: 40,
       xPadding: 0.3,
       yPadding: 0.25,
@@ -220,61 +180,68 @@
       //withinGroupPadding: 0.1
     });
 
-    let gdpRate2007to2010 = [['Year', 'US', 'EU', 'World'],
-    ['2007', 1.9, 3.2, 4.3],
-    ['2008', -0.1, 0.7, 1.9],
-    ['2009', -2.5, -4.3, -1.7],
-    ['2010', 2.6, 2.2, 4.3]
+
+    let QuebecMoveOut = [
+      ["year", "Manitoba", "Saskatchewan", "Alberta", "British Columbia"],
+      ["2015/2016", -461, -314, -4006, -3788],
+      ["2016/2017", -420, -286, -2758, -3295],
+      ["2017/2018", -367, -261, -2537, -3282],
+      ["2018/2019", -341, -289, -2818, -3143],
+    ]
+
+    let groupBar3 = new yd3.Bar(QuebecMoveOut, {
+      yTitle: "Number of Quebecers moving",
+      //yGridDashArray: '4 2',
+      yGridStrokeWidth: 0.2,
+      xPadding: 0.15,
+      //yPadding: 0,
+      legendY: 0.78,
+      frameLeft: 40,
+      xTickLabelRotate: 20,
+      //colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      title: 'Quebec residences moving desination',
+      titleY: 1,
+    });
+
+    br();
+
+
+    let gdpRate2007to2010 = [['Year', 'US', 'UK', 'Japan'],
+    ['2005',3.5,3.2,1.7,],
+    ['2006',2.9,2.8,1.4,],
+    ['2007',1.9,2.4,1.7,],
+    ['2008',-0.1,-0.3,-1.1,],
+    ['2009',-2.5,-4.2,-5.4,],
+    ['2010',2.6,1.9,4.2,],
+    ['2011',1.6,1.5,-0.1,],
+    ['2012',2.2,1.5,1.5,],
+    ['2013',1.8,2.1,2,],
+    ['2014',2.5,2.6,0.4,],
+   // ['2015', 2.88091046605219,  2.35552430595799,  1.22292104108077],
+   // ['2016', 1.56721516997864,  1.91815510596298,  0.609093181244134],
+   // ['2017', 2.21701033031884,  1.89207703836381,  1.92875725125687],
+   // ['2018', 2.92732272821085,  1.38567356958762,  0.788455875670337],
     ]
 
     // example 2
-    let bar10 = new yd3.Bar(gdpRate2007to2010, {
+    let groupBar4 = new yd3.Bar(gdpRate2007to2010, {
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
+      width: 800,
       xPadding: 0.25,
       legendX: 0.4,
       yGridStrokeWidth: 0.2,
       title: 'GDP Growth During 08 Financial Crisis',
-      yTitle: 'Growth rate (%)'
-    });
-    br();
-
-    let OwnerOccupiedExpenditures = [['Provinces', '2014', '2015', '2016', '2017', '2018'],
-    //    ['Canada', 10191, 10513, 11075, 11477, 11784],
-    ['NL', 184, 186, 182, 186, 183],
-    ['PEI', 37, 38, 37, 40, 41],
-    ['Nova Scotia', 360, 369, 399, 385, 390],
-    ['New Brunswick', 302, 313, 308, 312, 315],
-    ['Quebec', 2196, 2238, 2376, 2563, 2664],
-    ['Ontario', 4135, 4303, 4592, 4648, 4718],
-    ['Manitoba', 328, 344, 356, 378, 390],
-    ['Saskatchewan', 300, 308, 316, 334, 340],
-    ['Alberta', 1097, 1112, 1131, 1142, 1163],
-    ['British Columbia', 1237, 1287, 1362, 1471, 1561],
-    ['Yukon, NT and NV', 15, 15, 16, 18, 19],
-    ]  // https://doi.org/10.25318/3410009501-eng
-
-    // example 3
-    let bar11 = new yd3.Bar(OwnerOccupiedExpenditures, {
-      width: 800,
-      yTitle: "dollar",
-      //yGridDashArray: '4 2',
-      yGridStrokeWidth: 0.2,
-      xPadding: 0.4,
-      legendX: 0.1,
-      frameLeft: 40,
+      yTitle: 'Growth rate (%)',
       yAxisPosition: ['left', 'right'],
-      axisLongLineRemove: ['bottom'],
-      xTickLabelRotate: -20,
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      axisLongLineRemove: ['top'],
       backgroundColor: 'rgba(50, 115, 220, 0.1)',
-      title: 'Canada Home Owner-occupied Expenditures'
     });
 
     //bar4.update();
     //bar5.update();
     //bar6.update();
 
-    createTitle("H2", "stacked bar");
+    createTitle("H3", "Stacked bar (clickable legend)");
 
     let CanadaSpendScicence = [['year', 'Natural sciences research', 'Social sciences research', 'Natural sciences related', 'Social sciences related'],
     ['2016/2017', 6124, 968, 2517, 1818],
@@ -294,7 +261,7 @@
     });
 
 
-    canadaTemprature = [['Provinces', 'High', 'Low'],
+    let canadaTemprature = [['Provinces', 'High', 'Low'],
     ['Saskatchewan', 45.0, -56.7],
     ['Alberta', 43.3, -61.1],
     ['British Columbia', 44.4, -58.9],
@@ -329,12 +296,12 @@
 
     let gdp2007to2010 = [
       ['Country', '2007', '2008', '2009', '2010'],
-      // ['China', 14.2, 9.7, 9.4, 10.6],
+      ['Canada', 6.9, 1.0, -2.9, 3.1],
       ['EU', 3.2, 0.7, -4.3, 2.2],
       ['US', 1.9, -0.1, -2.5, 2.6],
-      ['Canada', 6.9, 1.0, -2.9, 3.1],
-      ['Austrilia', 3.8, 3.7, 1.9, 2.1]
+      ['Japan', 1.7, -1.1, -5.4, 4.2],
     ]
+
 
     // example 2
     let stackedBar3 = new yd3.Bar(gdp2007to2010, {
@@ -345,8 +312,8 @@
       yTitle: '(%)'
     });
 
-    let SaskatchewanMoveOut =
-      [["year", "NL", "PEI", "NS", "NB", "Quebec", "Ontario", "Manitoba", "Alberta", "British_Columbia", "Yukon", "NT", "NV"],
+    let SaskatchewanMoveOut = [
+      ["year", "NL", "PEI", "NS", "NB", "Quebec", "Ontario", "Manitoba", "Alberta", "British Columbia", "Yukon", "NT", "NV"],
       ['1991/1992', 119, 30, 279, 149, 343, 2480, 2803, 13165, 6426, 204, 219, 60,],
       ['1992/1993', 111, 41, 317, 100, 371, 2358, 2576, 11406, 5866, 160, 241, 59,],
       ['1993/1994', 87, 47, 261, 101, 336, 2151, 2556, 10900, 5455, 93, 201, 71,],
@@ -375,8 +342,7 @@
       ['2016/2017', 118, 52, 337, 158, 357, 4353, 1625, 7682, 4062, 56, 66, 24,],
       ['2017/2018', 108, 61, 325, 220, 418, 4430, 1378, 8682, 4308, 48, 98, 36,],
       ['2018/2019', 93, 47, 347, 241, 712, 6027, 1583, 9930, 4390, 40, 130, 67,],
-      ]
-
+    ]
 
     // example 2
     let stackedBar4 = new yd3.Bar(SaskatchewanMoveOut, {
@@ -384,15 +350,15 @@
       width: 800,
       yPadding: 0.01,
       title: 'Destination of moving out Saskatchewan residents',
-      xTickLabelRotate: 25,
+      xTickLabelRotate: -25,
       legendX: 0.08
     });
 
 
 
+    createTitle("H3", "Horizontal bar (clickable legend)");
 
 
-    createTitle("H2", "horizontal bar");
 
     let worldPopulation2020 = [
       ['Country', 'Population(million)'], ['US', 331], ['Indones', 274], ['Pakist', 221], ['Brazil', 213], ['Nigeri', 206], ['Bangladesh', 165],
@@ -405,10 +371,13 @@
       horizontal: true,
       //  height: 400,
       //width: 300,
+      xTickLabelColor: 'green',
       xPadding: 0,
       frameLeft: 60,
       frameTop: 5,
-
+      xGridStrokeWidth: 0.5,
+      xGridDashArray: '6 2',
+      xGridColor: 'green',
       title: 'World population'
     });
 
@@ -419,17 +388,15 @@
     ['British Columbia', 1362, 1471, 1561],
     ]  // https://doi.org/10.25318/3410009501-eng
 
-
     let horizontalBar2 = new yd3.Bar(OwnerOccupiedExpenditures3, {
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
       frameLeft: 60,
       yTitle: '',
-      title: 'Home Owner expenses'
+      xTitle: 'Dollar (million)',
+      title: 'Home Owner total expenses'
     });
-
-
 
     let p = [['China', 1439],
     ['India', 1380],
@@ -600,6 +567,65 @@
 
     });
     br();
+
+    let OwnerOccupiedExpenditures = [['Provinces', '2014', '2015', '2016', '2017', '2018'],
+    //    ['Canada', 10191, 10513, 11075, 11477, 11784],
+    ['NL', 184, 186, 182, 186, 183],
+    ['PEI', 37, 38, 37, 40, 41],
+    ['Nova Scotia', 360, 369, 399, 385, 390],
+    ['New Brunswick', 302, 313, 308, 312, 315],
+    ['Quebec', 2196, 2238, 2376, 2563, 2664],
+    ['Ontario', 4135, 4303, 4592, 4648, 4718],
+    ['Manitoba', 328, 344, 356, 378, 390],
+    ['Saskatchewan', 300, 308, 316, 334, 340],
+    ['Alberta', 1097, 1112, 1131, 1142, 1163],
+    ['British Columbia', 1237, 1287, 1362, 1471, 1561],
+    ['Yukon, NT and NV', 15, 15, 16, 18, 19],
+    ]  // https://doi.org/10.25318/3410009501-eng
+
+
+    let RentedExpenditures =
+      [['year', 'NL', 'PEI', 'NS', 'NB', 'QC', 'ON', 'MB', 'SK', 'AB', 'BC', 'YK + NT + NV'],
+      ['2000', 30, 8, 78, 46, 658, 880, 65, 53, 180, 266, 5],
+      ['2001', 33, 8, 82, 47, 791, 1028, 73, 59, 196, 273, 6],
+      ['2002', 34, 8, 82, 56, 871, 1065, 79, 63, 224, 307, 6],
+      ['2003', 35, 9, 90, 61, 978, 1207, 85, 69, 246, 337, 7],
+      ['2004', 41, 10, 104, 72, 1074, 1377, 98, 79, 289, 390, 8],
+      ['2005', 44, 11, 113, 79, 1184, 1507, 108, 87, 316, 429, 9],
+      ['2006', 48, 12, 127, 85, 1280, 1625, 116, 94, 347, 476, 9],
+      ['2007', 50, 12, 130, 93, 1380, 1743, 123, 97, 377, 518, 10],
+      ['2008', 52, 13, 139, 98, 1472, 1836, 134, 104, 397, 556, 10],
+      ['2009', 55, 14, 147, 104, 1550, 1937, 140, 110, 416, 587, 10],
+      ['2010', 56, 14, 147, 101, 1532, 1907, 137, 111, 413, 584, 10],
+      ['2011', 55, 14, 153, 105, 1550, 1971, 141, 115, 437, 621, 13],
+      ['2012', 56, 15, 156, 109, 1609, 2049, 150, 118, 452, 646, 15],
+      ['2013', 57, 15, 159, 111, 1637, 2083, 152, 121, 589, 660, 16],
+      ['2014', 58, 16, 160, 116, 1746, 2305, 160, 136, 527, 726, 16],
+      ['2015', 58, 16, 166, 120, 1789, 2429, 169, 142, 543, 761, 16],
+      ['2016', 57, 16, 181, 120, 1914, 2611, 178, 148, 562, 812, 18],
+      ['2017', 59, 17, 175, 121, 2081, 2662, 191, 158, 573, 885, 18],
+      ['2018', 58, 18, 180, 123, 2179, 2692, 199, 162, 582, 945, 21],
+      ] // https://doi.org/10.25318/3410009501-eng
+
+    // example 3
+    let bar11 = new yd3.LineDot(RentedExpenditures, {
+      width: 800,
+      yTitle: "Dollar (million)",
+      yGridDashArray: '10 2',
+      yGridStrokeWidth: 0.2,
+      xPadding: 0.4,
+      legendX: 0.2,
+      frameRight: 40,
+      yAxisPosition: ['right'],
+      yTitlePosition: ['right'],
+      //      axisLongLineRemove: ['bottom'],
+      //      xTickLabelRotate: -20,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      backgroundColor: 'rgba(50, 115, 220, 0.1)',
+      title: 'Canada Home Landlord/Tenants-occupied Expenditures'
+    });
+
+
     // example 3 
     let linedot6 = new yd3.LineDot(dataLineDot3, {
       margin: 50,
@@ -613,7 +639,6 @@
 
     });
 
-
     //linedot1.update();
     //linedot2.update();
     //linedot3.update();
@@ -622,7 +647,6 @@
     //linedot6.update();
 
     createTitle("H2", "scatter");
-
 
     dataScatter2 = [["age", "WWWWWWWiii", "score2", "gWggH", "i2654"]];
     for (i = 0; i < 60; i++) {
@@ -653,6 +677,53 @@
     //scatter1.update();
     //scatter2.update();
     //scatter3.update();
+
+
+
+
+
+
+
+
+    let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];
+    let dataBar3 = [["group", "score"]];
+    for (let i = 0; i < 50; i++) {
+      let element = [i + 1, Math.floor(((Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 - 0.5) * 50)]
+      dataBar3.push(element)
+    }
+
+    let dataBar4 = [["group", "gWHg", "score2"],
+    [1, 50, 50 + 20],
+    [2, 16, 16 + 20],
+    [3, 30, 30 + 20],
+    [4, 80, 80 + 20],
+    ];
+
+    let dataBar5 = [["group", "i", "Score2", "score3", "score4"],
+    [1, 50, 30, -70, -50 + 40],
+    [2, 80, 60, -100, -80 + 40],
+    [3, 30, 10, -50, -30 + 40],
+    ];
+
+    let dataBar6 = [["group", "score1", "score2", "score3", "score4", "score5"]];
+    for (i = 0; i < 16; i++) {
+      let element = [i, Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i), Math.floor(Math.random() * 100 * i)];
+      dataBar6.push(element)
+    }
+
+
+    let Saskatoon2010to2019Low2 = [['Month', 'Low temperature (°C)'], ['January', -19], ['February', -20], ['March', -11], ['April', -3],
+    ['May', 4], ['June', 10], ['July', 12], ['August', 10], ['September', 5], ['October', -2], ['November', -11], ['December', -17]]
+
+    let Saskatoon2010to2019High = [['Month', 'High temperature (°C)'], ['January', -8], ['February', -9], ['March', 0], ['April', 10],
+    ['May', 19], ['June', 23], ['July', 25], ['August', 24], ['September', 19], ['October', 10], ['November', -2], ['December', -8]]
+
+    let Saskatoon2010to2019Avg = [['Month', 'High temperature (°C)'], ["January", -13.5], ["February", -14.5], ["March", -5.5], ["April", 3.5],
+    ["May", 11.5], ["June", 16.5], ["July", 18.5], ["August", 17], ["September", 12], ["October", 4], ["November", -6.5], ["December", -12.5]]
+
+
+
+
 
   </script>
 </body>
