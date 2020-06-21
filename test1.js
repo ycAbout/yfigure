@@ -1,32 +1,50 @@
-const { json } = require("d3");
 'use strict';
-
 const fs = require('fs');
-const { Console } = require("console");
 
-let rawdata = fs.readFileSync('test1.json');
-let test1 = JSON.parse(rawdata);
+let rawdata = fs.readFileSync('world_bank_popular.json');
+let popular = JSON.parse(rawdata);
 
-for (let i=0; i< test1.length; i++) {
-    if(test1[i]['Country Name'] == 'Japan') console.log(test1[i]);
-    if (test1[i]['2007 [YR2007]'] > 0 && test1[i]['2007 [YR2007]'] < 5) {
-        console.log(test1[i]['Country Name']);
+
+let G20 = ['Argentina', 'Australia', 'Brazil', 'Canada', 'China', 'Germany', 'France', 'India', 'Indonesia', 'Italy', 'Japan', 'Mexico', 'Russia',
+    'Saudi Arabia', 'South Africa', 'South Korea', 'Turkey', 'United Kingdom', 'United States',]
+
+let G7 = ['Canada', 'France', 'Germany', 'Italy', 'Japan', 'United Kingdom', 'United States']
+let G1 = ['Russian Federation']
+
+let data = [['country', '2002', '2007', '2012', '2017']];
+let seriesName = [];
+let countryName = [];
+for (let i = 0; i < popular.length; i++) {
+    if (!seriesName.includes(popular[i]['Series Name'])) seriesName.push(popular[i]['Series Name']);
+    if (!countryName.includes(popular[i]['Country Name'])) countryName.push(popular[i]['Country Name']);
+    if (popular[i]['Series Name'] == 'Net migration') {  //Population
+        if (G1.includes(popular[i]['Country Name'])) data.push([
+            popular[i]['Country Name'],
+            Math.round(popular[i]['1962 [YR1962]'] / 1000),
+            Math.round(popular[i]['1967 [YR1967]'] / 1000),
+            Math.round(popular[i]['1972 [YR1972]'] / 1000),
+            Math.round(popular[i]['1977 [YR1977]'] / 1000),
+            Math.round(popular[i]['1982 [YR1982]'] / 1000),
+            Math.round(popular[i]['1987 [YR1987]'] / 1000),
+            Math.round(popular[i]['1992 [YR1992]'] / 1000),
+            Math.round(popular[i]['1997 [YR1997]'] / 1000),
+            Math.round(popular[i]['2002 [YR2002]'] / 1000),
+            Math.round(popular[i]['2007 [YR2007]'] / 1000),
+            Math.round(popular[i]['2012 [YR2012]'] / 1000),
+            Math.round(popular[i]['2017 [YR2017]'] / 1000)
+        ]);
+
     }
+
+
+
+
+
+    //    if(test1[i]['Country Name'] == 'Japan') console.log(test1[i]);
+    //    if (test1[i]['2007 [YR2007]'] > 0 && test1[i]['2007 [YR2007]'] < 5) {
+    //        console.log(test1[i]['Country Name']);
+    //    }
 }
 
-let a = [
-['2005', 3.51321379665302, 3.17972892405965, 1.662670405184,],
-['2006', 2.85497229170015, 2.78832455947308, 1.42000655604446,],
-['2007', 1.87617145846693,  2.43055321242285,  1.65418388116969],
-['2008', -0.136579805460741,  -0.281153589519334,-1.09354060040749],
-['2009', -2.53675706585665,  -4.24782174662953, -5.41641279673664],
-['2010', 2.56376655876581,  1.94952148180782,  4.19173925858955],
-['2011', 1.55083550568156,  1.54014736820638,  -0.115421339717841],
-['2012', 2.24954585236992,  1.4789239471568,   1.49508958594926],
-['2013', 1.84208107101102,  2.13948570108317,  2.0002678411015],
-['2014', 2.45197303536034,  2.6074759063105,   0.374719476331322],
-]
-
-for (let i=0; i< a.length; i++) {
-        console.log(Math.round(a[i][1]*10)/10 + ',' + Math.round(a[i][2]*10)/10 + ',' + Math.round(a[i][3]*10)/10 + ',')
-}
+//console.log(seriesName);
+console.log(data);

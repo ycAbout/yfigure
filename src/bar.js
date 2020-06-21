@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)?
+//time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)? title second line
 //error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
 
 /**

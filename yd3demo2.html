@@ -207,20 +207,20 @@
 
 
     let gdpRate2007to2010 = [['Year', 'US', 'UK', 'Japan'],
-    ['2005',3.5,3.2,1.7,],
-    ['2006',2.9,2.8,1.4,],
-    ['2007',1.9,2.4,1.7,],
-    ['2008',-0.1,-0.3,-1.1,],
-    ['2009',-2.5,-4.2,-5.4,],
-    ['2010',2.6,1.9,4.2,],
-    ['2011',1.6,1.5,-0.1,],
-    ['2012',2.2,1.5,1.5,],
-    ['2013',1.8,2.1,2,],
-    ['2014',2.5,2.6,0.4,],
-   // ['2015', 2.88091046605219,  2.35552430595799,  1.22292104108077],
-   // ['2016', 1.56721516997864,  1.91815510596298,  0.609093181244134],
-   // ['2017', 2.21701033031884,  1.89207703836381,  1.92875725125687],
-   // ['2018', 2.92732272821085,  1.38567356958762,  0.788455875670337],
+    ['2005', 3.5, 3.2, 1.7,],
+    ['2006', 2.9, 2.8, 1.4,],
+    ['2007', 1.9, 2.4, 1.7,],
+    ['2008', -0.1, -0.3, -1.1,],
+    ['2009', -2.5, -4.2, -5.4,],
+    ['2010', 2.6, 1.9, 4.2,],
+    ['2011', 1.6, 1.5, -0.1,],
+    ['2012', 2.2, 1.5, 1.5,],
+    ['2013', 1.8, 2.1, 2,],
+    ['2014', 2.5, 2.6, 0.4,],
+      // ['2015', 2.88091046605219,  2.35552430595799,  1.22292104108077],
+      // ['2016', 1.56721516997864,  1.91815510596298,  0.609093181244134],
+      // ['2017', 2.21701033031884,  1.89207703836381,  1.92875725125687],
+      // ['2018', 2.92732272821085,  1.38567356958762,  0.788455875670337],
     ]
 
     // example 2
@@ -359,7 +359,6 @@
     createTitle("H3", "Horizontal bar (clickable legend)");
 
 
-
     let worldPopulation2020 = [
       ['Country', 'Population(million)'], ['US', 331], ['Indones', 274], ['Pakist', 221], ['Brazil', 213], ['Nigeri', 206], ['Bangladesh', 165],
       ['Russia', 146], ['Mexico', 129], ["Japan", 126], ["Ethiopia", 115], ["Philippines", 110], ["Egypt", 102], ["Vietnam", 97], ["DR Congo", 90],
@@ -371,14 +370,37 @@
       horizontal: true,
       //  height: 400,
       //width: 300,
-      xTickLabelColor: 'green',
+      axisColor: 'green',
       xPadding: 0,
       frameLeft: 60,
+      xTitle: '',
       frameTop: 5,
       xGridStrokeWidth: 0.5,
       xGridDashArray: '6 2',
-      xGridColor: 'green',
+      xGridColor: 'orange',
       title: 'World population'
+    });
+
+    let G20NetMigration2012to2017 = [['country', '2012-2017'], ['Argentina', 24], ['Australia', 791], ['Brazil', 106], ['Canada', 1210], ['China', -1742], ['France', 183],
+    ['Germany', 2719], ['India', -2663], ['Indonesia', -495], ['Italy', 745], ['Japan', 358], ['Mexico', -300], ['Saudi Arabia', 675], ['South Africa', 727],
+    ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
+
+    // example 2
+    let horizontalBar2 = new yd3.Bar(G20NetMigration2012to2017, {
+      horizontal: true,
+      yAxisPosition: ['right'],
+      axisColor: 'red',
+      frameRight: 60,
+      frameTop: 5,
+      xGridStrokeWidth: 0.5,
+      xGridDashArray: '6 2',
+      xGridColor: 'orange',
+      yGridStrokeWidth: 0.5,
+      yGridDashArray: '6 2',
+      yGridColor: 'orange',
+      yTitle: '',
+      xTitle: 'Person (x1000)',
+      title: 'G20 2012-2017 net migration',
     });
 
 
@@ -388,7 +410,7 @@
     ['British Columbia', 1362, 1471, 1561],
     ]  // https://doi.org/10.25318/3410009501-eng
 
-    let horizontalBar2 = new yd3.Bar(OwnerOccupiedExpenditures3, {
+    let horizontalBar3 = new yd3.Bar(OwnerOccupiedExpenditures3, {
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
@@ -398,73 +420,108 @@
       title: 'Home Owner total expenses'
     });
 
-    let p = [['China', 1439],
-    ['India', 1380],
-    ["Thailand", 70],
-    ["UK", 68],
-    ["France", 65],
-    ["Italy", 60]
-    ["Tanzania", 60],
-    ["South Africa", 59],
-    ["Myanmar", 54],
-    ["Kenya", 54],
-    ["South Korea", 51],
-    ["Colombia", 51],
-    ["Spain", 47],]
+
+    let netMigration2002to2017 = [
+      ['year', 'United States', 'Russian', 'China'],
+      ['2002', 5335, 1778, -1966,],
+      ['2007', 5429, 2327, -2178,],
+      ['2012', 4962, 1801, -1552,],
+      ['2017', 4774, 912, -1742,],
+    ];
+
+    let horizontalBar4 = new yd3.Bar(netMigration2002to2017, {
+      horizontal: true,
+      scaleStart: 500,
+      xGridStrokeWidth: 0.2,
+      frameLeft: 60,
+      //yPadding: 0.3,
+      yTitle: '',
+      xTitle: 'Person (thousand)',
+      title: 'Net migration of the three'
+    });
+
+    let ontarioMoveOut = [['province', '2014/2015', '2015/2016', '2016/2017', '2017/2018', '2018/2019'],
+    ['NL', -2295, -2128, -1791, -1919, -2001,],
+    ['PEI', -683, -925, -1236, -1317, -1646,],
+    ['NS', -4788, -4970, -5504, -5647, -6123,],
+    ['NB', -2734, -2718, -3094, -3562, -3931,],
+    ['QC', -9909, -10862, -10884, -11726, -13291,],
+    ['MB', -3317, -3548, -3261, -3192, -3213,],
+    ['SK', -3335, -2770, -2593, -2197, -2347,],
+    ['AB', -25660, -16163, -13197, -13964, -16555,],
+    ['BC', -17905, -17666, -15846, -15574, -15443,],
+      //['Yukon', -243, -297, -291, -297, -385,],
+      //['Northwest_Territories', -411, -448, -376, -298, -208,],
+      //['Nunavut', -289, -218, -262, -281, -407,],
+    ];
+
+    // example 2
+    let horizontalBar5 = new yd3.Bar(ontarioMoveOut, {
+      stacked: true,
+      horizontal: true,
+      yTitle: '',
+      marginRight: 0,
+      legendX: 0.08,
+      xTickLabelRotate: -15, 
+      xGridStrokeWidth: 0.2,
+      title: ' Ontario move out',
+      xPadding: 0.178
+    });
 
 
-    let AnotherWorldPopulation2020 = [
-      ['Country', 'Population(million)'], ['US', -331], ['Indones', -274], ['Pakist', -221], ['Brazil', -213], ['Nigeri', -206], ['Bangladesh', -165],
-      ['Russia', -146], ['Mexico', -129], ["Japan", -126], ["Ethiopia", -115], ["Philippines", -110], ["Egypt", -102], ["Vietnam", -97], ["DR Congo", -90],
-      ["Turkey", -84], ["Iran", -84], ["Germany", -84], ["Thailand", -70], ["UK", -68], ["France", -65], ["Italy", -60],
+    let ontarioMoveIn = [['province', '2014/2015', '2015/2016', '2016/2017', '2017/2018', '2018/2019'],
+    ['NL', 1895, 2081, 2269, 2388, 2700],
+    ['PEI', 718, 897, 921, 1242, 1817],
+    ['NS', 4874, 5239, 4843, 4743, 4903],
+    ['NB', 3001, 3385, 3046, 3240, 3602],
+    ['QC', 18828, 18985, 18084, 17255, 18401],
+    ['MB', 4298, 4638, 5124, 5735, 6811],
+    ['SK', 3163, 3942, 4353, 4430, 6027],
+    ['AB', 14032, 19421, 19046, 16443, 16949],
+    ['BC', 11349, 12390, 13279, 13561, 14804],
+//    ['Yukon', 133, 180, 120, 173, 246],
+//    ['NT', 247, 283, 318, 335, 433],
+//    ['NV', 336, 349, 314, 373, 588],
     ]
 
     // example 2
-    let bar13b = new yd3.Bar(AnotherWorldPopulation2020, {
+    let horizontalBar6 = new yd3.Bar(ontarioMoveIn, {
+      stacked: true,
       horizontal: true,
-      height: 400,
-      width: 300,
-      xPadding: 0,
-      frameRight: 60,
-      frameLeft: 0,
+      yTitle: '',
       marginLeft: 0,
+      xTickLabelRotate: 15, 
+      xGridStrokeWidth: 0.2,
+      legendX: 0.08,
+      title: ' Ontario move in'
     });
 
 
-    let bar14 = new yd3.Bar(dataBar5, {
-      horizontal: true,
-    });
-
+    let G20NetMigration2002to2017 = [['country', '2002', '2007', '2012', '2017'], ['Argentina', -125, -120, 30, 24], ['Australia', 589, 1211, 989, 791],
+    ['Brazil', 0, 0, 16, 106], ['Canada', 1052, 1326, 1241, 1210], ['China', -1966, -2178, -1552, -1742], ['France', 926, 446, 424, 183],
+    ['Germany', 824, 43, 1939, 2719], ['India', -1889, -2656, -2350, -2663], ['Indonesia', -1150, -1334, -454, -495], ['Italy', 1664, 1051, 1637, 745],
+    ['Japan', 164, 278, 358, 358], ['Mexico', -2206, -562, -422, -300], ['Saudi Arabia', 748, 1073, 1723, 675], ['South Africa', 789, 862, 920, 727],
+    ['Turkey', -40, -50, 1763, 1420], ['United Kingdom', 992, 2189, 1300, 1303], ['United States', 5335, 5429, 4962, 4774]
+    ]
 
     // example 2
-    let bar15 = new yd3.Bar(dataBar5, {
-      stacked: true,
-      horizontal: false,
-      legendX: 0.5,
-      legendY: 0,
-      scaleStart: 5,
-
-    });
-
-
-
-    let dataBar40 = [["group", "gWHg", "score2"],
-    [1, -50, -50 + 20],
-    [2, -16, -16 - 20],
-    [3, -30, -30 + 20],
-    [4, -80, -80 + 20],
-    ];
-
-
-
-    // example 2
-    let bar150 = new yd3.Bar(dataBar40, {
+    let horizontalBar7 = new yd3.Bar(G20NetMigration2002to2017, {
       stacked: true,
       horizontal: true,
-      legendX: 0.5,
-      legendY: 0,
-      scaleStart: -10,
-
+      width: 800,
+      legendY: 0.1,
+      frameLeft: 60,
+      frameTop: 0,
+      marginTop: 30,
+      legendX: 0.12,
+      xGridStrokeWidth: 0.2,
+      xGridDashArray: '6 4',
+      yGridStrokeWidth: 0.2,
+      yGridDashArray: '4 8',
+      yTitle: '',
+      xTitle: 'Person (thousand)',
+      title: 'G20 2002-2017 net migration (5 years interval)',
+      colors: ['#3E9651', '#6B4C9A', '#922428', '#948B3D']
     });
 
 
@@ -473,11 +530,11 @@
     // example 1
     let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019Low, { horizontal: true, xPadding: 1 });
     // example 2
-    let sortableBar2 = new yd3.SortableBar(dataBar2, {
+    let sortableBar2 = new yd3.SortableBar(dataBar40, {
     });
     br();
     // example 3
-    let sortableBar3 = new yd3.SortableBar(dataBar3, {
+    let sortableBar3 = new yd3.SortableBar(dataBar40, {
       left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       colors: ['steelblue', '#CC2529']
@@ -532,9 +589,10 @@
       dotRadius: 1
     });
     br();
-    // example 3 
-    let linedot3 = new yd3.LineDot(dataLineDot3, {
 
+    // example 3 
+    let linedot3 = new yd3.LineDot(netMigration1962to2017, {
+      //width: 800,
       margin: 50,
       location: 'body',
       dotRadius: 1,
@@ -721,6 +779,57 @@
     let Saskatoon2010to2019Avg = [['Month', 'High temperature (°C)'], ["January", -13.5], ["February", -14.5], ["March", -5.5], ["April", 3.5],
     ["May", 11.5], ["June", 16.5], ["July", 18.5], ["August", 17], ["September", 12], ["October", 4], ["November", -6.5], ["December", -12.5]]
 
+    let p = [['China', 1439],
+    ['India', 1380],
+    ["Thailand", 70],
+    ["UK", 68],
+    ["France", 65],
+    ["Italy", 60]
+    ["Tanzania", 60],
+    ["South Africa", 59],
+    ["Myanmar", 54],
+    ["Kenya", 54],
+    ["South Korea", 51],
+    ["Colombia", 51],
+    ["Spain", 47],]
+
+
+    let G20NetMigration1962to2017 = [
+      ['country', '1962', '1967', '1972', '1977', '1982', '1987', '1992', '1997', '2002', '2007', '2012', '2017'],
+      //      ['Argentina', 122, 130, 142, -230, 140, 160, -105, -128, -125, -120, 30, 24],
+      ['Australia', 384, 806, 260, 236, 454, 654, 351, 388, 589, 1211, 989, 791],
+      //      ['Brazil', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 106],
+      ['Canada', 179, 611, 758, 421, 374, 859, 691, 784, 1052, 1326, 1241, 1210],
+      ['China', -1126, -160, -1105, -47, -200, -432, -780, -383, -1966, -2178, -1552, -1742],
+      ['France', 1418, 492, 543, 258, 292, 276, 122, 194, 926, 446, 424, 183],
+      ['Germany', 669, 871, 702, 229, 0, 1684, 2628, 716, 824, 43, 1939, 2719],
+      ['India', -85, -343, 2106, 1111, 580, 45, -553, -683, -1889, -2656, -2350, -2663],
+      //      ['Indonesia', 450, 556, 508, 379, 475, 261, -35, -68, -1150, -1334, -454, -495],
+      //      ['Italy', -231, -232, 19, 165, 265, -10, 153, -298, 1664, 1051, 1637, 745],
+      //      ['Japan', -151, 823, 715, 205, 50, -298, 46, -100, 164, 278, 358, 358],
+      //      ['Mexico', -409, -616, -920, -1254, -1273, -1836, -2019, -2296, -2206, -562, -422, -300],
+      //      ['Saudi Arabia', 126, 187, 483, 789, 1384, 717, -110, -350, 748, 1073, 1723, 675],
+      //      ['South Africa', 107, 199, 223, 73, 181, -118, 853, 640, 789, 862, 920, 727],
+      //      ['Turkey', -150, -180, -240, -260, -70, -100, -120, -100, -40, -50, 1763, 1420],
+      ['United Kingdom', 143, -85, 106, 39, -97, 99, 205, 513, 992, 2189, 1300, 1303],
+      ['United States', 1836, 1556, 2889, 3771, 3382, 3367, 4464, 8860, 5335, 5429, 4962, 4774]
+    ]
+
+    let G7NetMigration1962to2017dfdf = [
+      ['year', 'Canada', 'France', 'Germany', 'Italy', 'Japan', 'United Kingdom', 'United States',],
+      ['1962', 179, 1418, 669, -231, -151, 143, 1836,],
+      ['1967', 611, 492, 871, -232, 823, -85, 1556,],
+      ['1972', 758, 543, 702, 19, 715, 106, 2889,],
+      ['1977', 421, 258, 229, 165, 205, 39, 3771,],
+      ['1982', 374, 292, 0, 265, 50, -97, 3382,],
+      ['1987', 859, 276, 1684, -10, -298, 99, 3367,],
+      ['1992', 691, 122, 2628, 153, 46, 205, 4464,],
+      ['1997', 784, 194, 716, -298, -100, 513, 8860,],
+      ['2002', 1052, 926, 824, 1664, 164, 992, 5335,],
+      ['2007', 1326, 446, 43, 1051, 278, 2189, 5429,],
+      ['2012', 1241, 424, 1939, 1637, 358, 1300, 4962,],
+      ['2017', 1210, 183, 2719, 745, 358, 1303, 4774,],
+    ];
 
 
 
