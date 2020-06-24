@@ -462,7 +462,7 @@
       yTitle: '',
       marginRight: 0,
       legendX: 0.08,
-      xTickLabelRotate: -15, 
+      xTickLabelRotate: -15,
       xGridStrokeWidth: 0.2,
       title: ' Ontario move out',
       xPadding: 0.178
@@ -479,9 +479,9 @@
     ['SK', 3163, 3942, 4353, 4430, 6027],
     ['AB', 14032, 19421, 19046, 16443, 16949],
     ['BC', 11349, 12390, 13279, 13561, 14804],
-//    ['Yukon', 133, 180, 120, 173, 246],
-//    ['NT', 247, 283, 318, 335, 433],
-//    ['NV', 336, 349, 314, 373, 588],
+      //    ['Yukon', 133, 180, 120, 173, 246],
+      //    ['NT', 247, 283, 318, 335, 433],
+      //    ['NV', 336, 349, 314, 373, 588],
     ]
 
     // example 2
@@ -490,7 +490,7 @@
       horizontal: true,
       yTitle: '',
       marginLeft: 0,
-      xTickLabelRotate: 15, 
+      xTickLabelRotate: 15,
       xGridStrokeWidth: 0.2,
       legendX: 0.08,
       title: ' Ontario move in'
@@ -527,14 +527,33 @@
 
     createTitle("H2", "sortableBar");
 
+
+    let G20Migration2012to2017 = [['country', '2012-2017'], ['Argentina', 24], ['Australia', 791], ['Brazil', 106], ['Canada', 1210], ['China', -1742], ['France', 183],
+    ['Germany', 2719], ['India', -2663], ['Indonesia', -495], ['Italy', 745], ['Japan', 358], ['Mexico', -300], ['Saudi Arabia', 675], ['South Africa', 727],
+    ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
+
     // example 1
-    let sortableBar1 = new yd3.SortableBar(Saskatoon2010to2019Low, { horizontal: true, xPadding: 1 });
+    let sortableBar1 = new yd3.SortableBar(G20Migration2012to2017, {
+      frameLeft: 45,
+      xTitle: '',
+      yTitle: 'Person (x1000)',
+      title: 'G20 2012-2017 net migration',
+      titleY: 0.08,
+      xTickLabelRotate: 40
+    });
+
+
+    let withinCanadaMigration2018to2019 = [['provinces', 'person'], ['NL', -4501], ['PEI', 129], ['NS', 3306], ['NB', 606], ['QC', -3049],
+    ['ON', 11731], ['MB', -9246], ['SK', -9688], ['AB', 5542], ['BC', 6111], ['YK', -226], ['NT', -598], ['NV', -117]]
+
     // example 2
-    let sortableBar2 = new yd3.SortableBar(dataBar40, {
+    let sortableBar2 = new yd3.SortableBar(withinCanadaMigration2018to2019, {
+      horizontal: true
     });
     br();
-    // example 3
-    let sortableBar3 = new yd3.SortableBar(dataBar40, {
+
+   // example 3
+    let sortableBar3 = new yd3.SortableBar(withinCanadaMigration2018to2019, {
       left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       colors: ['steelblue', '#CC2529']
@@ -591,7 +610,7 @@
     br();
 
     // example 3 
-    let linedot3 = new yd3.LineDot(netMigration1962to2017, {
+    let linedot3 = new yd3.LineDot(dataLineDot1, {
       //width: 800,
       margin: 50,
       location: 'body',
@@ -706,6 +725,18 @@
 
     createTitle("H2", "scatter");
 
+
+    let ottawaHousePrice = [['year', 'price'], ['1956', 13351], ['1957', 14230], ['1958', 15564], ['1959', 16038], ['1960', 16791], ['1961', 16070], ['1962', 15952],
+    ['1963', 16549], ['1964', 16563], ['1965', 17056], ['1966', 18004], ['1967', 19476], ['1968', 23329], ['1969', 25652], ['1970', 26532], ['1971', 27808], ['1972', 30576],
+    ['1973', 38305], ['1974', 46661], ['1975', 49633], ['1976', 54623], ['1977', 57032], ['1978', 59134], ['1979', 61896], ['1980', 62748], ['1981', 64896], ['1982', 71080],
+    ['1983', 86245], ['1984', 102084], ['1985', 107306], ['1986', 111643], ['1987', 119612], ['1988', 128434], ['1989', 137455], ['1990', 141438], ['1991', 143361],
+    ['1992', 143868], ['1993', 148129], ['1994', 147543], ['1995', 143193], ['1996', 140534], ['1997', 143873], ['1998', 143953], ['1999', 149650], ['2000', 159511],
+    ['2001', 175971], ['2002', 200711], ['2003', 218692], ['2004', 235678], ['2005', 244532], ['2006', 255889], ['2007', 272618], ['2008', 290366], ['2009', 303888],
+    ['2010', 327225], ['2011', 343284], ['2012', 351792], ['2013', 357348], ['2014', 361707], ['2015', 367632], ['2016', 371901], ['2017', 392474], ['2018', 407571],
+    ['2019', 465221],]
+
+
+
     dataScatter2 = [["age", "WWWWWWWiii", "score2", "gWggH", "i2654"]];
     for (i = 0; i < 60; i++) {
       let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
@@ -714,7 +745,7 @@
 
 
     // example 1  
-    let scatter1 = new yd3.Scatter(Saskatoon2010to2019Low);
+    let scatter1 = new yd3.Scatter(ottawaHousePrice);
     // example 2 
     let scatter2 = new yd3.Scatter(dataScatter2, {
 
