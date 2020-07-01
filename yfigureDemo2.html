@@ -10,8 +10,8 @@
 <body>
   <div id="x"></div>
   <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src='./yd3.iife.js'> </script>
-  <script> console.log(yd3)</script>
+  <script src='./yfigure.iife.js'> </script>
+  <script> console.log(yf)</script>
   <script>
 
     function createTitle(level, head) {
@@ -81,12 +81,12 @@
 
     // example 1
     let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yd3.Bar(population, {
+    let bar1 = new yf.Bar(population, {
     });
 
     // example 2 rotate x tick lables, change layout, font
     let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yd3.Bar(population2, {
+    let bar2 = new yf.Bar(population2, {
       title: 'World Population',
       colors: ['#1f9400', '#1f9400'], // second for negative value
       xAxisPosition: ['bottom', 'top'],
@@ -100,7 +100,7 @@
 
     let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
     // example 3 negative data
-    let bar3 = new yd3.Bar(Saskatoon2010to2019Low, {
+    let bar3 = new yf.Bar(Saskatoon2010to2019Low, {
       title: 'Saskatoon temprature 2010 to 2019',
       titleY: 0.95,
       titleFont: 'bold 18px arial',
@@ -121,7 +121,7 @@
     ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
     ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
 
-    let bar4 = new yd3.Bar(canadaBudget, {
+    let bar4 = new yf.Bar(canadaBudget, {
       width: 800,
       height: 350,
       title: 'Canada Budget',
@@ -146,7 +146,7 @@
       ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
     ]
     // example 1
-    let groupBar1 = new yd3.Bar(largestCompanies2020, {
+    let groupBar1 = new yf.Bar(largestCompanies2020, {
       frameLeft: 40,
       xPadding: 0.01,
       title: 'World Largest Companies',
@@ -165,7 +165,7 @@
     ['Fourth', 1203, 1305, 916]]
 
     // example 2
-    let groupBar2 = new yd3.Bar(techCompany2019, {
+    let groupBar2 = new yf.Bar(techCompany2019, {
       frameLeft: 40,
       xPadding: 0.3,
       yPadding: 0.25,
@@ -187,7 +187,7 @@
       ["2018/2019", -341, -289, -2818, -3143],
     ]
 
-    let groupBar3 = new yd3.Bar(QuebecMoveOut, {
+    let groupBar3 = new yf.Bar(QuebecMoveOut, {
       yTitle: "Number of Quebecers moving",
       //yGridDashArray: '4 2',
       yGridStrokeWidth: 0.2,
@@ -222,7 +222,7 @@
     ]
 
     // example 2
-    let groupBar4 = new yd3.Bar(gdpRate2007to2010, {
+    let groupBar4 = new yf.Bar(gdpRate2007to2010, {
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
       width: 800,
       xPadding: 0.25,
@@ -250,7 +250,7 @@
     ] // https://doi.org/10.25318/2710000601-eng
 
     // example 2
-    let stackedBar1 = new yd3.Bar(CanadaSpendScicence, {
+    let stackedBar1 = new yf.Bar(CanadaSpendScicence, {
       stacked: true,
       frameLeft: 45,
       //legendX: 0.4,
@@ -275,7 +275,7 @@
     ['Yukon', 36.5, -63.0]]
 
     // example 2
-    let stackedBar2 = new yd3.Bar(canadaTemprature, {
+    let stackedBar2 = new yf.Bar(canadaTemprature, {
       stacked: true,
       legendX: 0.88,
       legendY: 0.42,
@@ -302,7 +302,7 @@
 
 
     // example 2
-    let stackedBar3 = new yd3.Bar(gdp2007to2010, {
+    let stackedBar3 = new yf.Bar(gdp2007to2010, {
       stacked: true,
       frameLeft: 45,
       //legendX: 0.4,
@@ -344,7 +344,7 @@
     ]
 
     // example 2
-    let stackedBar4 = new yd3.Bar(SaskatchewanMoveOut, {
+    let stackedBar4 = new yf.Bar(SaskatchewanMoveOut, {
       stacked: true,
       width: 800,
       yPadding: 0.01,
@@ -364,7 +364,7 @@
     ]
 
     // example 2
-    let horizontalBar1 = new yd3.Bar(worldPopulation2020, {
+    let horizontalBar1 = new yf.Bar(worldPopulation2020, {
       horizontal: true,
       //  height: 400,
       //width: 300,
@@ -384,7 +384,7 @@
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
     // example 2
-    let horizontalBar2 = new yd3.Bar(G20NetMigration2012to2017, {
+    let horizontalBar2 = new yf.Bar(G20NetMigration2012to2017, {
       horizontal: true,
       yAxisPosition: ['right'],
       axisColor: 'red',
@@ -408,7 +408,7 @@
     ['British Columbia', 1362, 1471, 1561],
     ]  // https://doi.org/10.25318/3410009501-eng
 
-    let horizontalBar3 = new yd3.Bar(OwnerOccupiedExpenditures3, {
+    let horizontalBar3 = new yf.Bar(OwnerOccupiedExpenditures3, {
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
@@ -427,7 +427,7 @@
       ['2017', 4774, 912, -1742,],
     ];
 
-    let horizontalBar4 = new yd3.Bar(netMigration2002to2017, {
+    let horizontalBar4 = new yf.Bar(netMigration2002to2017, {
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
@@ -454,7 +454,7 @@
     ];
 
     // example 2
-    let horizontalBar5 = new yd3.Bar(ontarioMoveOut, {
+    let horizontalBar5 = new yf.Bar(ontarioMoveOut, {
       stacked: true,
       horizontal: true,
       yTitle: '',
@@ -483,7 +483,7 @@
     ]
 
     // example 2
-    let horizontalBar6 = new yd3.Bar(ontarioMoveIn, {
+    let horizontalBar6 = new yf.Bar(ontarioMoveIn, {
       stacked: true,
       horizontal: true,
       yTitle: '',
@@ -503,7 +503,7 @@
     ]
 
     // example 2
-    let horizontalBar7 = new yd3.Bar(G20NetMigration2002to2017, {
+    let horizontalBar7 = new yf.Bar(G20NetMigration2002to2017, {
       stacked: true,
       horizontal: true,
       width: 800,
@@ -531,7 +531,7 @@
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
     // example 1
-    let sortableBar1 = new yd3.SortableBar(G20Migration2012to2017, {
+    let sortableBar1 = new yf.SortableBar(G20Migration2012to2017, {
       frameLeft: 45,
       xTitle: '',
       yTitle: 'Person (x1000)',
@@ -545,13 +545,13 @@
     ['ON', 11731], ['MB', -9246], ['SK', -9688], ['AB', 5542], ['BC', 6111], ['YK', -226], ['NT', -598], ['NV', -117]]
 
     // example 2
-    let sortableBar2 = new yd3.SortableBar(withinCanadaMigration2018to2019, {
+    let sortableBar2 = new yf.SortableBar(withinCanadaMigration2018to2019, {
       horizontal: true
     });
     br();
 
     // example 3
-    let sortableBar3 = new yd3.SortableBar(withinCanadaMigration2018to2019, {
+    let sortableBar3 = new yf.SortableBar(withinCanadaMigration2018to2019, {
       left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',
       colors: ['steelblue', '#CC2529']
@@ -566,15 +566,15 @@
 
 
     // example 1  
-    let histogram1 = new yd3.Histogram(dataHistogram);
+    let histogram1 = new yf.Histogram(dataHistogram);
     // example 2 
-    let histogram2 = new yd3.Histogram(dataHistogram, {
+    let histogram2 = new yf.Histogram(dataHistogram, {
       nBins: 30,
       yAxisPosition: ['right']
     });
     br();
     // example 3 
-    let histogram3 = new yd3.Histogram(dataHistogram, {
+    let histogram3 = new yf.Histogram(dataHistogram, {
       margin: 50,
       location: 'body',
       nBins: 100
@@ -599,16 +599,16 @@
     ]
 
     // example 1  
-    let linedot1 = new yd3.LineDot(dataLineDot1, { dotRadius: 1 });
+    let linedot1 = new yf.LineDot(dataLineDot1, { dotRadius: 1 });
     // example 2
-    let linedot2 = new yd3.LineDot(gdpGrowth, {
+    let linedot2 = new yf.LineDot(gdpGrowth, {
 
       dotRadius: 1
     });
     br();
 
     // example 3 
-    let linedot3 = new yd3.LineDot(dataLineDot1, {
+    let linedot3 = new yf.LineDot(dataLineDot1, {
       //width: 800,
       margin: 50,
       location: 'body',
@@ -632,9 +632,9 @@
     ]
 
     // example 1  
-    let linedot4 = new yd3.LineDot(dataLineDot1, { dotRadius: 5, yPadding: 5 });
+    let linedot4 = new yf.LineDot(dataLineDot1, { dotRadius: 5, yPadding: 5 });
     // example 2
-    let linedot5 = new yd3.LineDot(gdpRate, {
+    let linedot5 = new yf.LineDot(gdpRate, {
       dotRadius: 6,
       xPadding: 0.4,
       title: 'GDP growth 2013-2018',
@@ -683,7 +683,7 @@
       ] // https://doi.org/10.25318/3410009501-eng
 
     // example 3
-    let bar11 = new yd3.LineDot(RentedExpenditures, {
+    let bar11 = new yf.LineDot(RentedExpenditures, {
       width: 800,
       yTitle: "Dollar (million)",
       yGridDashArray: '10 2',
@@ -702,7 +702,7 @@
 
 
     // example 3 
-    let linedot6 = new yd3.LineDot(dataLineDot3, {
+    let linedot6 = new yf.LineDot(dataLineDot3, {
       margin: 50,
       location: 'body',
       dotRadius: 10,
@@ -723,7 +723,6 @@
 
     createTitle("H2", "scatter");
 
-
     let ottawaHousePrice = [['year', 'price'], ['1956', 13351], ['1957', 14230], ['1958', 15564], ['1959', 16038], ['1960', 16791], ['1961', 16070], ['1962', 15952],
     ['1963', 16549], ['1964', 16563], ['1965', 17056], ['1966', 18004], ['1967', 19476], ['1968', 23329], ['1969', 25652], ['1970', 26532], ['1971', 27808], ['1972', 30576],
     ['1973', 38305], ['1974', 46661], ['1975', 49633], ['1976', 54623], ['1977', 57032], ['1978', 59134], ['1979', 61896], ['1980', 62748], ['1981', 64896], ['1982', 71080],
@@ -743,14 +742,14 @@
 
 
     // example 1  
-    let scatter1 = new yd3.Scatter(ottawaHousePrice);
+    let scatter1 = new yf.Scatter(ottawaHousePrice);
     // example 2 
-    let scatter2 = new yd3.Scatter(dataScatter2, {
+    let scatter2 = new yf.Scatter(dataScatter2, {
 
     });
     br();
     // example 3 
-    let scatter3 = new yd3.Scatter(dataScatter3, {
+    let scatter3 = new yf.Scatter(dataScatter3, {
       margin: 50,
       location: 'body',
       dotRadius: 4,
@@ -764,12 +763,6 @@
     //scatter1.update();
     //scatter2.update();
     //scatter3.update();
-
-
-
-
-
-
 
 
     let dataBar2 = [["group", "score"], [1, -50], [2, -80], [3, -30], [4, -70], [5, -40]];

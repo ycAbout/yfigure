@@ -1,4 +1,4 @@
-var yd3 = (function (exports, d3) {
+var yf = (function (exports, d3) {
   'use strict';
 
   function author() {
@@ -13,7 +13,7 @@ var yd3 = (function (exports, d3) {
    */
 
     let copyright = 'Copyright ' + (new Date).getFullYear() + ' Yalin Chen';
-    let info = `***yd3, an easy to use data visualization javascript library build on top of d3js
+    let info = `***yfigure, an easy to use data visualization javascript library build on top of d3js
   @author Yalin Chen yc.about@gmail.com
   ${copyright}***`;
     return info
@@ -652,7 +652,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)? title second line
+  //time series axis, area, pie chart, stack area, additional y, scatter x category, title second line
   //error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
 
   /**
