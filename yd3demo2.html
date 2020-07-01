@@ -82,8 +82,6 @@
     // example 1
     let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
     let bar1 = new yd3.Bar(population, {
-      frameBottom: 0,
-      marginBottom: 0,
     });
 
     // example 2 rotate x tick lables, change layout, font
@@ -312,6 +310,7 @@
       yTitle: '(%)'
     });
 
+
     let SaskatchewanMoveOut = [
       ["year", "NL", "PEI", "NS", "NB", "Quebec", "Ontario", "Manitoba", "Alberta", "British Columbia", "Yukon", "NT", "NV"],
       ['1991/1992', 119, 30, 279, 149, 343, 2480, 2803, 13165, 6426, 204, 219, 60,],
@@ -350,10 +349,9 @@
       width: 800,
       yPadding: 0.01,
       title: 'Destination of moving out Saskatchewan residents',
-      xTickLabelRotate: -25,
-      legendX: 0.08
+      legendX: 0.08,
+      tickLabelRemove: ['bottom 1 2 4 5 7 8 10 11 13 14 16 17 19 20 22 23 25 26']
     });
-
 
 
     createTitle("H3", "Horizontal bar (clickable legend)");
@@ -552,7 +550,7 @@
     });
     br();
 
-   // example 3
+    // example 3
     let sortableBar3 = new yd3.SortableBar(withinCanadaMigration2018to2019, {
       left: 50, top: 50, right: 50, bottom: 50,
       location: 'body',

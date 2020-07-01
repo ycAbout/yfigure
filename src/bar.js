@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
-//time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)? title second line
+//time series axis, area, pie chart, stack area, additional y, scatter x category, title second line
 //error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
 
 /**
@@ -178,7 +178,6 @@ class Bar extends BaseSimpleGroupAxis {
         (dataMin > 0 && scaleStart <= minYArray[0] && scaleStart > 0)
         || (dataMax < 0 && scaleStart >= maxYArray[0] && scaleStart < 0)
       ) ? scaleStart : 0;   // if all postive or all negative data, scaleStart works
-
 
       // if there is negative data, set y min. Otherwise choose 0 as default y min
       let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : Math.max(baseNumberStack, 0)) : (dataMin < 0 ? dataMin - ySetback : Math.max(baseNumber, 0));

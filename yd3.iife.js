@@ -47,8 +47,8 @@ var yd3 = (function (exports, d3) {
       options.id ? true : options.id = this._brand + 'id' + Math.floor(Math.random() * 1000000).toString();
       (options.width || parseInt(options.width) === 0) ? true : options.width = 400;
       (options.height || parseInt(options.height) === 0) ? true : options.height = 300;
-      options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D', 
-      'orange', 'blue', 'violet', '#6a2c70', '#b83b5e', '#f08a5d', '#fbc687', '#ea907a'];
+      options.colors ? true : options.colors = ['#396AB1', '#CC2529', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D',
+        'orange', 'blue', 'violet', '#6a2c70', '#b83b5e', '#f08a5d', '#fbc687', '#ea907a'];
       options.backgroundColor ? true : options.backgroundColor = '';
       options.title ? true : options.title = '';
       options.titleFont ? true : options.titleFont = 'bold 16px sans-serif';
@@ -457,6 +457,9 @@ var yd3 = (function (exports, d3) {
       // if user not specified yTitle
       if (yTitle === false) yTitle = yDataName;
 
+      tickLabelRemove = tickLabelRemove.map((ele) => ele.trim().split(/\s+/));
+      let tickLabelRemoveAxis = tickLabelRemove.map((ele) => ele[0]);
+
       //x axis
       for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
         let xAxis = svg
@@ -480,10 +483,11 @@ var yd3 = (function (exports, d3) {
           .selectAll("line")
           .attr("stroke-width", xTickStrokeWidth);
 
-        if (tickLabelRemove.includes(xAxisPosition[i])) {
-          xAxis
-            .selectAll("text")
-            .remove();
+        // set label not display
+        let omitIndex = tickLabelRemoveAxis.indexOf(xAxisPosition[i]);
+        if (omitIndex != -1) {
+          tickLabelRemove[omitIndex].slice(1).map((ele) => d3.select(xAxis.selectAll("text").nodes()[ele])
+            .style("display", "none"));
         }
 
         if (axisLongLineRemove.includes(xAxisPosition[i])) {
@@ -524,10 +528,11 @@ var yd3 = (function (exports, d3) {
           .selectAll("line")
           .attr("stroke-width", yTickStrokeWidth);
 
-        if (tickLabelRemove.includes(yAxisPosition[i])) {
-          yAxis
-            .selectAll("text")
-            .remove();
+        // set label not display
+        let omitIndex = tickLabelRemoveAxis.indexOf(xAxisPosition[i]);
+        if (omitIndex != -1) {
+          tickLabelRemove[omitIndex].slice(1).map((ele) => d3.select(yAxis.selectAll("text").nodes()[ele])
+            .style("display", "none"));
         }
 
         if (axisLongLineRemove.includes(yAxisPosition[i])) {
@@ -647,7 +652,7 @@ var yd3 = (function (exports, d3) {
 
   }
 
-  //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)?
+  //time series axis, area, pie chart, stack area, additional y, scatter x category, line bar x continuous (x tick number)? title second line
   //error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
 
   /**
@@ -824,7 +829,6 @@ var yd3 = (function (exports, d3) {
           (dataMin > 0 && scaleStart <= minYArray[0] && scaleStart > 0)
           || (dataMax < 0 && scaleStart >= maxYArray[0] && scaleStart < 0)
         ) ? scaleStart : 0;   // if all postive or all negative data, scaleStart works
-
 
         // if there is negative data, set y min. Otherwise choose 0 as default y min
         let yMin = stacked ? (dataMin < 0 ? dataMinSum - ySetbackStack : Math.max(baseNumberStack, 0)) : (dataMin < 0 ? dataMin - ySetback : Math.max(baseNumber, 0));

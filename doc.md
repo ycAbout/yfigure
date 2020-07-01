@@ -51,7 +51,7 @@ common options:
   `yAxisStrokeWidth: 1` Sets individual line width
   `xTickStrokeWidth: 1` Sets individual line width
   `yTickStrokeWidth: 1` Sets individual line width
-  `tickLabelRemove: []` Sets which axis tick label removal // possible values: `['top', 'bottom', 'left', 'right']`
+  `tickLabelRemove: []` Sets which axis tick label to remove // example values: `['top 0 2 4', 'bottom 1 3 5', 'left 0 2 4', 'right 1 3 5']`
   `axisLongLineRemove: []` Sets which axis long line to removal // possible values: `['top', 'bottom', 'left', 'right']`
   `xTickLabelRotate: 0` Sets x axis tick label rotating // needs to between (-90 to 90)
   `xGridColor: ''` Sets the x grid line color
