@@ -25,13 +25,6 @@
       document.body.appendChild(br);
     }
 
-    //generate a sudo normal distributed dataset
-    let dataHistogram = [["age"]];
-    for (let i = 0; i < 600; i++) {
-      let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 100]
-      dataHistogram.push(element)
-    }
-
     //let dataLineDot1 = [["group", "score"], [1, 50], [2, 80], [3, 30], [4, 40], [5, 20]];
     let dataLineDot1 = [["group", "score"], [1, 50], [2, -80], [3, 30], [4, 40], [5, 20]];
     let dataLineDot2 = [["group", "score1", "score2", "score3", "score4"],
@@ -350,7 +343,7 @@
       yPadding: 0.01,
       title: 'Destination of moving out Saskatchewan residents',
       legendX: 0.08,
-      tickLabelRemove: ['bottom 1 2 4 5 7 8 10 11 13 14 16 17 19 20 22 23 25 26']
+      tickLabelHide: ['bottom 1 2 4 5 7 8 10 11 13 14 16 17 19 20 22 23 25 26']
     });
 
 
@@ -528,8 +521,8 @@
 
     createTitle("H2", "sortableBar");
 
-    let G20population2019 = [['Country', 'Population'], ["Argentina", 44495], ["Australia", 24983], ["Brazil", 209469], ["Canada", 37058],["China",1392730],
-    ["France", 66977], ["Germany", 82906],  ["India",1352617],  ["Indonesia", 267663], ["Italy", 60422], ["Japan", 126529],
+    let G20population2019 = [['Country', 'Population'], ["Argentina", 44495], ["Australia", 24983], ["Brazil", 209469], ["Canada", 37058], ["China", 1392730],
+    ["France", 66977], ["Germany", 82906], ["India", 1352617], ["Indonesia", 267663], ["Italy", 60422], ["Japan", 126529],
     ["Mexico", 126191], ["Saudi Arabia", 33700], ["South Africa", 57780], ["Turkey", 82320], ["United Kingdom", 66460], ["United States", 326688]]
 
     // example 1
@@ -539,7 +532,14 @@
       yTitle: 'Person (x1000)',
       title: 'G20 Population',
       titleY: 0.08,
-      xTickLabelRotate: 40
+      xTickLabelRotate: 40,
+      yGridStrokeWidth: 0.2,
+      colors: ['#006400'],
+      xAxisColor: 'red',
+      xTickLabelColor: 'red',
+      yAxisColor: 'blue',
+      yTickLabelColor: 'blue',
+      yTitleColor: 'blue'
     });
 
 
@@ -550,11 +550,14 @@
     // example 1
     let sortableBar2 = new yf.SortableBar(G20Migration2012to2017, {
       frameLeft: 45,
+      xAxisPosition: ['top'],
       xTitle: '',
       yTitle: 'Person (x1000)',
       title: 'G20 2012-2017 net migration',
-      titleY: 0.08,
-      xTickLabelRotate: 40
+      titleY: 0.98,
+      xTickLabelRotate: 40,
+      yGridStrokeWidth: 0.2,
+      colors: ['green', 'orange']
     });
 
 
@@ -563,28 +566,33 @@
 
     // example 2
     let sortableBar3 = new yf.SortableBar(withinCanadaMigration2018to2019, {
-      horizontal: true, 
+      horizontal: true,
       title: 'Within Canada Migration 2018-2019',
       titleY: 0.08,
+      xGridStrokeWidth: 0.2,
+      tickLabelHide: ['bottom 1 3 7 9 11'],
+      colors: ['navy', '#DEB887']
     });
     br();
 
-    let OECDMigration2012to2017 = [["country",'2012-2017'],["Australia",791],["Austria",325],["Belgium",240],["Canada",1210],["Chile",559],
-    ["Colombia",1024],["Czech Republic",110],["Denmark",76],["Estonia",20],["Finland",70],["France",183],["Germany",2719],["Greece",-80],
-    ["Hungary",30],["Iceland",2],["Ireland",118],["Israel",50],["Italy",745],["Japan",358],["Korea, Rep.",59],["Latvia",-74],["Lithuania",-164],
-    ["Luxembourg",49],["Mexico",-300],["Netherlands",80],["New Zealand",74],["Norway",140],["Poland",-147],["Portugal",-30],["Slovak Republic",7],
-    ["Slovenia",10],["Spain",200],["Sweden",200],["Switzerland",260],["Turkey",1420],["United Kingdom",1303],["United States",4774]]
+    let OECDMigration2012to2017 = [["country", '2012-2017'], ["Australia", 791], ["Austria", 325], ["Belgium", 240], ["Canada", 1210], ["Chile", 559],
+    ["Colombia", 1024], ["Czech Republic", 110], ["Denmark", 76], ["Estonia", 20], ["Finland", 70], ["France", 183], ["Germany", 2719], ["Greece", -80],
+    ["Hungary", 30], ["Iceland", 2], ["Ireland", 118], ["Israel", 50], ["Italy", 745], ["Japan", 358], ["Korea, Rep.", 59], ["Latvia", -74], ["Lithuania", -164],
+    ["Luxembourg", 49], ["Mexico", -300], ["Netherlands", 80], ["New Zealand", 74], ["Norway", 140], ["Poland", -147], ["Portugal", -30], ["Slovak Republic", 7],
+    ["Slovenia", 10], ["Spain", 200], ["Sweden", 200], ["Switzerland", 260], ["Turkey", 1420], ["United Kingdom", 1303], ["United States", 4774]]
 
     // example 3
     let sortableBar4 = new yf.SortableBar(OECDMigration2012to2017, {
       width: 800,
       frameLeft: 45,
+      yAxisPosition: ['left', 'right'],
       xTitle: '',
       yTitle: 'Person (x1000)',
       title: 'OECD net migration 2012-2017',
       titleY: 0.08,
       xTickLabelRotate: 40,
-      colors: ['steelblue', '#CC2529']
+      yGridStrokeWidth: 0.2,
+      colors: ['#CC2529', 'steelblue']
     });
 
     //sortableBar1.update();
@@ -594,19 +602,67 @@
 
     createTitle("H2", "histogram");
 
-    // example 1  
-    let histogram1 = new yf.Histogram(dataHistogram);
+
+    let normalDistribution = [['value'], [0.1], [2.62], [-0.8], [-0.55], [-1.41], [0.95], [-1.29], [1.06], [-0.78], [-1.36], [0.66], [1.11], [0.51],
+    [-1.83], [-1.78], [-0.92], [-1.1], [-0.63], [-1.19], [1.18], [0.18], [-1.09], [1.03], [0.48], [-1.11], [0.18], [1.18], [-0.69],
+    [-0.17], [1.38], [0.6], [0.31], [-0.53], [2.01], [0.49], [0.01], [0.07], [-0.25], [0.93], [-0.41], [1.54], [-0.36], [-2.4], [-0.65],
+    [-0.3], [-1], [1.71], [0.15], [0.3], [-0.47], [0.05], [-0.29], [1.6], [0.76], [-0.16], [-0.37], [0.2], [0.83], [-0.71]]
+
     // example 2 
-    let histogram2 = new yf.Histogram(dataHistogram, {
-      nBins: 30,
-      yAxisPosition: ['right']
+    let histogram1 = new yf.Histogram(normalDistribution, {
+      nBins: 10,
+      colors: ['green'],
+      title: 'Normal distribution'
     });
+
+    let normal = [['value'], [10.18], [10.8], [10.22], [9.61], [11.32], [7.94], [10.7], [9.03], [10.72], [10.37], [10.84], [8.65], [10.83], [10.82],
+    [10.31], [10.24], [9.67], [11.81], [9.28], [11.64], [9.72], [9.49], [8.94], [7.39], [9.72], [9.27], [8.83], [10.39], [9.64], [12.77],
+    [8.44], [8.81], [9.67], [10.27], [10.29], [10.82], [10.44], [10.82], [9.99], [9.38], [9.38], [10.55], [8.7], [8.67], [11.38], [9.17],
+    [8.37], [11.24], [9.2], [8.92], [11.2], [9.25], [10.74], [10.87], [9.38], [10.1], [9.67], [10.26], [9.21], [10.49], [10.57], [7.58],
+    [10.67], [9.89], [9.36], [9.8], [8.94], [10.07], [10.52], [11.28], [8.94], [10.97], [10.55], [10.39], [9.63], [9.62], [9.85], [10.71],
+    [9.75], [10.92], [9.75], [9.18], [12.1], [9.95], [8.49], [9.61], [9.08], [9.3], [9.84], [10.48], [9.93], [7.79], [10.36], [9.35], [10.52],
+    [9.53], [7.55], [10.05], [10.15], [10.67], [8.51], [9.06], [10.4], [11.82], [9.65], [8.78], [9.48], [10.27], [11.39], [10.08], [12.11],
+    [9.54], [9.92], [9.45], [10.08], [10.05], [8.46], [9.21], [11.11], [9.01], [9.22], [11.38], [9.85], [11.66], [11.29], [10.81], [10.4],
+    [8.05], [9.84], [11.34], [8.81], [9.61], [9.29], [9.99], [10.23], [9.51], [8.25], [10.41], [10.18], [10.37], [10.56], [9.88], [9.78],
+    [11.54], [9.95], [9.74], [8.94], [12.41], [10.46], [7.8], [9.07], [9.23], [9.43], [10.74], [11.04], [8.15], [10.34], [10.28], [10.22],
+    [10.89], [9.34], [8.88], [10.82], [8.49], [9.91], [10.77], [9.22], [10.5], [9.91], [10.35], [8.42], [10.13], [8.77], [10.96], [9.43],
+    [9.59], [10.94], [10.92], [9.04], [8.93], [11.73], [11.32], [8.26], [11.08], [10.45], [12.05], [8.7], [10.08], [10.8], [8.89], [10.56],
+    [9.74], [9.33], [9.26], [10.13], [9.62], [10.37], [11.26], [11.42], [9.51], [8.94], [10.89], [10.54], [10.26], [10.22], [9.65], [9.96],
+    [11.01], [8.17], [9.49], [11.78], [10.64], [9.14], [10.58], [10.92], [10.67], [11.12], [10.35], [11.51], [10.47], [10.2], [10.53], [10.79],
+    [11.73], [8.88], [9.97], [10.05], [8.51], [8.68], [11.18], [10.23], [7.93], [11.66], [9.86], [11.42], [10.48]]
+
+    // example 1  
+    let histogram2 = new yf.Histogram(normal);
+
+
+    let histogram3 = new yf.Histogram(normalDistribution, {
+      nBins: 10,
+      horizontal: true,
+      colors: ['red'],
+    });
+
     br();
-    // example 3 
-    let histogram3 = new yf.Histogram(dataHistogram, {
-      margin: 50,
-      location: 'body',
-      nBins: 100
+
+    //generate a sudo normal distributed dataset
+    let dataHistogram = [["value"]];
+    for (let i = 0; i < 300; i++) {
+      let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 10]
+      dataHistogram.push(element)
+    }
+    for (let i = 0; i < 300; i++) {
+      let element = [6 + (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 10]
+      dataHistogram.push(element)
+    }
+    for (let i = 0; i < 300; i++) {
+      let element = [12 + (Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 10]
+      dataHistogram.push(element)
+    }
+
+    // example 4 
+    let histogram4 = new yf.Histogram(dataHistogram, {
+      width: 800,
+      nBins: 50,
+      colors: ['purple']
     });
 
     //histogram1.update();
@@ -882,47 +938,47 @@
       ['2017', 1210, 183, 2719, 745, 358, 1303, 4774,],
     ];
 
-    let worldPopulation2019 = [["Afghanistan",37172],["Albania",2866],["Algeria",42228],["American Samoa",55],["Andorra",77],
-["Angola",30810],["Antigua and Barbuda",96],["Argentina",44495],["Armenia",2952],["Aruba",106],["Australia",24983],["Austria",8841],
-["Azerbaijan",9940],["Bahamas, The",386],["Bahrain",1569],["Bangladesh",161356],["Barbados",287],["Belarus",9483],["Belgium",11433],
-["Belize",383],["Benin",11485],["Bermuda",64],["Bhutan",754],["Bolivia",11353],["Bosnia and Herzegovina",3324],["Botswana",2254],
-["Brazil",209469],["British Virgin Islands",30],["Brunei Darussalam",429],["Bulgaria",7025],["Burkina Faso",19752],["Burundi",11175],
-["Cabo Verde",544],["Cambodia",16250],["Cameroon",25216],["Canada",37058],["Cayman Islands",64],["Central African Republic",4666],
-["Chad",15478],["Channel Islands",170],["Chile",18729],["Colombia",49649],["Comoros",832],["Congo, Dem. Rep.",84068],
-["Congo, Rep.",5244],["Costa Rica",4999],["Cote d'Ivoire",25069],["Croatia",4088],["Cuba",11338],["Curacao",160],["Cyprus",1189],
-["Czech Republic",10630],["Denmark",5794],["Djibouti",959],["Dominica",72],["Dominican Republic",10627],["Ecuador",17084],["Egypt, Arab Rep.",98424],
-//["El Salvador",6421],["Equatorial Guinea",1309],["Eritrea",null],["Estonia",1322],["Ethiopia",109225],["Faroe Islands",48],["Fiji",883],
-//["Finland",5516],["France",66977],["French Polynesia",278],["Gabon",2119],["Gambia, The",2280],["Georgia",3727],["Germany",82906],["Ghana",29767],
-//["Gibraltar",34],["Greece",10732],["Greenland",56],["Grenada",111],["Guam",166],["Guatemala",17248],["Guinea",12414],["Guinea-Bissau",1874],
-//["Guyana",779],["Haiti",11123],["Honduras",9588],["Hong Kong SAR, China",7451],["Hungary",9776],["Iceland",353],["India",1352617],
-//["Indonesia",267663],["Iran, Islamic Rep.",81800],["Iraq",38434],["Ireland",4867],["Isle of Man",84],["Israel",8883],["Italy",60422],
-//["Jamaica",2935],["Japan",126529],["Jordan",9956],["Kazakhstan",18272],["Kenya",51393],["Kiribati",116],["Korea, Dem. People’s Rep.",25550],
-//["Korea, Rep.",51607],["Kosovo",1845],["Kuwait",4137],["Kyrgyz Republic",6323],["Lao PDR",7062],["Latvia",1927],["Lebanon",6849],["Lesotho",2108],
-//["Liberia",4819],["Libya",6679],["Liechtenstein",38],["Lithuania",2802],["Luxembourg",608],["Macao SAR, China",632],["North Macedonia",2083],
-//["Madagascar",26262],["Malawi",18143],["Malaysia",31529],["Maldives",516],["Mali",19078],["Malta",485],["Marshall Islands",58],["Mauritania",4403],
-//["Mauritius",1265],["Mexico",126191],["Micronesia, Fed. Sts.",113],["Moldova",2706],["Monaco",39],["Mongolia",3170],["Montenegro",622],
-//["Morocco",36029],["Mozambique",29496],["Myanmar",53708],["Namibia",2448],["Nauru",13],["Nepal",28088],["Netherlands",17232],["New Caledonia",284],
-//["New Zealand",4841],["Nicaragua",6466],["Niger",22443],["Nigeria",195875],["Northern Mariana Islands",57],["Norway",5312],["Oman",4829],
-//["Pakistan",212215],["Palau",18],["Panama",4177],["Papua New Guinea",8606],["Paraguay",6956],["Peru",31989],["Philippines",106652],["Poland",37975],
-//["Portugal",10284],["Puerto Rico",3195],["Qatar",2782],["Romania",19466],["Russian Federation",144478],["Rwanda",12302],["Samoa",196],
-//["San Marino",34],["Sao Tome and Principe",211],["Saudi Arabia",33700],["Senegal",15854],["Serbia",6983],["Seychelles",97],["Sierra Leone",7650],
-//["Singapore",5639],["Sint Maarten (Dutch part)",41],["Slovak Republic",5447],["Slovenia",2074],["Solomon Islands",653],["Somalia",15008],
-//["South Africa",57780],["South Sudan",10976],["Spain",46797],["Sri Lanka",21670],["St. Kitts and Nevis",52],["St. Lucia",182],
-//["St. Martin (French part)",37],["St. Vincent and the Grenadines",110],["Sudan",41802],["Suriname",576],["Eswatini",1136],["Sweden",10175],
-//["Switzerland",8513],["Syrian Arab Republic",16906],["Tajikistan",9101],["Tanzania",56318],["Thailand",69429],["Timor-Leste",1268],["Togo",7889],
-//["Tonga",103],["Trinidad and Tobago",1390],["Tunisia",11565],["Turkey",82320],["Turkmenistan",5851],["Turks and Caicos Islands",38],["Tuvalu",12],
-//["Uganda",42723],["Ukraine",44623],["United Arab Emirates",9631],["United Kingdom",66460],["United States",326688],["Uruguay",3449],
-//["Uzbekistan",32955],["Vanuatu",293],["Venezuela, RB",28870],["Vietnam",95540],["Virgin Islands (U.S.)",107],["West Bank and Gaza",4569],
-//["Yemen, Rep.",28499],["Zambia",17352],["Zimbabwe",14439]
-]
+    let worldPopulation2019 = [["Afghanistan", 37172], ["Albania", 2866], ["Algeria", 42228], ["American Samoa", 55], ["Andorra", 77],
+    ["Angola", 30810], ["Antigua and Barbuda", 96], ["Argentina", 44495], ["Armenia", 2952], ["Aruba", 106], ["Australia", 24983], ["Austria", 8841],
+    ["Azerbaijan", 9940], ["Bahamas, The", 386], ["Bahrain", 1569], ["Bangladesh", 161356], ["Barbados", 287], ["Belarus", 9483], ["Belgium", 11433],
+    ["Belize", 383], ["Benin", 11485], ["Bermuda", 64], ["Bhutan", 754], ["Bolivia", 11353], ["Bosnia and Herzegovina", 3324], ["Botswana", 2254],
+    ["Brazil", 209469], ["British Virgin Islands", 30], ["Brunei Darussalam", 429], ["Bulgaria", 7025], ["Burkina Faso", 19752], ["Burundi", 11175],
+    ["Cabo Verde", 544], ["Cambodia", 16250], ["Cameroon", 25216], ["Canada", 37058], ["Cayman Islands", 64], ["Central African Republic", 4666],
+    ["Chad", 15478], ["Channel Islands", 170], ["Chile", 18729], ["Colombia", 49649], ["Comoros", 832], ["Congo, Dem. Rep.", 84068],
+    ["Congo, Rep.", 5244], ["Costa Rica", 4999], ["Cote d'Ivoire", 25069], ["Croatia", 4088], ["Cuba", 11338], ["Curacao", 160], ["Cyprus", 1189],
+    ["Czech Republic", 10630], ["Denmark", 5794], ["Djibouti", 959], ["Dominica", 72], ["Dominican Republic", 10627], ["Ecuador", 17084], ["Egypt, Arab Rep.", 98424],
+      //["El Salvador",6421],["Equatorial Guinea",1309],["Eritrea",null],["Estonia",1322],["Ethiopia",109225],["Faroe Islands",48],["Fiji",883],
+      //["Finland",5516],["France",66977],["French Polynesia",278],["Gabon",2119],["Gambia, The",2280],["Georgia",3727],["Germany",82906],["Ghana",29767],
+      //["Gibraltar",34],["Greece",10732],["Greenland",56],["Grenada",111],["Guam",166],["Guatemala",17248],["Guinea",12414],["Guinea-Bissau",1874],
+      //["Guyana",779],["Haiti",11123],["Honduras",9588],["Hong Kong SAR, China",7451],["Hungary",9776],["Iceland",353],["India",1352617],
+      //["Indonesia",267663],["Iran, Islamic Rep.",81800],["Iraq",38434],["Ireland",4867],["Isle of Man",84],["Israel",8883],["Italy",60422],
+      //["Jamaica",2935],["Japan",126529],["Jordan",9956],["Kazakhstan",18272],["Kenya",51393],["Kiribati",116],["Korea, Dem. People’s Rep.",25550],
+      //["Korea, Rep.",51607],["Kosovo",1845],["Kuwait",4137],["Kyrgyz Republic",6323],["Lao PDR",7062],["Latvia",1927],["Lebanon",6849],["Lesotho",2108],
+      //["Liberia",4819],["Libya",6679],["Liechtenstein",38],["Lithuania",2802],["Luxembourg",608],["Macao SAR, China",632],["North Macedonia",2083],
+      //["Madagascar",26262],["Malawi",18143],["Malaysia",31529],["Maldives",516],["Mali",19078],["Malta",485],["Marshall Islands",58],["Mauritania",4403],
+      //["Mauritius",1265],["Mexico",126191],["Micronesia, Fed. Sts.",113],["Moldova",2706],["Monaco",39],["Mongolia",3170],["Montenegro",622],
+      //["Morocco",36029],["Mozambique",29496],["Myanmar",53708],["Namibia",2448],["Nauru",13],["Nepal",28088],["Netherlands",17232],["New Caledonia",284],
+      //["New Zealand",4841],["Nicaragua",6466],["Niger",22443],["Nigeria",195875],["Northern Mariana Islands",57],["Norway",5312],["Oman",4829],
+      //["Pakistan",212215],["Palau",18],["Panama",4177],["Papua New Guinea",8606],["Paraguay",6956],["Peru",31989],["Philippines",106652],["Poland",37975],
+      //["Portugal",10284],["Puerto Rico",3195],["Qatar",2782],["Romania",19466],["Russian Federation",144478],["Rwanda",12302],["Samoa",196],
+      //["San Marino",34],["Sao Tome and Principe",211],["Saudi Arabia",33700],["Senegal",15854],["Serbia",6983],["Seychelles",97],["Sierra Leone",7650],
+      //["Singapore",5639],["Sint Maarten (Dutch part)",41],["Slovak Republic",5447],["Slovenia",2074],["Solomon Islands",653],["Somalia",15008],
+      //["South Africa",57780],["South Sudan",10976],["Spain",46797],["Sri Lanka",21670],["St. Kitts and Nevis",52],["St. Lucia",182],
+      //["St. Martin (French part)",37],["St. Vincent and the Grenadines",110],["Sudan",41802],["Suriname",576],["Eswatini",1136],["Sweden",10175],
+      //["Switzerland",8513],["Syrian Arab Republic",16906],["Tajikistan",9101],["Tanzania",56318],["Thailand",69429],["Timor-Leste",1268],["Togo",7889],
+      //["Tonga",103],["Trinidad and Tobago",1390],["Tunisia",11565],["Turkey",82320],["Turkmenistan",5851],["Turks and Caicos Islands",38],["Tuvalu",12],
+      //["Uganda",42723],["Ukraine",44623],["United Arab Emirates",9631],["United Kingdom",66460],["United States",326688],["Uruguay",3449],
+      //["Uzbekistan",32955],["Vanuatu",293],["Venezuela, RB",28870],["Vietnam",95540],["Virgin Islands (U.S.)",107],["West Bank and Gaza",4569],
+      //["Yemen, Rep.",28499],["Zambia",17352],["Zimbabwe",14439]
+    ]
 
 
-let OECDpopulation2019 = [['Country', 'Population'], ["Australia",24983],["Austria",8841],["Belgium",11433],["Canada",37058],["Chile",18729],
-    ["Colombia",49649],["Czech Republic",10630],["Denmark",5794],["Estonia",1322],["Finland",5516],["France",66977],["Germany",82906],["Greece",10732],
-    ["Hungary",9776],["Iceland",353],["Ireland",4867],["Israel",8883],["Italy",60422],["Japan",126529],["Korea, Rep.",51607],["Latvia",1927],
-    ["Lithuania",2802],["Luxembourg",608],["Mexico",126191],["Netherlands",17232],["New Zealand",4841],["Norway",5312],["Poland",37975],
-    ["Portugal",10284],["Slovak Republic",5447],["Slovenia",2074],["Spain",46797],["Sweden",10175],["Switzerland",8513],["Turkey",82320],
-    ["United Kingdom",66460],["United States",326688]]
+    let OECDpopulation2019 = [['Country', 'Population'], ["Australia", 24983], ["Austria", 8841], ["Belgium", 11433], ["Canada", 37058], ["Chile", 18729],
+    ["Colombia", 49649], ["Czech Republic", 10630], ["Denmark", 5794], ["Estonia", 1322], ["Finland", 5516], ["France", 66977], ["Germany", 82906], ["Greece", 10732],
+    ["Hungary", 9776], ["Iceland", 353], ["Ireland", 4867], ["Israel", 8883], ["Italy", 60422], ["Japan", 126529], ["Korea, Rep.", 51607], ["Latvia", 1927],
+    ["Lithuania", 2802], ["Luxembourg", 608], ["Mexico", 126191], ["Netherlands", 17232], ["New Zealand", 4841], ["Norway", 5312], ["Poland", 37975],
+    ["Portugal", 10284], ["Slovak Republic", 5447], ["Slovenia", 2074], ["Spain", 46797], ["Sweden", 10175], ["Switzerland", 8513], ["Turkey", 82320],
+    ["United Kingdom", 66460], ["United States", 326688]]
 
 
 

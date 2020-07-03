@@ -193,7 +193,7 @@ class BaseSimpleGroupAxis {
     (options.yTicks || parseInt(options.yTicks) === 0) ? true : options.yTicks = null;
     (options.xTickSize || parseFloat(options.xTickSize) === 0) ? true : options.xTickSize = 6;
     (options.yTickSize || parseFloat(options.yTickSize) === 0) ? true : options.yTickSize = 6;
-    options.tickLabelRemove ? true : options.tickLabelRemove = [];
+    options.tickLabelHide ? true : options.tickLabelHide = [];
     options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
     options.xGridColor ? true : options.xGridColor = '';
     options.xGridDashArray ? true : options.xGridDashArray = '';
@@ -223,7 +223,7 @@ class BaseSimpleGroupAxis {
     validateArray(options.yAxisPosition, 'yAxisPosition');
     validateArray(options.xTitlePosition, 'xTitlePosition');
     validateArray(options.yTitlePosition, 'yTitlePosition');
-    validateArray(options.tickLabelRemove, 'tickLabelRemove');
+    validateArray(options.tickLabelHide, 'tickLabelHide');
     validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
 
     function validateString(stringToBe, errorString) {
@@ -342,7 +342,7 @@ class BaseSimpleGroupAxis {
     let yTicks = options.yTicks;
     let xTickSize = parseFloat(options.xTickSize);
     let yTickSize = parseFloat(options.yTickSize);
-    let tickLabelRemove = options.tickLabelRemove;
+    let tickLabelHide = options.tickLabelHide;
     let axisLongLineRemove = options.axisLongLineRemove;
     let xGridColor = options.xGridColor.toString();
     let xGridDashArray = options.xGridDashArray.toString();
@@ -358,7 +358,7 @@ class BaseSimpleGroupAxis {
     let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
 
     return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
+      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLongLineRemove,
       xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
       yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
       line0StrokeWidth, line0DashArray]
@@ -403,7 +403,7 @@ class BaseSimpleGroupAxis {
    */
   _drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, horizontal,
     xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-    xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelRemove, axisLongLineRemove,
+    xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLongLineRemove,
     xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
     yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
     line0StrokeWidth, line0DashArray]) {
@@ -438,8 +438,8 @@ class BaseSimpleGroupAxis {
     // if user not specified yTitle
     if (yTitle === false) yTitle = yDataName;
 
-    tickLabelRemove = tickLabelRemove.map((ele) => ele.trim().split(/\s+/));
-    let tickLabelRemoveAxis = tickLabelRemove.map((ele) => ele[0]);
+    tickLabelHide = tickLabelHide.map((ele) => ele.trim().split(/\s+/));
+    let tickLabelHideAxis = tickLabelHide.map((ele) => ele[0]);
 
     //x axis
     for (let i = 0; i < Math.min(xAxisPosition.length, 2); i++) {
@@ -465,9 +465,9 @@ class BaseSimpleGroupAxis {
         .attr("stroke-width", xTickStrokeWidth)
 
       // set label not display
-      let omitIndex = tickLabelRemoveAxis.indexOf(xAxisPosition[i]);
+      let omitIndex = tickLabelHideAxis.indexOf(xAxisPosition[i]);
       if (omitIndex != -1) {
-        tickLabelRemove[omitIndex].slice(1).map((ele) => d3.select(xAxis.selectAll("text").nodes()[ele])
+        tickLabelHide[omitIndex].slice(1).map((ele) => d3.select(xAxis.selectAll("text").nodes()[ele])
           .style("display", "none"));
       }
 
@@ -510,9 +510,9 @@ class BaseSimpleGroupAxis {
         .attr("stroke-width", yTickStrokeWidth);
 
       // set label not display
-      let omitIndex = tickLabelRemoveAxis.indexOf(xAxisPosition[i]);
+      let omitIndex = tickLabelHideAxis.indexOf(yAxisPosition[i]);
       if (omitIndex != -1) {
-        tickLabelRemove[omitIndex].slice(1).map((ele) => d3.select(yAxis.selectAll("text").nodes()[ele])
+        tickLabelHide[omitIndex].slice(1).map((ele) => d3.select(yAxis.selectAll("text").nodes()[ele])
           .style("display", "none"));
       }
 
