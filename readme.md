@@ -1,18 +1,19 @@
-# yd3, an easy to use data visualization javascript library build on top of d3
+# yfigure, an easy to use data visualization javascript library. 
+# Don't waste time, use yfigure.
 ### @author Yalin Chen yc.about@gmail.com   
 Copyright 2020 Yalin Chen
 
 ## Why
-d3 is so great but is so hard to use. yd3 makes it as simple as calling a function: `yd3.sortableBar(data);`
+There are plenty figure libraries, but yfigure aims to provide the simplest but very powerful and flexible way to draw a figure.
 
 ## How to use
-1. Add this yd3 library to your html:  
-`<script src='` ****your yd3 library file path**** `'></script>`
+1. Add this yfigure library to your html:  
+`<script src='` ****your yfigure library file path**** `'></script>`
 2. Use it as normal javascript (write any line below above):
 ```
 <script>
 let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
-yd3.sortableBar(dataBar);
+yf.sortableBar(dataBar);
 </script>
 ```
 or add to your html file:  
@@ -21,7 +22,7 @@ or add to your html file:
 your js file: 
 ```
 let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
-yd3.sortableBar(dataBar);
+yf.sortableBar(dataBar);
 ```
 
 note: This library packed d3v5 (Copyright 2020 Mike Bostock) into it.
@@ -47,16 +48,16 @@ This function draws a horizontal bar graph (y represents continuous value) using
 let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
 
 //example 1
-yd3.bar(data);
+yf.bar(data);
 
 //example 2
 let data2 =[{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-yd3.bar(data2, {
+yf.bar(data2, {
   size: { width: 350, height: 300 },
 });
 
 //example 3
-yd3.bar(data2, {
+yf.bar(data2, {
   size: { width: 350, height: 300 },
   margin: { left: 40, top: 20, right: 60, bottom: 40 },
   location: 'body',
@@ -83,16 +84,16 @@ This function draws a horizontal sortable bar graph (y represents continuous val
 let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 }, { "group": 4, "score": 80 }, { "group": 5, "score": 40 }];
 
 //example 1
-yd3.sortableBar(data);
+yf.sortableBar(data);
 
 //example 2
 let data2 =[{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": -30 }, { "group": 4, "score": -80 }, { "group": 5, "score": 40 }];
-yd3.sortableBar(data2, {
+yf.sortableBar(data2, {
   size: { width: 350, height: 300 },
 });
 
 //example 3
-yd3.sortableBar(data2, {
+yf.sortableBar(data2, {
   size: { width: 350, height: 300 },
   margin: { left: 40, top: 20, right: 60, bottom: 40 },
   location: 'body',
@@ -126,16 +127,16 @@ for (let i = 0; i < 900; i++) {
 }
 
 // example 1  
-yd3.histogram(data);
+yf.histogram(data);
 
 // example 2 
-yd3.histogram(data, {
+yf.histogram(data, {
     size: { width: 350, height: 300 }, 
     nBins: 30
 });
 
 // example 3 
-yd3.histogram(data, {
+yf.histogram(data, {
     size: { width: 350, height: 300 }, 
     margin: { left: 40, top: 80, right: 40, bottom: 40 }, 
     location: 'body',
@@ -163,10 +164,10 @@ This function draws a line with dot graph (y represents continuous value) using 
 let data = [{ "group": 1, "score": 50 }, { "group": 2, "score": 80 }, { "group": 3, "score": 30 },{ "group": 4, "score": 40 }, { "group": 5, "score": 20 }];
 
 // example 1  
-yd3.lineDot(data, { dotRadius: 1 });
+yf.lineDot(data, { dotRadius: 1 });
 
 // example 2 
-yd3.lineDot(data, {
+yf.lineDot(data, {
     size: { width: 350, height: 300 }, 
 });
 
@@ -185,7 +186,7 @@ yd3.lineDot(data, {
       data2.push(element)
     }
 
-yd3.lineDot(data2, {
+yf.lineDot(data2, {
     size: { width: 350, height: 300 }, 
     margin: { left: 40, top: 80, right: 40, bottom: 40 }, 
     location: 'body',
@@ -221,10 +222,10 @@ for (i = 0; i < 50; i++) {
 }
 
 // example 1  
-yd3.scatter(data);
+yf.scatter(data);
 
 // example 2 
-yd3.scatter(data, {
+yf.scatter(data, {
     size: { width: 350, height: 300 }, 
 });
 
@@ -241,7 +242,7 @@ for (i = 0; i < 50; i++) {
     data2.push(element)
 }
 
-yd3.scatter(data2, {
+yf.scatter(data2, {
     size: { width: 350, height: 300 }, 
     margin: { left: 40, top: 80, right: 40, bottom: 40 }, 
     location: 'body',

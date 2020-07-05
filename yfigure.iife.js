@@ -3,9 +3,10 @@ var yf = (function (exports, d3) {
 
   function author() {
     /**
-   * This library aims to provide the simplest but very powerful and flexible way to draw a graph on a web page.
+   * This javascript library aims to provide the simplest but super powerful and flexible way to draw a figure.
    * One only needs to provide data in a 2d array format and an optional object contains all the figure options.
-   * Every single option was carefully thought to provide the best possible user experience.
+   * Every single option was carefully thought through to provide the best possible user experience. 
+   * This library is build on top of d3js, thus d3 copyright applies to the d3 portion of this library.
    * 
    * This library uses 2d array as data format instead of an array of objects for two reasons:
    * 1. 2d array looks more structurized and easier for visual perception.
@@ -13,7 +14,7 @@ var yf = (function (exports, d3) {
    */
 
     let copyright = 'Copyright ' + (new Date).getFullYear() + ' Yalin Chen';
-    let info = `***yfigure, an easy to use data visualization javascript library build on top of d3js
+    let info = `***yfigure, a javascript library aims to provide the simplest but super powerful and flexible way to do data visualization.
   @author Yalin Chen yc.about@gmail.com
   ${copyright}***`;
     return info
@@ -652,8 +653,8 @@ var yf = (function (exports, d3) {
 
   }
 
-  //time series axis, area, pie chart, stack area, additional y, scatter x category, title second line
-  //error bar, line hover, ScaleStart 0.9 error, datapoint attached to figure, background multiple color, y break (two figures, top add a small figure), commerical copyright,
+  //time series axis, area, pie chart, stack area, additional y,
+  //title second line, ScaleStart 0.9 error, datapoint attached to figure? error bar, group hist, line hover, background multiple color, y break (two figures, top add a small figure) or bar bendover, commerical copyright,
 
   /**
   * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).
