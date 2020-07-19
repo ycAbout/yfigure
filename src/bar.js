@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { BaseSimpleGroupAxis } from './baseClass.js';
 
 //time series axis, area, pie chart, stack area, additional y,
-//title second line, ScaleStart 0.9 error, datapoint attached to figure? error bar, group hist, line hover, background multiple color, y break (two figures, top add a small figure) or bar bendover, commerical copyright,
+//ScaleStart 0.9 error, datapoint attached to figure? error bar, group hist, line hover, background multiple color, y break (two figures, top add a small figure) or bar bendover, commerical copyright,
 
 /**
 * A Bar class for a horizontal simple or grouped bar graph (y represents continuous value).

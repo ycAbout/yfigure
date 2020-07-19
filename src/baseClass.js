@@ -76,6 +76,7 @@ class BaseSimpleGroupAxis {
     }
 
     !Array.isArray(options.colors) ? makeError(`Option colors needs to be an array!`) : true;
+    !(parseInt(options.titleRotate) <= 45 && parseInt(options.titleRotate) >= -45) ? makeError('Option titleRotate needs to be between -45 to 45!') : true;
 
     let location = options.location;
     let id = options.id;
@@ -256,7 +257,8 @@ class BaseSimpleGroupAxis {
     validateNumStr(options.xPadding, 'xPadding');
     validateNumStr(options.yPadding, 'yPadding');
 
-    !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90 degree!') : true;
+    !(parseInt(options.xTickLabelRotate) <= 90 && parseInt(options.xTickLabelRotate) >= -90) ? makeError('Option xTickLabelRotate needs to be between -90 to 90!') : true;
+
 
     (typeof options.xTicks !== 'number' && options.xTicks !== null) ? makeError('Option xTicks needs to be a number!') : true;
     (typeof options.yTicks !== 'number' && options.yTicks !== null) ? makeError('Option yTicks needs to be a number!') : true;
@@ -582,17 +584,68 @@ class BaseSimpleGroupAxis {
    */
   _drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]) {
 
-    //Figure title
-    svg
+
+    let titleContainer = svg
       .append("g")
       .attr("transform", `translate(${-(frameLeft + marginLeft)}, ${-(frameTop + marginTop)})`)  // move to the beginning
+
+    //Figure title
+    let proposedTitle = titleContainer
       .append("text")
       .style('font', titleFont)
-      .style('fill', titleColor)
-      .attr("text-anchor", titleX < 0.34 ? "start" : titleX < 0.67 ? "middle" : "end")  // transform is applied to the anchor
-      .attr("transform", `translate(${width * titleX}, ${height * titleY}) rotate(${titleRotate})`)
-      .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
       .text(title);
+
+    let proposedTitleWidth = proposedTitle.node().getBBox().width;
+    let proposedTitleHeight = proposedTitle.node().getBBox().height;
+
+    proposedTitle.remove();
+
+    if (proposedTitleWidth > width) {
+
+      //break title into 2 lines
+      let middle = Math.floor(title.length / 2);
+      let before = title.lastIndexOf(' ', middle);
+      let after = title.indexOf(' ', middle + 1);
+
+      if (middle - before < after - middle) {
+        middle = before;
+      } else {
+        middle = after;
+      }
+
+      let titleLine1 = title.substr(0, middle);
+      let titleLine2 = title.substr(middle + 1);
+
+      titleContainer
+        .append("text")
+        .style('font', titleFont)
+        .style('fill', titleColor)
+        .attr("text-anchor", titleX < 0.34 ? "start" : titleX < 0.67 ? "middle" : "end")  // transform is applied to the anchor
+        .attr("transform", `translate(${width * titleX}, ${height * titleY}) rotate(${titleRotate})`)
+        .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
+        .text(titleLine1);
+
+      titleContainer
+        .append("text")
+        .style('font', titleFont)
+        .style('fill', titleColor)
+        .attr("text-anchor", titleX < 0.34 ? "start" : titleX < 0.67 ? "middle" : "end")  // transform is applied to the anchor
+        .attr("transform", `translate(${width * titleX}, ${height * titleY + proposedTitleHeight + 2}) rotate(${titleRotate})`)
+        .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
+        .text(titleLine2);
+
+    } else {
+      titleContainer
+        .append("text")
+        .style('font', titleFont)
+        .style('fill', titleColor)
+        .attr("text-anchor", titleX < 0.34 ? "start" : titleX < 0.67 ? "middle" : "end")  // transform is applied to the anchor
+        .attr("transform", `translate(${width * titleX}, ${height * titleY}) rotate(${titleRotate})`)
+        .attr("dy", `${titleY < 0.34 ? 0.8 : titleY < 0.67 ? 0.4 : -0.4}em`)   // reference point
+        .text(title);
+
+    }
+
   }
 
 
