@@ -20,7 +20,7 @@ common options:
   `titleColor: 'black'` Sets figure title properties
   `titleX: 0.5` Sets figure title  properties  // 0 - 1 from left to right
   `titleY: 0` Sets figure title  properties  // 0 - 1  from top to bottom
-  `titleRotate: 0` Sets figure title properties
+  `titleRotate: 0` Sets figure title properties // needs to between (-45 to 45)
 
   axis options:
   `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`

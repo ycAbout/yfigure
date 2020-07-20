@@ -489,8 +489,13 @@ var yf = (function (exports, d3) {
         // set label not display
         let omitIndex = tickLabelHideAxis.indexOf(xAxisPosition[i]);
         if (omitIndex != -1) {
-          tickLabelHide[omitIndex].slice(1).map((ele) => d3.select(xAxis.selectAll("text").nodes()[ele])
-            .style("display", "none"));
+          tickLabelHide[omitIndex].slice(1).map((ele) => {
+            d3.select(xAxis.selectAll("text").nodes()[ele])
+              .style("display", "none");
+
+            d3.select(xAxis.selectAll("line").nodes()[ele])
+              .attr("stroke-width", Math.max(xTickStrokeWidth - 0.6, 0.2));
+          });
         }
 
         if (axisLongLineRemove.includes(xAxisPosition[i])) {
@@ -1259,17 +1264,19 @@ var yf = (function (exports, d3) {
       (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : this._options.legendY = 0.12;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
+      this._options.lineStrokeWidth ? true : this._options.lineStrokeWidth = 2; 
 
       //validate format
-      if (typeof this._options.dotRadius !== 'number') { throw new Error('Option dotRadius need to be a number!') }
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
       function validateNumStr(numStrToBe, errorString) {
         (typeof numStrToBe !== 'number' && typeof numStrToBe !== 'string') ? makeError(`Option ${errorString} needs to be a string or number!`) : true;
       }
+      validateNumStr(this._options.dotRadius, 'dotRadius');
       validateNumStr(this._options.legendX, 'legendX');
       validateNumStr(this._options.legendY, 'legendY');
       validateNumStr(this._options.legendWidth, 'legendWidth');
+      validateNumStr(this._options.lineStrokeWidth, 'lineStrokeWidth');
 
       typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
@@ -1288,6 +1295,7 @@ var yf = (function (exports, d3) {
 
       let legendX = Math.min(parseFloat(options.legendX), 0.98);
       let legendY = Math.min(parseFloat(options.legendY), 0.98);
+      let lineStrokeWidth = parseFloat(options.lineStrokeWidth);
       let legendWidth = parseFloat(options.legendWidth);
       let legendFont = options.legendFont;
 
@@ -1386,7 +1394,7 @@ var yf = (function (exports, d3) {
               .datum(dataValue)
               .attr("fill", "none")
               .attr("stroke", colorScale(yDataNames[i]))
-              .attr("stroke-width", 2)
+              .attr("stroke-width", lineStrokeWidth)
               .attr("d", d3.line()
                 .x(element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
                 .y(element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
