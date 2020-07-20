@@ -464,13 +464,18 @@ class BaseSimpleGroupAxis {
 
       xAxis
         .selectAll("line")
-        .attr("stroke-width", xTickStrokeWidth)
+        .attr("stroke-width", xTickStrokeWidth);
 
       // set label not display
       let omitIndex = tickLabelHideAxis.indexOf(xAxisPosition[i]);
       if (omitIndex != -1) {
-        tickLabelHide[omitIndex].slice(1).map((ele) => d3.select(xAxis.selectAll("text").nodes()[ele])
-          .style("display", "none"));
+        tickLabelHide[omitIndex].slice(1).map((ele) => {
+          d3.select(xAxis.selectAll("text").nodes()[ele])
+            .style("display", "none");
+
+          d3.select(xAxis.selectAll("line").nodes()[ele])
+            .attr("stroke-width", Math.max(xTickStrokeWidth - 0.6, 0.2));
+        });
       }
 
       if (axisLongLineRemove.includes(xAxisPosition[i])) {
