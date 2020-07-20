@@ -88,16 +88,17 @@ for (let i = 0; i < popular.length; i++) {
 //console.log(data);
 
 
+let big3 = ['China', 'United States', 'Russian Federation']
 
 let population = [];
 for (let i = 0; i < popular.length; i++) {
-    if (popular[i]['Series Name'] == "Population, total") {  //Population
-        if (OECD.includes(popular[i]['Country Name'].toUpperCase())) population.push(
-            [popular[i]['Country Name'], Math.round(popular[i]['2018 [YR2018]'] / 1000)]
+    if (popular[i]['Series Name'] == "GDP growth (annual %)") {  //Population
+        if (big3.includes(popular[i]['Country Name'])) population.push(
+            [popular[i]['Country Name'], popular[i]]
         );
     }
 }
 
 fs.writeFile('./test1.json', JSON.stringify(data), () => { });
-console.log(population.length);
+console.log(population);
 console.log(OECD.length);
