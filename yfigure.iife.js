@@ -459,7 +459,6 @@ var yf = (function (exports, d3) {
       if (xTitle === false) xTitle = xDataName;
       // if user not specified yTitle
       if (yTitle === false) yTitle = yDataName;
-
       tickLabelHide = tickLabelHide.map((ele) => ele.trim().split(/\s+/));
       let tickLabelHideAxis = tickLabelHide.map((ele) => ele[0]);
 
@@ -490,11 +489,22 @@ var yf = (function (exports, d3) {
         let omitIndex = tickLabelHideAxis.indexOf(xAxisPosition[i]);
         if (omitIndex != -1) {
           tickLabelHide[omitIndex].slice(1).map((ele) => {
-            d3.select(xAxis.selectAll("text").nodes()[ele])
-              .style("display", "none");
+            if (ele.includes('-')) {
+              let temArray = ele.split('-');
+              for (let i = Number(temArray[0]); i < Number(temArray[1])+1; i++) {
+                d3.select(xAxis.selectAll("text").nodes()[i])
+                  .style("display", "none");
 
-            d3.select(xAxis.selectAll("line").nodes()[ele])
-              .attr("stroke-width", Math.max(xTickStrokeWidth - 0.6, 0.2));
+                d3.select(xAxis.selectAll("line").nodes()[i])
+                  .attr("stroke-width", Math.max(xTickStrokeWidth - 0.6, 0.2));
+              }
+            } else {
+              d3.select(xAxis.selectAll("text").nodes()[ele])
+                .style("display", "none");
+
+              d3.select(xAxis.selectAll("line").nodes()[ele])
+                .attr("stroke-width", Math.max(xTickStrokeWidth - 0.6, 0.2));
+            }
           });
         }
 
