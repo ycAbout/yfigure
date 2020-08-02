@@ -491,7 +491,7 @@ var yf = (function (exports, d3) {
           tickLabelHide[omitIndex].slice(1).map((ele) => {
             if (ele.includes('-')) {
               let temArray = ele.split('-');
-              for (let i = Number(temArray[0]); i < Number(temArray[1])+1; i++) {
+              for (let i = Number(temArray[0]); i < Number(temArray[1]) + 1; i++) {
                 d3.select(xAxis.selectAll("text").nodes()[i])
                   .style("display", "none");
 
@@ -549,9 +549,26 @@ var yf = (function (exports, d3) {
         // set label not display
         let omitIndex = tickLabelHideAxis.indexOf(yAxisPosition[i]);
         if (omitIndex != -1) {
-          tickLabelHide[omitIndex].slice(1).map((ele) => d3.select(yAxis.selectAll("text").nodes()[ele])
-            .style("display", "none"));
+          tickLabelHide[omitIndex].slice(1).map((ele) => {
+            if (ele.includes('-')) {
+              let temArray = ele.split('-');
+              for (let i = Number(temArray[0]); i < Number(temArray[1]) + 1; i++) {
+                d3.select(yAxis.selectAll("text").nodes()[i])
+                  .style("display", "none");
+
+                d3.select(yAxis.selectAll("line").nodes()[i])
+                  .attr("stroke-width", Math.max(yTickStrokeWidth - 0.6, 0.2));
+              }
+            } else {
+              d3.select(yAxis.selectAll("text").nodes()[ele])
+                .style("display", "none");
+
+              d3.select(yAxis.selectAll("line").nodes()[ele])
+                .attr("stroke-width", Math.max(yTickStrokeWidth - 0.6, 0.2));
+            }
+          });
         }
+
 
         if (axisLongLineRemove.includes(yAxisPosition[i])) {
           yAxis

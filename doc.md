@@ -23,10 +23,10 @@ common options:
   `titleRotate: 0` Sets figure title properties // needs to between (-45 to 45)
 
   axis options:
-  `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition = []`, `yAxisPosition = ['left', 'right']`
-  `yAxisPosition: ['left']`  Sets axis location
-  `xTitlePosition: ['bottom']` Sets axis title location
-  `yTitlePosition: ['left']` Sets axis title location
+  `xAxisPosition: ['bottom']`  Sets axis location   // for none or both, e.g., `xAxisPosition: []`, `xAxisPosition: ['left', 'right']`
+  `yAxisPosition: ['left']`  Sets axis location    // for none or both, e.g., `yAxisPosition: []`, `yAxisPosition: ['left', 'right']`
+  `xTitlePosition: ['bottom']` Sets axis title location    // for none or both, e.g., `xTitlePosition: []`, `xTitlePosition: ['left', 'right']`
+  `yTitlePosition: ['left']` Sets axis title location    // for none or both, e.g., `yTitlePosition: []`, `yTitlePosition: ['left', 'right']`
   `xTitle: ''` Sets the x axis title, override xDataName, use space string `' '` to remove it
   `yTitle: ''` Sets the y axis title, override yDataName, use space string `' '` to remove it
   `xPadding: 0.1` Sets the x data padding on axis
