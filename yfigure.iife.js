@@ -1655,8 +1655,8 @@ var yf = (function (exports, d3) {
           }
         }
 
-        let dataMax = Math.max(d3.max(maxYArray), 0);
-        let dataMin = Math.min(d3.min(minYArray), 0);
+        let dataMax = d3.max(maxYArray);
+        let dataMin = d3.min(minYArray);
 
         // make highest number approximately 10% range off the range
         let ySetback = (dataMax - dataMin) * yPadding;  //10% of data range
@@ -1676,6 +1676,7 @@ var yf = (function (exports, d3) {
         let yScale = d3.scaleLinear()
           .domain([yMin, yMax])  // data points off axis
           .range([innerHeight, 0]);
+
 
         // remove old content group if exist and draw a new one
         if (svg.select('#' + id + 'sky999all').node()) {
