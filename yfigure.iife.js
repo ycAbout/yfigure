@@ -1568,7 +1568,7 @@ var yf = (function (exports, d3) {
       this._options.dotRadius ? true : this._options.dotRadius = 4;
       (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : this._options.legendX = 0.18;
       (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : this._options.legendY = 0.12;
-      this._options.legendWidth ? true :this._options.legendWidth = 600;
+      this._options.legendWidth ? true : this._options.legendWidth = 600;
       this._options.legendFont ? true : this._options.legendFont = '10px sans-serif';
 
       //validate format
@@ -1703,6 +1703,7 @@ var yf = (function (exports, d3) {
               .attr("cy", function (element) { return yScale(element[i + 1]) })
               .attr("r", dotRadius)
               .attr("fill", colorScale(yDataNames[i]))
+              .attr("display", (element) => element[i + 1] == 'x' ? 'none' : true)
               .on('mouseover', (element) => {
                 d3.select('#' + dataPointDisplayId)
                   .style('display', null)
