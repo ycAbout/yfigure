@@ -17,7 +17,7 @@ export default [
     input: 'main.js',
     external: ['d3'],
     output: [{
-      file: './yfigure.iife.js',
+      file: './test/yfigure.iife.js',
       format: 'iife',
       name: 'yf',
       globals: {

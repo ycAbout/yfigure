@@ -99,6 +99,7 @@ for (let i = 0; i < popular.length; i++) {
     }
 }
 
-fs.writeFile('./test1.json', JSON.stringify(data), () => { });
-console.log(population);
-console.log(OECD.length);
+//fs.writeFile('./test1.json', JSON.stringify(data), () => { });
+//console.log(population);
+//console.log(OECD.length);
+
