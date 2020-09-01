@@ -141,7 +141,6 @@ class Bar extends BaseSimpleGroupAxis {
       for (let j = 0; j < dataValue.length; j++) {
         let sumPostive = 0;
         let sumNegative = 0;
-        [x, 1, 2, 3, -1, -2, -3]
         for (let k = 1; k < dataValue[j].length; k++) {
           if (yNamesSelected.length === 0) {
             if (dataValue[j][k] < 0) {
