@@ -280,21 +280,43 @@ class Bar extends BaseSimpleGroupAxis {
                 return colorScale(yDataNames[i])              // two and more ys, no postive vs. negative
               }
             })
-            .on('mouseover', (element) => {
+            .on('mouseover', function (element) {
+              let transformValue = this.getAttribute("transform");
+              let x = console.log(this.getBoundingClientRect().x);
+              let y = console.log(this.getBoundingClientRect().y);
+              console.log(this.getBoundingClientRect())
+              //let x = this.getBBox().x ? (this.getBBox().x + this.getBBox().width) : this.getBBox().x 
+              //let y = this.getBBox().y
+              //d3.select(this.parentNode)
+              //  .append('text')
+              //  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+              //  .attr('fill', 'black')
+              //  .attr("transform", transformValue)
+              //  .attr('x', x)
+              //  .attr('y', y)
+              //  .text('testest')
+
+
               d3.select('#' + dataPointDisplayId)
                 .style('display', null)
-                .style('top', (d3.event.pageY - 20) + 'px')
-                .style('left', (d3.event.pageX + 'px'))
+                .style('top', (y - 20) + 'px')
+                .style('left', (x + 'px'))
                 .text(element[xDataIndex] + ': ' + element[i + 1]);
+
+              //d3.select('#' + dataPointDisplayId)
+              //  .style('display', null)
+              //  .style('top', (d3.event.pageY - 20) + 'px')
+              //  .style('left', (d3.event.pageX + 'px'))
+              //  .text(element[xDataIndex] + ': ' + element[i + 1]);
             })
             .on('mousemove', (element) => {
-              d3.select('#' + dataPointDisplayId)
-                .style('display', null)
-                .style('top', (d3.event.pageY - 20) + 'px')
-                .style('left', (d3.event.pageX + 'px'))
-                .text(element[xDataIndex] + ': ' + element[i + 1]);
+              //d3.select('#' + dataPointDisplayId)
+              //  .style('display', null)
+              //  .style('top', (d3.event.pageY - 20) + 'px')
+              //  .style('left', (d3.event.pageX + 'px'))
+              //  .text(element[xDataIndex] + ': ' + element[i + 1]);
             })
-            .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove() });
 
           firstTime = 1;
         }
