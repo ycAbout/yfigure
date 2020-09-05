@@ -700,32 +700,6 @@ var yf = (function (exports, d3) {
 
     }
 
-
-    /**
-     * This function set the data point object to be shown on mouseover for a graph.
-     * @return {string} a string format of dataPointDisplay object ID to be selected.
-     */
-    _setDataPoint() {
-
-      let dataPointDisplayId = this._brand + 'DataPointDisplay999sky999sky999sky';
-
-      //add it if there is no such element, so there is only one per page
-      if (!d3.select('#' + dataPointDisplayId).node()) {
-        // add mouse over text
-        d3.select('body')
-          .append('p')
-          .attr('id', dataPointDisplayId)
-          .style("position", "absolute")
-          .style("background", "white")
-          .style("padding", "5px")
-          .style("border-radius", "6px")
-          .style("display", "none")
-          .style('font-size', '1.2em');
-      }
-
-      return dataPointDisplayId;
-    }
-
     // update the graph by drawing a new one
     update(data, options = {}) {
       //remove old graph
@@ -840,9 +814,6 @@ var yf = (function (exports, d3) {
       // initialize legend position
       let legendx = legendX * width;
       let legendy = legendY * height;
-
-      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-      let dataPointDisplayId = this._setDataPoint();
 
       // to hold legend click status, the y data selection status
       let legendState = new Array(yDataNames.length).fill(1);
@@ -1019,39 +990,25 @@ var yf = (function (exports, d3) {
               })
               .on('mouseover', function (element) {
                 let transformValue = this.getAttribute("transform");
-                let x = console.log(this.getBoundingClientRect().x);
-                let y = console.log(this.getBoundingClientRect().y);
-                console.log(this.getBoundingClientRect());
-                //let x = this.getBBox().x ? (this.getBBox().x + this.getBBox().width) : this.getBBox().x 
-                //let y = this.getBBox().y
-                //d3.select(this.parentNode)
-                //  .append('text')
-                //  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                //  .attr('fill', 'black')
-                //  .attr("transform", transformValue)
-                //  .attr('x', x)
-                //  .attr('y', y)
-                //  .text('testest')
+                let currentPosition = this.getBBox();
+                let x = currentPosition.x + currentPosition.width/2;
+                let y = element[i + 1] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
+                if (horizontal) {
+                  x = element[i + 1] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
+                  y =  currentPosition.y + currentPosition.height/2;
+                }
 
-
-                d3.select('#' + dataPointDisplayId)
-                  .style('display', null)
-                  .style('top', (y - 20) + 'px')
-                  .style('left', (x + 'px'))
-                  .text(element[xDataIndex] + ': ' + element[i + 1]);
-
-                //d3.select('#' + dataPointDisplayId)
-                //  .style('display', null)
-                //  .style('top', (d3.event.pageY - 20) + 'px')
-                //  .style('left', (d3.event.pageX + 'px'))
-                //  .text(element[xDataIndex] + ': ' + element[i + 1]);
-              })
-              .on('mousemove', (element) => {
-                //d3.select('#' + dataPointDisplayId)
-                //  .style('display', null)
-                //  .style('top', (d3.event.pageY - 20) + 'px')
-                //  .style('left', (d3.event.pageX + 'px'))
-                //  .text(element[xDataIndex] + ': ' + element[i + 1]);
+                content
+                  .append('text')
+                  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+                  .attr('fill', 'black')
+                  .attr('font-size', "1.2em")
+                  .attr('text-anchor', horizontal ? (element[i + 1] > 0 ? 'start' : 'end') : 'middle')
+                  .attr("dominant-baseline", horizontal ? 'middle' : (element[i + 1] > 0 ? 'baseline' : 'hanging'))
+                  .attr("transform", transformValue)
+                  .attr('x', x)
+                  .attr('y', y)
+                  .text(element[i + 1]);
               })
               .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
 
@@ -1239,9 +1196,6 @@ var yf = (function (exports, d3) {
         .range(horizontal ? [0, innerWidth] : [innerHeight, 0])
         .domain([0, d3.max(bins, d => d.length * (1 + (horizontal ? xPadding : yPadding)))]);
 
-      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-      let dataPointDisplayId = this._setDataPoint();
-
       // append the bar rectangles to the svg element
       svg.selectAll("rect")
         .data(bins)
@@ -1252,22 +1206,29 @@ var yf = (function (exports, d3) {
         .attr("width", d => horizontal ? yScale(d.length) : xScale(d.x1) - xScale(d.x0) - 1)
         .attr("height", d => horizontal ? xScale(d.x1) - xScale(d.x0) - 1 : innerHeight - yScale(d.length))
         .style("fill", color)
-        .on('mouseover', (d) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-        })
-        .on('mousemove', (d) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-        })
-        .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+        .on('mouseover', function (element) {
+          let transformValue = this.getAttribute("transform");
+          let currentPosition = this.getBBox();
+          let x = currentPosition.x + currentPosition.width/2;
+          let y = currentPosition.y - 7;
+          if (horizontal) {
+            x = currentPosition.x + currentPosition.width + 7;
+            y =  currentPosition.y + currentPosition.height/2;
+          }
 
+          svg
+            .append('text')
+            .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+            .attr('fill', 'black')
+            .attr('font-size', "1.2em")
+            .attr('text-anchor', horizontal ? 'start' : 'middle')
+            .attr("dominant-baseline", horizontal ? 'middle' : 'baseline')
+            .attr("transform", transformValue)
+            .attr('x', x)
+            .attr('y', y)
+            .text(element.length);
+        })
+        .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
 
       if (horizontal) {    // switch xScale and yScale to make axis
         let middleMan = xScale;
@@ -1378,9 +1339,6 @@ var yf = (function (exports, d3) {
       let legendx = legendX * width;
       let legendy = legendY * height;
 
-      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-      let dataPointDisplayId = this._setDataPoint();
-
       // to hold legend click status, the y data selection status
       let legendState = new Array(yDataNames.length).fill(1);
 
@@ -1458,21 +1416,24 @@ var yf = (function (exports, d3) {
               .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
               .attr("r", dotRadius)
               .attr("fill", colorScale(yDataNames[i]))
-              .on('mouseover', (element) => {
-                d3.select('#' + dataPointDisplayId)
-                  .style('display', null)
-                  .style('top', (d3.event.pageY - 20) + 'px')
-                  .style('left', (d3.event.pageX + 'px'))
-                  .text(element[xDataIndex] + ': ' + element[i + 1]);
+              .on('mouseover', function (element) {
+                let transformValue = this.getAttribute("transform");
+                let currentPosition = this.getBBox();
+                let x = currentPosition.x + currentPosition.width/2;
+                let y = currentPosition.y - 7;
+        
+                content
+                  .append('text')
+                  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+                  .attr('fill', 'black')
+                  .attr('font-size', "1.2em")
+                  .attr('text-anchor','middle')
+                  .attr("transform", transformValue)
+                  .attr('x', x)
+                  .attr('y', y)
+                  .text(element[i + 1]);
               })
-              .on('mousemove', (element) => {
-                d3.select('#' + dataPointDisplayId)
-                  .style('display', null)
-                  .style('top', (d3.event.pageY - 20) + 'px')
-                  .style('left', (d3.event.pageX + 'px'))
-                  .text(element[xDataIndex] + ': ' + element[i + 1]);
-              })
-              .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+              .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
           }
         }
 
@@ -1653,9 +1614,6 @@ var yf = (function (exports, d3) {
       let legendx = legendX * width;
       let legendy = legendY * height;
 
-      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-      let dataPointDisplayId = this._setDataPoint();
-
       // to hold legend click status, the y data selection status
       let legendState = new Array(yDataNames.length).fill(1);
 
@@ -1698,7 +1656,6 @@ var yf = (function (exports, d3) {
           .domain([yMin, yMax])  // data points off axis
           .range([innerHeight, 0]);
 
-
         // remove old content group if exist and draw a new one
         if (svg.select('#' + id + 'sky999all').node()) {
           svg.select('#' + id + 'sky999all').remove();
@@ -1725,21 +1682,24 @@ var yf = (function (exports, d3) {
               .attr("r", dotRadius)
               .attr("fill", colorScale(yDataNames[i]))
               .attr("display", (element) => element[i + 1] == 'x' ? 'none' : true)
-              .on('mouseover', (element) => {
-                d3.select('#' + dataPointDisplayId)
-                  .style('display', null)
-                  .style('top', (d3.event.pageY - 20) + 'px')
-                  .style('left', (d3.event.pageX + 'px'))
-                  .text(element[xDataIndex] + ': ' + element[i + 1]);
+              .on('mouseover', function (element) {
+                let transformValue = this.getAttribute("transform");
+                let currentPosition = this.getBBox();
+                let x = currentPosition.x + currentPosition.width/2;
+                let y = currentPosition.y - 7;
+        
+                content
+                  .append('text')
+                  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+                  .attr('fill', 'black')
+                  .attr('font-size', "1.2em")
+                  .attr('text-anchor', 'middle')
+                  .attr("transform", transformValue)
+                  .attr('x', x)
+                  .attr('y', y)
+                  .text(element[i + 1]);
               })
-              .on('mousemove', (element) => {
-                d3.select('#' + dataPointDisplayId)
-                  .style('display', null)
-                  .style('top', (d3.event.pageY - 20) + 'px')
-                  .style('left', (d3.event.pageX + 'px'))
-                  .text(element[xDataIndex] + ': ' + element[i + 1]);
-              })
-              .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+              .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
           }
         }
 
@@ -1896,9 +1856,6 @@ var yf = (function (exports, d3) {
         .append('g')
         .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
-      // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-      let dataPointDisplayId = this._setDataPoint();
-
       // use arrow function to automatically bind this.
       const draw = (dataValue, svg, order) => {
         let innerData;
@@ -1950,22 +1907,31 @@ var yf = (function (exports, d3) {
           .attr('y', element => horizontal ? xScale(element[xDataIndex]) : yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
           .attr('height', element => horizontal ? xScale.bandwidth() : Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
           .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
-          .on('mouseover', (element) => {
-            d3.select('#' + dataPointDisplayId)
-              .style('display', null)
-              .style('top', (d3.event.pageY - 20) + 'px')
-              .style('left', (d3.event.pageX + 'px'))
-              .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+          .on('mouseover', function (element) {
+            let transformValue = this.getAttribute("transform");
+            let currentPosition = this.getBBox();
+            let x = currentPosition.x + currentPosition.width/2;
+            let y = element[yDataIndex] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
+
+            if (horizontal) {
+              x = element[yDataIndex] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
+              y =  currentPosition.y + currentPosition.height/2;
+            }
+
+            svg
+              .append('text')
+              .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+              .attr('fill', 'black')
+              .attr('font-size', "1.2em")
+              .attr('text-anchor', horizontal ? (element[yDataIndex] > 0 ? 'start' : 'end') : 'middle')
+              .attr("dominant-baseline", horizontal ? 'middle' : (element[yDataIndex] > 0 ? 'baseline' : 'hanging'))
+              .attr("transform", transformValue)
+              .attr('x', x)
+              .attr('y', y)
+              .text(element[yDataIndex]);
           })
-          .on('mousemove', (element) => {
-            d3.select('#' + dataPointDisplayId)
-              .style('display', null)
-              .style('top', (d3.event.pageY - 20) + 'px')
-              .style('left', (d3.event.pageX + 'px'))
-              .text(element[xDataIndex] + ': ' + element[yDataIndex]);
-          })
-          .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
-          
+          .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+    
         // remove old content group if exist and draw a new one
         if (svg.select('#' + id + 'xyl999').node()) {
           svg.select('#' + id + 'xyl999').remove();
