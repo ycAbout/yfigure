@@ -94,9 +94,6 @@ class Histogram extends BaseSimpleGroupAxis {
       .range(horizontal ? [0, innerWidth] : [innerHeight, 0])
       .domain([0, d3.max(bins, d => d.length * (1 + (horizontal ? xPadding : yPadding)))]);
 
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = this._setDataPoint();
-
     // append the bar rectangles to the svg element
     svg.selectAll("rect")
       .data(bins)
@@ -107,22 +104,29 @@ class Histogram extends BaseSimpleGroupAxis {
       .attr("width", d => horizontal ? yScale(d.length) : xScale(d.x1) - xScale(d.x0) - 1)
       .attr("height", d => horizontal ? xScale(d.x1) - xScale(d.x0) - 1 : innerHeight - yScale(d.length))
       .style("fill", color)
-      .on('mouseover', (d) => {
-        d3.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3.event.pageY - 20) + 'px')
-          .style('left', (d3.event.pageX + 'px'))
-          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-      })
-      .on('mousemove', (d) => {
-        d3.select('#' + dataPointDisplayId)
-          .style('display', null)
-          .style('top', (d3.event.pageY - 20) + 'px')
-          .style('left', (d3.event.pageX + 'px'))
-          .text('[' + Math.round((d.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((d.x1 + Number.EPSILON) * 100) / 100 + '] : ' + d.length);
-      })
-      .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+      .on('mouseover', function (element) {
+        let transformValue = this.getAttribute("transform");
+        let currentPosition = this.getBBox()
+        let x = currentPosition.x + currentPosition.width/2;
+        let y = currentPosition.y - 7;
+        if (horizontal) {
+          x = currentPosition.x + currentPosition.width + 7;
+          y =  currentPosition.y + currentPosition.height/2;
+        }
 
+        svg
+          .append('text')
+          .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+          .attr('fill', 'black')
+          .attr('font-size', "1.2em")
+          .attr('text-anchor', horizontal ? 'start' : 'middle')
+          .attr("dominant-baseline", horizontal ? 'middle' : 'baseline')
+          .attr("transform", transformValue)
+          .attr('x', x)
+          .attr('y', y)
+          .text(element.length)
+      })
+      .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
 
     if (horizontal) {    // switch xScale and yScale to make axis
       let middleMan = xScale;

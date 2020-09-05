@@ -682,32 +682,6 @@ class BaseSimpleGroupAxis {
 
   }
 
-
-  /**
-   * This function set the data point object to be shown on mouseover for a graph.
-   * @return {string} a string format of dataPointDisplay object ID to be selected.
-   */
-  _setDataPoint() {
-
-    let dataPointDisplayId = this._brand + 'DataPointDisplay999sky999sky999sky';
-
-    //add it if there is no such element, so there is only one per page
-    if (!d3.select('#' + dataPointDisplayId).node()) {
-      // add mouse over text
-      d3.select('body')
-        .append('p')
-        .attr('id', dataPointDisplayId)
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("padding", "5px")
-        .style("border-radius", "6px")
-        .style("display", "none")
-        .style('font-size', '1.2em')
-    }
-
-    return dataPointDisplayId;
-  }
-
   // update the graph by drawing a new one
   update(data, options = {}) {
     //remove old graph

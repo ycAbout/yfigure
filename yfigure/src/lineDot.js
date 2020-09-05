@@ -89,9 +89,6 @@ class LineDot extends BaseSimpleGroupAxis {
     let legendx = legendX * width;
     let legendy = legendY * height;
 
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = this._setDataPoint();
-
     // to hold legend click status, the y data selection status
     let legendState = new Array(yDataNames.length).fill(1);
 
@@ -169,21 +166,24 @@ class LineDot extends BaseSimpleGroupAxis {
             .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
             .attr("r", dotRadius)
             .attr("fill", colorScale(yDataNames[i]))
-            .on('mouseover', (element) => {
-              d3.select('#' + dataPointDisplayId)
-                .style('display', null)
-                .style('top', (d3.event.pageY - 20) + 'px')
-                .style('left', (d3.event.pageX + 'px'))
-                .text(element[xDataIndex] + ': ' + element[i + 1]);
+            .on('mouseover', function (element) {
+              let transformValue = this.getAttribute("transform");
+              let currentPosition = this.getBBox()
+              let x = currentPosition.x + currentPosition.width/2;
+              let y = currentPosition.y - 7;
+      
+              content
+                .append('text')
+                .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+                .attr('fill', 'black')
+                .attr('font-size', "1.2em")
+                .attr('text-anchor','middle')
+                .attr("transform", transformValue)
+                .attr('x', x)
+                .attr('y', y)
+                .text(element[i + 1])
             })
-            .on('mousemove', (element) => {
-              d3.select('#' + dataPointDisplayId)
-                .style('display', null)
-                .style('top', (d3.event.pageY - 20) + 'px')
-                .style('left', (d3.event.pageX + 'px'))
-                .text(element[xDataIndex] + ': ' + element[i + 1]);
-            })
-            .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
+            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
         }
       }
 

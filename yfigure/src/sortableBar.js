@@ -83,9 +83,6 @@ class SortableBar extends BaseSimpleGroupAxis {
       .append('g')
       .attr('transform', `translate(${marginLeft + frameLeft},${marginTop + frameTop})`);
 
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = this._setDataPoint();
-
     // use arrow function to automatically bind this.
     const draw = (dataValue, svg, order) => {
       let innerData;
@@ -137,22 +134,31 @@ class SortableBar extends BaseSimpleGroupAxis {
         .attr('y', element => horizontal ? xScale(element[xDataIndex]) : yScale(Math.max(element[yDataIndex], 0)))       // if negative, use y(0) as starting point
         .attr('height', element => horizontal ? xScale.bandwidth() : Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
         .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
-        .on('mouseover', (element) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
+        .on('mouseover', function (element) {
+          let transformValue = this.getAttribute("transform");
+          let currentPosition = this.getBBox()
+          let x = currentPosition.x + currentPosition.width/2;
+          let y = element[yDataIndex] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
+
+          if (horizontal) {
+            x = element[yDataIndex] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
+            y =  currentPosition.y + currentPosition.height/2;
+          }
+
+          svg
+            .append('text')
+            .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+            .attr('fill', 'black')
+            .attr('font-size', "1.2em")
+            .attr('text-anchor', horizontal ? (element[yDataIndex] > 0 ? 'start' : 'end') : 'middle')
+            .attr("dominant-baseline", horizontal ? 'middle' : (element[yDataIndex] > 0 ? 'baseline' : 'hanging'))
+            .attr("transform", transformValue)
+            .attr('x', x)
+            .attr('y', y)
+            .text(element[yDataIndex])
         })
-        .on('mousemove', (element) => {
-          d3.select('#' + dataPointDisplayId)
-            .style('display', null)
-            .style('top', (d3.event.pageY - 20) + 'px')
-            .style('left', (d3.event.pageX + 'px'))
-            .text(element[xDataIndex] + ': ' + element[yDataIndex]);
-        })
-        .on('mouseout', () => d3.select('#' + dataPointDisplayId).style('display', 'none'));
-        
+        .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+  
       // remove old content group if exist and draw a new one
       if (svg.select('#' + id + 'xyl999').node()) {
         svg.select('#' + id + 'xyl999').remove();

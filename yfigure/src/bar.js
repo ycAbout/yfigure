@@ -104,9 +104,6 @@ class Bar extends BaseSimpleGroupAxis {
     let legendx = legendX * width;
     let legendy = legendY * height;
 
-    // set dataPointDisplay object for mouseover effect and get the ID for d3 selector
-    let dataPointDisplayId = this._setDataPoint();
-
     // to hold legend click status, the y data selection status
     let legendState = new Array(yDataNames.length).fill(1);
 
@@ -282,41 +279,27 @@ class Bar extends BaseSimpleGroupAxis {
             })
             .on('mouseover', function (element) {
               let transformValue = this.getAttribute("transform");
-              let x = console.log(this.getBoundingClientRect().x);
-              let y = console.log(this.getBoundingClientRect().y);
-              console.log(this.getBoundingClientRect())
-              //let x = this.getBBox().x ? (this.getBBox().x + this.getBBox().width) : this.getBBox().x 
-              //let y = this.getBBox().y
-              //d3.select(this.parentNode)
-              //  .append('text')
-              //  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-              //  .attr('fill', 'black')
-              //  .attr("transform", transformValue)
-              //  .attr('x', x)
-              //  .attr('y', y)
-              //  .text('testest')
+              let currentPosition = this.getBBox()
+              let x = currentPosition.x + currentPosition.width/2;
+              let y = element[i + 1] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
+              if (horizontal) {
+                x = element[i + 1] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
+                y =  currentPosition.y + currentPosition.height/2;
+              }
 
-
-              d3.select('#' + dataPointDisplayId)
-                .style('display', null)
-                .style('top', (y - 20) + 'px')
-                .style('left', (x + 'px'))
-                .text(element[xDataIndex] + ': ' + element[i + 1]);
-
-              //d3.select('#' + dataPointDisplayId)
-              //  .style('display', null)
-              //  .style('top', (d3.event.pageY - 20) + 'px')
-              //  .style('left', (d3.event.pageX + 'px'))
-              //  .text(element[xDataIndex] + ': ' + element[i + 1]);
+              content
+                .append('text')
+                .attr('id', 'yfDataPointDisplay999sky999sky999sky')
+                .attr('fill', 'black')
+                .attr('font-size', "1.2em")
+                .attr('text-anchor', horizontal ? (element[i + 1] > 0 ? 'start' : 'end') : 'middle')
+                .attr("dominant-baseline", horizontal ? 'middle' : (element[i + 1] > 0 ? 'baseline' : 'hanging'))
+                .attr("transform", transformValue)
+                .attr('x', x)
+                .attr('y', y)
+                .text(element[i + 1])
             })
-            .on('mousemove', (element) => {
-              //d3.select('#' + dataPointDisplayId)
-              //  .style('display', null)
-              //  .style('top', (d3.event.pageY - 20) + 'px')
-              //  .style('left', (d3.event.pageX + 'px'))
-              //  .text(element[xDataIndex] + ': ' + element[i + 1]);
-            })
-            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove() });
+            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
 
           firstTime = 1;
         }
