@@ -989,28 +989,67 @@ var yf = (function (exports, d3) {
                 }
               })
               .on('mouseover', function (element) {
+                this.setAttribute("opacity", 0.6);
                 let transformValue = this.getAttribute("transform");
-                let currentPosition = this.getBBox();
-                let x = currentPosition.x + currentPosition.width/2;
-                let y = element[i + 1] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
-                if (horizontal) {
-                  x = element[i + 1] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
-                  y =  currentPosition.y + currentPosition.height/2;
-                }
-
-                content
+                let text = element[xDataIndex] + ' : ' + element[i + 1];
+                let proposed = content
                   .append('text')
+                  .attr('font-size', '16px')
+                  .text(text);
+
+                let proposedWidth = proposed.node().getBBox().width;
+                let proposedHeight = proposed.node().getBBox().height;
+
+                proposed.remove();
+
+                let currentPosition = this.getBBox();
+                let midX = currentPosition.x + currentPosition.width / 2;
+                let x = midX - proposedWidth / 2;
+                let y = element[i + 1] > 0 ? (currentPosition.y - 7) - proposedHeight : currentPosition.y + currentPosition.height + 7;
+                
+                //over left right limit move
+                let baseX = horizontal ? 0 : xScale(element[xDataIndex]);
+                let rightX = baseX + (midX + proposedWidth / 2);
+                if (rightX > innerWidth) x -= rightX - innerWidth;
+                let leftX = baseX + x;
+                if (leftX < 0) x += -leftX;
+
+                //over top bottom limit move
+                let baseY = horizontal ? yScale(element[xDataIndex]) : 0;
+                //top
+                if (baseY + y < 0) y+= -(baseY + y) - 10;
+                //bottom
+                if (baseY + y + proposedHeight > innerHeight) y -=  (baseY + y + proposedHeight) - innerHeight -10;
+
+                console.log('here', baseY);
+                let datatip = content
+                  .append('g')
                   .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                  .attr('fill', 'black')
-                  .attr('font-size', "1.2em")
-                  .attr('text-anchor', horizontal ? (element[i + 1] > 0 ? 'start' : 'end') : 'middle')
-                  .attr("dominant-baseline", horizontal ? 'middle' : (element[i + 1] > 0 ? 'baseline' : 'hanging'))
-                  .attr("transform", transformValue)
+                  .attr("transform", transformValue);
+
+                datatip
+                  .append('rect')
                   .attr('x', x)
                   .attr('y', y)
-                  .text(element[i + 1]);
+                  .attr('rx', 5)
+                  .attr('width', proposedWidth + 6)
+                  .attr('height', proposedHeight + 6)
+                  .attr('fill', '#EDF7F6');
+
+                datatip
+                  .append('text')
+                  .attr('fill', 'black')
+                  .attr('font-size', '16px')
+                  .attr('text-anchor', 'start')
+                  .attr('dy', '1em')
+                  .attr('x', x + 3)
+                  .attr('y', y)
+                  .text(text);
               })
-              .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+              .on('mouseout', function () {
+                this.setAttribute("opacity", 1);
+                d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+              });
 
             firstTime = 1;
           }
@@ -1207,28 +1246,66 @@ var yf = (function (exports, d3) {
         .attr("height", d => horizontal ? xScale(d.x1) - xScale(d.x0) - 1 : innerHeight - yScale(d.length))
         .style("fill", color)
         .on('mouseover', function (element) {
+          this.setAttribute("opacity", 0.6);
           let transformValue = this.getAttribute("transform");
-          let currentPosition = this.getBBox();
-          let x = currentPosition.x + currentPosition.width/2;
-          let y = currentPosition.y - 7;
-          if (horizontal) {
-            x = currentPosition.x + currentPosition.width + 7;
-            y =  currentPosition.y + currentPosition.height/2;
-          }
-
-          svg
+          let text = '[' + Math.round((element.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((element.x1 + Number.EPSILON) * 100) / 100 + '] : ' + element.length;
+          let proposed = svg
             .append('text')
+            .attr('font-size', '16px')
+            .text(text);
+
+          let proposedWidth = proposed.node().getBBox().width;
+          let proposedHeight = proposed.node().getBBox().height;
+
+          proposed.remove();
+
+          let currentPosition = this.getBBox();
+          let midX = currentPosition.x + currentPosition.width / 2;
+          let x = midX - proposedWidth / 2;
+          let y = (currentPosition.y - 7) - proposedHeight;
+
+          //over left right limit move
+          let baseX = 0;
+          let rightX = baseX + (midX + proposedWidth / 2);
+          if (rightX > innerWidth) x -= rightX - innerWidth;
+          let leftX = baseX + (midX - proposedWidth / 2);
+          if (leftX < 0) x += -leftX;
+
+          //over top bottom limit move
+          let baseY = 0;
+          //top
+          if (baseY + y < 0) y += -(baseY + y) - 10;
+          //bottom
+          if (baseY + y + proposedHeight > innerHeight) y -= (baseY + y + proposedHeight) - innerHeight - 10;
+
+          let datatip = svg
+            .append('g')
             .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-            .attr('fill', 'black')
-            .attr('font-size', "1.2em")
-            .attr('text-anchor', horizontal ? 'start' : 'middle')
-            .attr("dominant-baseline", horizontal ? 'middle' : 'baseline')
-            .attr("transform", transformValue)
+            .attr("transform", transformValue);
+
+          datatip
+            .append('rect')
             .attr('x', x)
             .attr('y', y)
-            .text(element.length);
+            .attr('rx', 5)
+            .attr('width', proposedWidth + 6)
+            .attr('height', proposedHeight + 6)
+            .attr('fill', '#EDF7F6');
+
+          datatip
+            .append('text')
+            .attr('fill', 'black')
+            .attr('font-size', '16px')
+            .attr('text-anchor', 'start')
+            .attr('dy', '1em')
+            .attr('x', x + 3)
+            .attr('y', y)
+            .text(text);
         })
-        .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+        .on('mouseout', function () {
+          this.setAttribute("opacity", 1);
+          d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+        });
 
       if (horizontal) {    // switch xScale and yScale to make axis
         let middleMan = xScale;
@@ -1246,7 +1323,6 @@ var yf = (function (exports, d3) {
       this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
       return id;
-
     }
 
   }
@@ -1417,23 +1493,60 @@ var yf = (function (exports, d3) {
               .attr("r", dotRadius)
               .attr("fill", colorScale(yDataNames[i]))
               .on('mouseover', function (element) {
+                this.setAttribute("opacity", 0.6);
                 let transformValue = this.getAttribute("transform");
-                let currentPosition = this.getBBox();
-                let x = currentPosition.x + currentPosition.width/2;
-                let y = currentPosition.y - 7;
-        
-                content
+                let text = element[xDataIndex] + ' : ' + element[i + 1];
+                let proposed = content
                   .append('text')
+                  .attr('font-size', '16px')
+                  .text(text);
+
+                let proposedWidth = proposed.node().getBBox().width;
+                let proposedHeight = proposed.node().getBBox().height;
+
+                proposed.remove();
+
+                let currentPosition = this.getBBox();
+                let midX = currentPosition.x + currentPosition.width / 2;
+                let x = midX - proposedWidth / 2;
+                let y = (currentPosition.y - 7) - proposedHeight;
+                
+                //over left right limit move
+                if (midX + proposedWidth / 2 > innerWidth) x -= midX + proposedWidth / 2 - innerWidth;
+                if (x < 0) x += -x;
+
+                //over top bottom limit move
+                //top
+                if (y < 0) y = currentPosition.y + 7 + currentPosition.height;
+
+                let datatip = content
+                  .append('g')
                   .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                  .attr('fill', 'black')
-                  .attr('font-size', "1.2em")
-                  .attr('text-anchor','middle')
-                  .attr("transform", transformValue)
+                  .attr("transform", transformValue);
+
+                datatip
+                  .append('rect')
                   .attr('x', x)
                   .attr('y', y)
-                  .text(element[i + 1]);
+                  .attr('rx', 5)
+                  .attr('width', proposedWidth + 6)
+                  .attr('height', proposedHeight + 6)
+                  .attr('fill', '#EDF7F6');
+
+                datatip
+                  .append('text')
+                  .attr('fill', 'black')
+                  .attr('font-size', '16px')
+                  .attr('text-anchor', 'start')
+                  .attr('dy', '1em')
+                  .attr('x', x + 3)
+                  .attr('y', y)
+                  .text(text);
               })
-              .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+              .on('mouseout', function () {
+                this.setAttribute("opacity", 1);
+                d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+              });
           }
         }
 
@@ -1683,23 +1796,61 @@ var yf = (function (exports, d3) {
               .attr("fill", colorScale(yDataNames[i]))
               .attr("display", (element) => element[i + 1] == 'x' ? 'none' : true)
               .on('mouseover', function (element) {
+                this.setAttribute("opacity", 0.6);
                 let transformValue = this.getAttribute("transform");
-                let currentPosition = this.getBBox();
-                let x = currentPosition.x + currentPosition.width/2;
-                let y = currentPosition.y - 7;
-        
-                content
+                let text = element[xDataIndex] + ' : ' + element[i + 1];
+                let proposed = content
                   .append('text')
+                  .attr('font-size', '16px')
+                  .text(text);
+
+                let proposedWidth = proposed.node().getBBox().width;
+                let proposedHeight = proposed.node().getBBox().height;
+
+                proposed.remove();
+
+                let currentPosition = this.getBBox();
+                let midX = currentPosition.x + currentPosition.width / 2;
+                let x = midX - proposedWidth / 2;
+                let y = (currentPosition.y - 7) - proposedHeight;
+                
+                //over left right limit move
+                if (midX + proposedWidth / 2 > innerWidth) x -= midX + proposedWidth / 2 - innerWidth;
+                if (x < 0) x += -x;
+
+                //over top bottom limit move
+                //top
+                if (y < 0) y = currentPosition.y + 7 + currentPosition.height;
+
+                let datatip = content
+                  .append('g')
                   .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                  .attr('fill', 'black')
-                  .attr('font-size', "1.2em")
-                  .attr('text-anchor', 'middle')
-                  .attr("transform", transformValue)
+                  .attr("transform", transformValue);
+
+                datatip
+                  .append('rect')
                   .attr('x', x)
                   .attr('y', y)
-                  .text(element[i + 1]);
+                  .attr('rx', 5)
+                  .attr('width', proposedWidth + 6)
+                  .attr('height', proposedHeight + 6)
+                  .attr('fill', '#EDF7F6');
+
+                datatip
+                  .append('text')
+                  .attr('fill', 'black')
+                  .attr('font-size', '16px')
+                  .attr('text-anchor', 'start')
+                  .attr('dy', '1em')
+                  .attr('x', x + 3)
+                  .attr('y', y)
+                  .text(text);
               })
-              .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+              .on('mouseout', function () {
+                this.setAttribute("opacity", 1);
+                d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+              });
+
           }
         }
 
@@ -1908,29 +2059,63 @@ var yf = (function (exports, d3) {
           .attr('height', element => horizontal ? xScale.bandwidth() : Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
           .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
           .on('mouseover', function (element) {
+            this.setAttribute("opacity", 0.6);
             let transformValue = this.getAttribute("transform");
-            let currentPosition = this.getBBox();
-            let x = currentPosition.x + currentPosition.width/2;
-            let y = element[yDataIndex] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
-
-            if (horizontal) {
-              x = element[yDataIndex] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
-              y =  currentPosition.y + currentPosition.height/2;
-            }
-
-            svg
+            let text = element[xDataIndex] + ' : ' + element[yDataIndex];
+            let proposed = svg
               .append('text')
+              .attr('font-size', '16px')
+              .text(text);
+
+            let proposedWidth = proposed.node().getBBox().width;
+            let proposedHeight = proposed.node().getBBox().height;
+
+            proposed.remove();
+
+            let currentPosition = this.getBBox();
+            let midX = currentPosition.x + currentPosition.width / 2;
+            let x = midX - proposedWidth / 2;
+            let y = element[yDataIndex] > 0 ? (currentPosition.y - 7) - proposedHeight : currentPosition.y + currentPosition.height + 7;
+            
+            //over left right limit move
+            let rightX = (midX + proposedWidth / 2);
+            if (rightX > innerWidth) x -= rightX - innerWidth;
+            if (x < 0) x += -x;
+
+            //over top bottom limit move
+            //top
+            if (y < 0) y+= -y - 10;
+            //bottom
+            if (y + proposedHeight > innerHeight) y -=  (y + proposedHeight - innerHeight) -10;
+            
+            let datatip = svg
+              .append('g')
               .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-              .attr('fill', 'black')
-              .attr('font-size', "1.2em")
-              .attr('text-anchor', horizontal ? (element[yDataIndex] > 0 ? 'start' : 'end') : 'middle')
-              .attr("dominant-baseline", horizontal ? 'middle' : (element[yDataIndex] > 0 ? 'baseline' : 'hanging'))
-              .attr("transform", transformValue)
+              .attr("transform", transformValue);
+
+            datatip
+              .append('rect')
               .attr('x', x)
               .attr('y', y)
-              .text(element[yDataIndex]);
+              .attr('rx', 5)
+              .attr('width', proposedWidth + 6)
+              .attr('height', proposedHeight + 6)
+              .attr('fill', '#EDF7F6');
+
+            datatip
+              .append('text')
+              .attr('fill', 'black')
+              .attr('font-size', '16px')
+              .attr('text-anchor', 'start')
+              .attr('dy', '1em')
+              .attr('x', x + 3)
+              .attr('y', y)
+              .text(text);
           })
-          .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+          .on('mouseout', function () {
+            this.setAttribute("opacity", 1);
+            d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+          });
     
         // remove old content group if exist and draw a new one
         if (svg.select('#' + id + 'xyl999').node()) {

@@ -167,23 +167,60 @@ class LineDot extends BaseSimpleGroupAxis {
             .attr("r", dotRadius)
             .attr("fill", colorScale(yDataNames[i]))
             .on('mouseover', function (element) {
+              this.setAttribute("opacity", 0.6);
               let transformValue = this.getAttribute("transform");
-              let currentPosition = this.getBBox()
-              let x = currentPosition.x + currentPosition.width/2;
-              let y = currentPosition.y - 7;
-      
-              content
+              let text = element[xDataIndex] + ' : ' + element[i + 1];
+              let proposed = content
                 .append('text')
+                .attr('font-size', '16px')
+                .text(text);
+
+              let proposedWidth = proposed.node().getBBox().width;
+              let proposedHeight = proposed.node().getBBox().height;
+
+              proposed.remove();
+
+              let currentPosition = this.getBBox();
+              let midX = currentPosition.x + currentPosition.width / 2;
+              let x = midX - proposedWidth / 2;
+              let y = (currentPosition.y - 7) - proposedHeight
+              
+              //over left right limit move
+              if (midX + proposedWidth / 2 > innerWidth) x -= midX + proposedWidth / 2 - innerWidth;
+              if (x < 0) x += -x;
+
+              //over top bottom limit move
+              //top
+              if (y < 0) y = currentPosition.y + 7 + currentPosition.height;
+
+              let datatip = content
+                .append('g')
                 .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                .attr('fill', 'black')
-                .attr('font-size', "1.2em")
-                .attr('text-anchor','middle')
-                .attr("transform", transformValue)
+                .attr("transform", transformValue);
+
+              datatip
+                .append('rect')
                 .attr('x', x)
                 .attr('y', y)
-                .text(element[i + 1])
+                .attr('rx', 5)
+                .attr('width', proposedWidth + 6)
+                .attr('height', proposedHeight + 6)
+                .attr('fill', '#EDF7F6');
+
+              datatip
+                .append('text')
+                .attr('fill', 'black')
+                .attr('font-size', '16px')
+                .attr('text-anchor', 'start')
+                .attr('dy', '1em')
+                .attr('x', x + 3)
+                .attr('y', y)
+                .text(text)
             })
-            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+            .on('mouseout', function () {
+              this.setAttribute("opacity", 1);
+              d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+            });
         }
       }
 

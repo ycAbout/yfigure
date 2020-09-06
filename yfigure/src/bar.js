@@ -278,28 +278,67 @@ class Bar extends BaseSimpleGroupAxis {
               }
             })
             .on('mouseover', function (element) {
+              this.setAttribute("opacity", 0.6);
               let transformValue = this.getAttribute("transform");
-              let currentPosition = this.getBBox()
-              let x = currentPosition.x + currentPosition.width/2;
-              let y = element[i + 1] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
-              if (horizontal) {
-                x = element[i + 1] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
-                y =  currentPosition.y + currentPosition.height/2;
-              }
-
-              content
+              let text = element[xDataIndex] + ' : ' + element[i + 1];
+              let proposed = content
                 .append('text')
+                .attr('font-size', '16px')
+                .text(text);
+
+              let proposedWidth = proposed.node().getBBox().width;
+              let proposedHeight = proposed.node().getBBox().height;
+
+              proposed.remove();
+
+              let currentPosition = this.getBBox();
+              let midX = currentPosition.x + currentPosition.width / 2;
+              let x = midX - proposedWidth / 2;
+              let y = element[i + 1] > 0 ? (currentPosition.y - 7) - proposedHeight : currentPosition.y + currentPosition.height + 7
+              
+              //over left right limit move
+              let baseX = horizontal ? 0 : xScale(element[xDataIndex])
+              let rightX = baseX + (midX + proposedWidth / 2);
+              if (rightX > innerWidth) x -= rightX - innerWidth;
+              let leftX = baseX + x;
+              if (leftX < 0) x += -leftX;
+
+              //over top bottom limit move
+              let baseY = horizontal ? yScale(element[xDataIndex]) : 0;
+              //top
+              if (baseY + y < 0) y+= -(baseY + y) - 10;
+              //bottom
+              if (baseY + y + proposedHeight > innerHeight) y -=  (baseY + y + proposedHeight) - innerHeight -10;
+
+              console.log('here', baseY);
+              let datatip = content
+                .append('g')
                 .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                .attr('fill', 'black')
-                .attr('font-size', "1.2em")
-                .attr('text-anchor', horizontal ? (element[i + 1] > 0 ? 'start' : 'end') : 'middle')
-                .attr("dominant-baseline", horizontal ? 'middle' : (element[i + 1] > 0 ? 'baseline' : 'hanging'))
-                .attr("transform", transformValue)
+                .attr("transform", transformValue);
+
+              datatip
+                .append('rect')
                 .attr('x', x)
                 .attr('y', y)
-                .text(element[i + 1])
+                .attr('rx', 5)
+                .attr('width', proposedWidth + 6)
+                .attr('height', proposedHeight + 6)
+                .attr('fill', '#EDF7F6');
+
+              datatip
+                .append('text')
+                .attr('fill', 'black')
+                .attr('font-size', '16px')
+                .attr('text-anchor', 'start')
+                .attr('dy', '1em')
+                .attr('x', x + 3)
+                .attr('y', y)
+                .text(text)
             })
-            .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+            .on('mouseout', function () {
+              this.setAttribute("opacity", 1);
+              d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+            });
 
           firstTime = 1;
         }

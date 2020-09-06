@@ -135,29 +135,63 @@ class SortableBar extends BaseSimpleGroupAxis {
         .attr('height', element => horizontal ? xScale.bandwidth() : Math.abs(yScale(element[yDataIndex]) - yScale(0)))  // height = distance to y(0)
         .attr('fill', element => element[yDataIndex] > 0 ? colors[0] : colors[1])
         .on('mouseover', function (element) {
+          this.setAttribute("opacity", 0.6);
           let transformValue = this.getAttribute("transform");
-          let currentPosition = this.getBBox()
-          let x = currentPosition.x + currentPosition.width/2;
-          let y = element[yDataIndex] > 0 ? currentPosition.y - 7 : currentPosition.y + currentPosition.height + 7;
-
-          if (horizontal) {
-            x = element[yDataIndex] > 0 ? currentPosition.x + currentPosition.width + 7 : currentPosition.x - 7;
-            y =  currentPosition.y + currentPosition.height/2;
-          }
-
-          svg
+          let text = element[xDataIndex] + ' : ' + element[yDataIndex];
+          let proposed = svg
             .append('text')
+            .attr('font-size', '16px')
+            .text(text);
+
+          let proposedWidth = proposed.node().getBBox().width;
+          let proposedHeight = proposed.node().getBBox().height;
+
+          proposed.remove();
+
+          let currentPosition = this.getBBox();
+          let midX = currentPosition.x + currentPosition.width / 2;
+          let x = midX - proposedWidth / 2;
+          let y = element[yDataIndex] > 0 ? (currentPosition.y - 7) - proposedHeight : currentPosition.y + currentPosition.height + 7
+          
+          //over left right limit move
+          let rightX = (midX + proposedWidth / 2);
+          if (rightX > innerWidth) x -= rightX - innerWidth;
+          if (x < 0) x += -x;
+
+          //over top bottom limit move
+          //top
+          if (y < 0) y+= -y - 10;
+          //bottom
+          if (y + proposedHeight > innerHeight) y -=  (y + proposedHeight - innerHeight) -10;
+          
+          let datatip = svg
+            .append('g')
             .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-            .attr('fill', 'black')
-            .attr('font-size', "1.2em")
-            .attr('text-anchor', horizontal ? (element[yDataIndex] > 0 ? 'start' : 'end') : 'middle')
-            .attr("dominant-baseline", horizontal ? 'middle' : (element[yDataIndex] > 0 ? 'baseline' : 'hanging'))
-            .attr("transform", transformValue)
+            .attr("transform", transformValue);
+
+          datatip
+            .append('rect')
             .attr('x', x)
             .attr('y', y)
-            .text(element[yDataIndex])
+            .attr('rx', 5)
+            .attr('width', proposedWidth + 6)
+            .attr('height', proposedHeight + 6)
+            .attr('fill', '#EDF7F6');
+
+          datatip
+            .append('text')
+            .attr('fill', 'black')
+            .attr('font-size', '16px')
+            .attr('text-anchor', 'start')
+            .attr('dy', '1em')
+            .attr('x', x + 3)
+            .attr('y', y)
+            .text(text)
         })
-        .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+        .on('mouseout', function () {
+          this.setAttribute("opacity", 1);
+          d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+        });
   
       // remove old content group if exist and draw a new one
       if (svg.select('#' + id + 'xyl999').node()) {

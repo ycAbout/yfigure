@@ -105,28 +105,66 @@ class Histogram extends BaseSimpleGroupAxis {
       .attr("height", d => horizontal ? xScale(d.x1) - xScale(d.x0) - 1 : innerHeight - yScale(d.length))
       .style("fill", color)
       .on('mouseover', function (element) {
+        this.setAttribute("opacity", 0.6);
         let transformValue = this.getAttribute("transform");
-        let currentPosition = this.getBBox()
-        let x = currentPosition.x + currentPosition.width/2;
-        let y = currentPosition.y - 7;
-        if (horizontal) {
-          x = currentPosition.x + currentPosition.width + 7;
-          y =  currentPosition.y + currentPosition.height/2;
-        }
-
-        svg
+        let text = '[' + Math.round((element.x0 + Number.EPSILON) * 100) / 100 + '-' + Math.round((element.x1 + Number.EPSILON) * 100) / 100 + '] : ' + element.length;
+        let proposed = svg
           .append('text')
+          .attr('font-size', '16px')
+          .text(text);
+
+        let proposedWidth = proposed.node().getBBox().width;
+        let proposedHeight = proposed.node().getBBox().height;
+
+        proposed.remove();
+
+        let currentPosition = this.getBBox();
+        let midX = currentPosition.x + currentPosition.width / 2;
+        let x = midX - proposedWidth / 2;
+        let y = (currentPosition.y - 7) - proposedHeight
+
+        //over left right limit move
+        let baseX = 0
+        let rightX = baseX + (midX + proposedWidth / 2);
+        if (rightX > innerWidth) x -= rightX - innerWidth;
+        let leftX = baseX + (midX - proposedWidth / 2);
+        if (leftX < 0) x += -leftX;
+
+        //over top bottom limit move
+        let baseY = 0;
+        //top
+        if (baseY + y < 0) y += -(baseY + y) - 10;
+        //bottom
+        if (baseY + y + proposedHeight > innerHeight) y -= (baseY + y + proposedHeight) - innerHeight - 10;
+
+        let datatip = svg
+          .append('g')
           .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-          .attr('fill', 'black')
-          .attr('font-size', "1.2em")
-          .attr('text-anchor', horizontal ? 'start' : 'middle')
-          .attr("dominant-baseline", horizontal ? 'middle' : 'baseline')
-          .attr("transform", transformValue)
+          .attr("transform", transformValue);
+
+        datatip
+          .append('rect')
           .attr('x', x)
           .attr('y', y)
-          .text(element.length)
+          .attr('rx', 5)
+          .attr('width', proposedWidth + 6)
+          .attr('height', proposedHeight + 6)
+          .attr('fill', '#EDF7F6');
+
+        datatip
+          .append('text')
+          .attr('fill', 'black')
+          .attr('font-size', '16px')
+          .attr('text-anchor', 'start')
+          .attr('dy', '1em')
+          .attr('x', x + 3)
+          .attr('y', y)
+          .text(text)
       })
-      .on('mouseout', function () { d3.select('#yfDataPointDisplay999sky999sky999sky').remove(); });
+      .on('mouseout', function () {
+        this.setAttribute("opacity", 1);
+        d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+      })
 
     if (horizontal) {    // switch xScale and yScale to make axis
       let middleMan = xScale;
@@ -144,7 +182,6 @@ class Histogram extends BaseSimpleGroupAxis {
     this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
     return id;
-
   }
 
 }
