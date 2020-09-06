@@ -973,7 +973,7 @@ let exams = [['math', 'female reading', 'female writing', 'male reading', 'male 
 // example 2 
 let scatter2 = new yf.Scatter(exams, {
     dotRadius: 3,
-    title: 'Math, reading, and writing score (sudo data)'
+    title: 'Math, reading, and writing (sudo data)'
 });
 
 let latitudeTemperature = [['Latitude', 'Temperature'], [31.2, 6.666], [32.9, 3.333], [33.6, 1.666], [35.4, -0.5555], [34.3, 8.333], [38.4, 5.555],

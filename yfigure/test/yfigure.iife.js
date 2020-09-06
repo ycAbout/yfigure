@@ -1020,8 +1020,7 @@ var yf = (function (exports, d3) {
                 if (baseY + y < 0) y+= -(baseY + y) - 10;
                 //bottom
                 if (baseY + y + proposedHeight > innerHeight) y -=  (baseY + y + proposedHeight) - innerHeight -10;
-
-                
+           
                 let datatip = content
                   .append('g')
                   .attr('id', 'yfDataPointDisplay999sky999sky999sky')
@@ -1101,7 +1100,12 @@ var yf = (function (exports, d3) {
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
               legendState[position] = 1 - legendState[position];
-              this.setAttribute("opacity", Math.max(legendState[position], 0.5));
+              this.setAttribute("opacity", Math.max(legendState[position], 0.8));
+              if (this.getAttribute("text-decoration")) {
+                this.removeAttribute("text-decoration");
+              } else {
+                this.setAttribute("text-decoration", 'line-through');
+              }
               drawModule();
             });
 
@@ -1596,7 +1600,12 @@ var yf = (function (exports, d3) {
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
               legendState[position] = 1 - legendState[position];
-              this.setAttribute("opacity", Math.max(legendState[position], 0.5));
+              this.setAttribute("opacity", Math.max(legendState[position], 0.8));
+              if (this.getAttribute("text-decoration")) {
+                this.removeAttribute("text-decoration");
+              } else {
+                this.setAttribute("text-decoration", 'line-through');
+              }
               drawModule();
             });
 
@@ -1885,7 +1894,13 @@ var yf = (function (exports, d3) {
             .on("click", function () {
               let position = parseInt(this.getAttribute('key'));
               legendState[position] = 1 - legendState[position];
-              this.setAttribute("opacity", Math.max(legendState[position], 0.5));
+              this.setAttribute("opacity", Math.max(legendState[position], 0.8));
+              if (this.getAttribute("text-decoration")) {
+                this.removeAttribute("text-decoration");
+              } else {
+                this.setAttribute("text-decoration", 'line-through');
+              }
+
               drawModule();
             });
 

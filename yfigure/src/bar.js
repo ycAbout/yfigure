@@ -389,7 +389,12 @@ class Bar extends BaseSimpleGroupAxis {
           .on("click", function () {
             let position = parseInt(this.getAttribute('key'));
             legendState[position] = 1 - legendState[position];
-            this.setAttribute("opacity", Math.max(legendState[position], 0.5));
+            this.setAttribute("opacity", Math.max(legendState[position], 0.8));
+            if (this.getAttribute("text-decoration")) {
+              this.removeAttribute("text-decoration");
+            } else {
+              this.setAttribute("text-decoration", 'line-through');
+            }
             drawModule();
           });
 
