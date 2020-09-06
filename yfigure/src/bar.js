@@ -309,8 +309,7 @@ class Bar extends BaseSimpleGroupAxis {
               if (baseY + y < 0) y+= -(baseY + y) - 10;
               //bottom
               if (baseY + y + proposedHeight > innerHeight) y -=  (baseY + y + proposedHeight) - innerHeight -10;
-
-              console.log('here', baseY);
+         
               let datatip = content
                 .append('g')
                 .attr('id', 'yfDataPointDisplay999sky999sky999sky')
