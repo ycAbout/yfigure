@@ -7,24 +7,29 @@ Copyright 2020 Yalin Chen
 There are plenty figure libraries, but yfigure aims to provide the simplest but very powerful and flexible way to draw a figure.
 
 ## How to use
-1. Add this yfigure library to your html:  
-`<script src='` ****your yfigure library file path**** `'></script>`
-2. Use it as normal javascript (write any line below above):
-```
+1. Add the YFigure library to your html:  
+`<script src='` ****`<yourpath>`/yfigure.js**** `'></script>`  
+
+2. Use it as normal javascript (write anywhere below 1.):
+E.g., Add a figure to the html body
+ ```
 <script>
 let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
-yf.sortableBar(dataBar);
+  
+let bar1 = new yf.Bar(dataBar, {//key:value options});
+</script>
+  ```
+3. To add to a speicific location:  
+3a. Add to your html file:  
+`<div id='awesomeYFigure1'></div>`  
+3b. Add a figure to that location  
+```
+<script>
+let tech = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103, 91, 93], ['3rd', 106, 101, 86], ['4th', 120, 131, 92]]
+  
+let groupBar = new yf.Bar(tech, {location: '#awesomeYFigure1'});
 </script>
 ```
-or add to your html file:  
-`<script src='` ****your js file path**** `'></script>`  
-
-your js file: 
-```
-let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]];
-yf.sortableBar(dataBar);
-```
-
 note: This library packed d3v5 (Copyright 2020 Mike Bostock) into it.
 
 
