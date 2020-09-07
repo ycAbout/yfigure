@@ -16,83 +16,38 @@ function Figure(props) {
   );
 }
 
+function DemoNav() {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light">
+      <li className="navbar-brand">Demo</li>
+      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item active">
+            <a className="nav-link" >Bar Graph <span className="sr-only">(current)</span></a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" >Sortable Bar</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" >Histogram</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" >Line Dot</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
+
+
 class Demo extends Component {
 
   componentDidMount() {
-    // example 1
-    let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yf.Bar(population, { location: '#yfigure1' });
-
-    // example 2 rotate x tick lables, change layout, font
-    let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yf.Bar(population2, {
-      location: '#yfigure2',
-      title: 'World Population',
-      colors: ['#1f9400', '#1f9400'], // second for negative value
-      xAxisPosition: ['bottom', 'top'],
-      yAxisPosition: ['left', 'right'],
-      axisLongLineRemove: ['top', 'right'],
-      xAxisFont: '14px times',
-      yAxisFont: '14px times',
-      backgroundColor: 'rgb(57,204,204, 0.1)',
-    });
-
-    let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
-    // example 3 negative data
-    let bar3 = new yf.Bar(Saskatoon2010to2019Low, {
-      location: '#yfigure3',
-      title: 'Saskatoon temprature 2010 to 2019',
-      titleY: 0.95,
-      titleFont: 'bold 18px arial',
-      xPadding: 0.01,
-      xAxisFont: '16px times',
-      yAxisFont: '16px times',
-      xTitle: ' ',  // no xTitle
-      xTickLabelRotate: -20,
-      yTicks: 5,
-      backgroundColor: 'rgba(50, 115, 220, 0.1)',
-    });
-
-
-    // example 4 change color, bar padding
-    let canadaBudget = [['year', 'Surplus/deficit (% GDP)'], ['1995', -4.64], ['1996', -3.62], ['1997', -1.02], ['1998', 0.33],
-    ['1999', 0.62], ['2000', 1.42], ['2001', 1.94], ['2002', 0.71], ['2003', 0.55], ['2004', 0.73], ['2005', 0.11], ['2006', 0.93],
-    ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
-    ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
-
-    let bar4 = new yf.Bar(canadaBudget, {
-      location: '#yfigure4',
-      width: 800,
-      height: 350,
-      title: 'Canada Budget',
-      titleY: 1,
-      titleFont: 'bold 28px times',
-      frameBottom: 20,
-      marginBottom: 10,
-      xAxisPosition: ['top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['top'],
-      xGridDashArray: '4 2',
-      xGridStrokeWidth: 0.2,
-      yGridDashArray: '4 2',
-      yGridStrokeWidth: 0.2,
-    });
-
-    let largestCompanies2020 = [
-      ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
-      ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
-    ]
-    // example 1
-    let groupBar1 = new yf.Bar(largestCompanies2020, {
-      location: '#yfigure5',
-      frameLeft: 40,
-      xPadding: 0.01,
-      title: 'World Largest Companies',
-      titleY: 0.98,
-      //frameTop: 0,
-      yTitle: 'Market cap (us billion)',
-      xTitle: '',
-      withinGroupPadding: 0.1
-    });
-
 
     let techCompany2019 = [['Quarter', 'Microsoft', 'Apple', 'Amazon'],
     ['First', 905, 836, 875],
@@ -101,18 +56,18 @@ class Demo extends Component {
     ['Fourth', 1203, 1305, 916]]
 
     // example 2
-    let groupBar2 = new yf.Bar(techCompany2019, {
-      location: '#yfigure6',
+    let groupBar1 = new yf.Bar(techCompany2019, {
+      location: '#groupedBar1',
       frameLeft: 40,
-      xPadding: 0.3,
-      yPadding: 0.25,
       title: '2019 Microsoft Apple Amazon',
       yTitle: 'Market cap (us billion)',
-      legendX: 0.20,
-      legendY: 0.18,
-      legendWidth: 10,
-      legendFont: '12px times'
-      //withinGroupPadding: 0.1
+      //      xPadding: 0.3,
+      //      yPadding: 0.25,
+      //      legendX: 0.20,
+      //      legendY: 0.18,
+      //      legendWidth: 10,
+      //      legendFont: '12px times'
+      //      withinGroupPadding: 0.1
     });
 
 
@@ -124,22 +79,40 @@ class Demo extends Component {
       ["2018/2019", -341, -289, -2818, -3143],
     ]
 
-    let groupBar3 = new yf.Bar(QuebecMoveOut, {
-      location: '#yfigure7',
+    let groupBar2 = new yf.Bar(QuebecMoveOut, {
+      location: '#groupedBar2',
       yTitle: "Number of Quebecers moving",
       //yGridDashArray: '4 2',
       yGridStrokeWidth: 0.2,
       xPadding: 0.15,
       //yPadding: 0,
-      legendY: 0.78,
-      frameLeft: 40,
-      xTickLabelRotate: 20,
+      legendX: 0.15,
+      legendY: 0.85,
+      frameLeft: 45,
+      frameTop: 35,
+      xTickLabelRotate: 10,
+      xTitle: '',
       //colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
       title: 'Quebec residences moving desination',
-      titleY: 1,
+      //titleY: 1,
     });
 
-
+    let largestCompanies2020 = [
+      ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
+      ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
+    ]
+    // example 1
+    let groupBar3 = new yf.Bar(largestCompanies2020, {
+      location: '#groupedBar3',
+      frameLeft: 40,
+      xPadding: 0.01,
+      title: 'World Largest Companies',
+      titleY: 0.98,
+      //frameTop: 0,
+      yTitle: 'Market cap (us billion)',
+      xTitle: '',
+      withinGroupPadding: 0.1
+    });
 
 
     let gdpRate2007to2010 = [['Year', 'US', 'UK', 'Japan'],
@@ -161,7 +134,7 @@ class Demo extends Component {
 
     // example 2
     let groupBar4 = new yf.Bar(gdpRate2007to2010, {
-      location: '#yfigure8',
+      location: '#groupedBar4',
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
       width: 800,
       xPadding: 0.25,
@@ -179,6 +152,63 @@ class Demo extends Component {
     //bar6.update();
 
 
+    // example 1
+    let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar1 = new yf.Bar(population, { location: '#simpleBar1' });
+
+    // example 2 rotate x tick lables, change layout, font
+    let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let bar2 = new yf.Bar(population2, {
+      location: '#simpleBar2',
+      title: 'World Population',
+      colors: ['#1f9400', '#1f9400'], // second for negative value
+      xAxisPosition: ['bottom', 'top'],
+      yAxisPosition: ['left', 'right'],
+      axisLongLineRemove: ['top', 'right'],
+      xAxisFont: '14px times',
+      yAxisFont: '14px times',
+      backgroundColor: 'rgb(57,204,204, 0.1)',
+    });
+
+    let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
+    // example 3 negative data
+    let bar3 = new yf.Bar(Saskatoon2010to2019Low, {
+      location: '#simpleBar3',
+      title: 'Saskatoon temprature 2010 to 2019',
+      titleY: 0.95,
+      titleFont: 'bold 18px arial',
+      xPadding: 0.01,
+      xAxisFont: '16px times',
+      yAxisFont: '16px times',
+      xTitle: ' ',  // no xTitle
+      xTickLabelRotate: -20,
+      yTicks: 5,
+      backgroundColor: 'rgba(50, 115, 220, 0.1)',
+    });
+
+
+    // example 4 change color, bar padding
+    let canadaBudget = [['year', 'Surplus/deficit (% GDP)'], ['1995', -4.64], ['1996', -3.62], ['1997', -1.02], ['1998', 0.33],
+    ['1999', 0.62], ['2000', 1.42], ['2001', 1.94], ['2002', 0.71], ['2003', 0.55], ['2004', 0.73], ['2005', 0.11], ['2006', 0.93],
+    ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
+    ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
+
+    let bar4 = new yf.Bar(canadaBudget, {
+      location: '#simpleBar4',
+      width: 800,
+      height: 350,
+      title: 'Canada Budget',
+      titleY: 1,
+      titleFont: 'bold 28px times',
+      frameBottom: 20,
+      marginBottom: 10,
+      xAxisPosition: ['top'], yAxisPosition: ['left', 'right'], xTitlePosition: ['top'],
+      xGridDashArray: '4 2',
+      xGridStrokeWidth: 0.2,
+      yGridDashArray: '4 2',
+      yGridStrokeWidth: 0.2,
+    });
+
 
     let CanadaSpendScicence = [['year', 'Natural sciences research', 'Social sciences research', 'Natural sciences related', 'Social sciences related'],
     ['2016/2017', 6124, 968, 2517, 1818],
@@ -190,7 +220,7 @@ class Demo extends Component {
 
     // example 2
     let stackedBar1 = new yf.Bar(CanadaSpendScicence, {
-      location: '#yfigure9',
+      location: '#stackedBar1',
       stacked: true,
       frameLeft: 45,
       //legendX: 0.4,
@@ -216,7 +246,7 @@ class Demo extends Component {
 
     // example 2
     let stackedBar2 = new yf.Bar(canadaTemprature, {
-      location: '#yfigure10',
+      location: '#stackedBar2',
       stacked: true,
       legendX: 0.88,
       legendY: 0.42,
@@ -244,7 +274,7 @@ class Demo extends Component {
 
     // example 2
     let stackedBar3 = new yf.Bar(gdp2007to2010, {
-      location: '#yfigure11',
+      location: '#stackedBar3',
       stacked: true,
       frameLeft: 45,
       //legendX: 0.4,
@@ -287,7 +317,7 @@ class Demo extends Component {
 
     // example 2
     let stackedBar4 = new yf.Bar(SaskatchewanMoveOut, {
-      location: '#yfigure12',
+      location: '#stackedBar4',
       stacked: true,
       width: 800,
       yPadding: 0.01,
@@ -304,7 +334,7 @@ class Demo extends Component {
 
     // example 2
     let horizontalBar1 = new yf.Bar(worldPopulation2020, {
-      location: '#yfigure13',
+      location: '#horizontalBar1',
       horizontal: true,
       //  height: 400,
       //width: 300,
@@ -325,7 +355,7 @@ class Demo extends Component {
 
     // example 2
     let horizontalBar2 = new yf.Bar(G20NetMigration2012to2017, {
-      location: '#yfigure14',
+      location: '#horizontalBar2',
       horizontal: true,
       yAxisPosition: ['right'],
       axisColor: 'red',
@@ -350,7 +380,7 @@ class Demo extends Component {
     ]  // https://doi.org/10.25318/3410009501-eng
 
     let horizontalBar3 = new yf.Bar(OwnerOccupiedExpenditures3, {
-      location: '#yfigure15',
+      location: '#horizontalBar3',
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
@@ -369,10 +399,10 @@ class Demo extends Component {
       ['2017', 4774, 912, -1742,],
     ];
 
-  
+
 
     let horizontalBar4 = new yf.Bar(netMigration2002to2017, {
-      location: '#yfigure16',
+      location: '#horizontalBar4',
       horizontal: true,
       scaleStart: 500,
       xGridStrokeWidth: 0.2,
@@ -400,7 +430,7 @@ class Demo extends Component {
 
     // example 2
     let horizontalBar5 = new yf.Bar(ontarioMoveOut, {
-      location: '#yfigure17',
+      location: '#horizontalBar5',
       stacked: true,
       horizontal: true,
       yTitle: '',
@@ -430,7 +460,7 @@ class Demo extends Component {
 
     // example 2
     let horizontalBar6 = new yf.Bar(ontarioMoveIn, {
-      location: '#yfigure18',
+      location: '#horizontalBar6',
       stacked: true,
       horizontal: true,
       yTitle: '',
@@ -441,7 +471,7 @@ class Demo extends Component {
       title: ' Ontario move in'
     });
 
-  
+
 
     let G20NetMigration2002to2017 = [['country', '2002', '2007', '2012', '2017'], ['Argentina', -125, -120, 30, 24], ['Australia', 589, 1211, 989, 791],
     ['Brazil', 0, 0, 16, 106], ['Canada', 1052, 1326, 1241, 1210], ['China', -1966, -2178, -1552, -1742], ['France', 926, 446, 424, 183],
@@ -452,7 +482,7 @@ class Demo extends Component {
 
     // example 2
     let horizontalBar7 = new yf.Bar(G20NetMigration2002to2017, {
-      location: '#yfigure19',
+      location: '#horizontalBar7',
       stacked: true,
       horizontal: true,
       width: 800,
@@ -480,7 +510,7 @@ class Demo extends Component {
 
     // example 1
     let sortableBar1 = new yf.SortableBar(G20population2019, {
-      location: '#yfigure20',
+      location: '#sortableBar1',
       frameLeft: 65,
       xTitle: '',
       yTitle: 'Person (x1000)',
@@ -503,7 +533,7 @@ class Demo extends Component {
 
     // example 1
     let sortableBar2 = new yf.SortableBar(G20Migration2012to2017, {
-      location: '#yfigure21',
+      location: '#sortableBar2',
       frameLeft: 45,
       xAxisPosition: ['top'],
       xTitle: '',
@@ -521,7 +551,7 @@ class Demo extends Component {
 
     // example 2
     let sortableBar3 = new yf.SortableBar(withinCanadaMigration2018to2019, {
-      location: '#yfigure22',
+      location: '#sortableBar3',
       horizontal: true,
       title: 'Within Canada Migration 2018-2019',
       titleY: 0.08,
@@ -539,7 +569,7 @@ class Demo extends Component {
 
     // example 3
     let sortableBar4 = new yf.SortableBar(OECDMigration2012to2017, {
-      location: '#yfigure23',
+      location: '#sortableBar4',
       width: 800,
       frameLeft: 45,
       yAxisPosition: ['left', 'right'],
@@ -567,7 +597,7 @@ class Demo extends Component {
 
     // example 2 
     let histogram1 = new yf.Histogram(normalDistribution, {
-      location: '#yfigure24',
+      location: '#histogram1',
       nBins: 10,
       colors: ['green'],
       title: 'Normal distribution'
@@ -590,10 +620,10 @@ class Demo extends Component {
     [11.73], [8.88], [9.97], [10.05], [8.51], [8.68], [11.18], [10.23], [7.93], [11.66], [9.86], [11.42], [10.48]]
 
     // example 1  
-    let histogram2 = new yf.Histogram(normal, {location: '#yfigure44'});
+    let histogram2 = new yf.Histogram(normal, { location: '#histogram2' });
 
     let histogram3 = new yf.Histogram(normalDistribution, {
-      location: '#yfigure25',
+      location: '#histogram3',
       nBins: 10,
       horizontal: true,
       title: 'Horizontal histogram',
@@ -619,7 +649,7 @@ class Demo extends Component {
 
     // example 4 
     let histogram4 = new yf.Histogram(dataHistogram, {
-      location: '#yfigure26',
+      location: '#histogram4',
       width: 800,
       nBins: 50,
       colors: ['purple']
@@ -632,7 +662,9 @@ class Demo extends Component {
 
     // example 1  
     let linedot1 = new yf.LineDot(canadaGdpRate10Years, {
-      location: '#yfigure27', title: 'Canada GDP growth rate past 10 years' });
+      location: '#lineDot1',
+      title: 'Canada GDP growth rate past 10 years'
+    });
 
     let gdpRate = [
       ['year', 'China', 'US', 'Malaysia', 'Israel'],
@@ -647,7 +679,7 @@ class Demo extends Component {
 
     // example 2
     let linedot2 = new yf.LineDot(gdpRate, {
-      location: '#yfigure28',
+      location: '#lineDot2',
       dotRadius: 6,
       xPadding: 0.4,
       title: 'GDP growth 2013-2018',
@@ -659,7 +691,7 @@ class Demo extends Component {
 
     // example 3 
     let linedot3 = new yf.LineDot(negativeMigration, {
-      location: '#yfigure29',
+      location: '#lineDot3',
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
       legendX: 0.28,
       legendY: 0.85,
@@ -678,7 +710,7 @@ class Demo extends Component {
     ['May', 19, 4], ['June', 23, 10], ['July', 25, 12], ['August', 24, 10], ['September', 19, 5], ['October', 10, -2], ['November', -2, -11], ['December', -8, -17]]
 
     let linedot4 = new yf.LineDot(Saskatoon2010to2019tem, {
-      location: '#yfigure30',
+      location: '#lineDot4',
       horizontal: true,
       title: 'Saskatoon tempreture 2010 to 2019',
       yTitle: ''
@@ -697,7 +729,7 @@ class Demo extends Component {
 
     // example 2
     let linedot5 = new yf.LineDot(gdpRate2, {
-      location: '#yfigure31',
+      location: '#lineDot5',
       dotRadius: 6,
       horizontal: true,
       title: 'GDP growth 2013-2018',
@@ -709,7 +741,7 @@ class Demo extends Component {
     ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
     let linedot6 = new yf.LineDot(negativeMigration, {
-      location: '#yfigure32',
+      location: '#lineDot6',
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
       legendFont: '14px times',
       horizontal: true,
@@ -749,8 +781,8 @@ class Demo extends Component {
       ] // https://doi.org/10.25318/3410009501-eng
 
     // example 3
-    let lineDot5 = new yf.LineDot(RentedExpenditures, {
-      location: '#yfigure33',
+    let lineDot7 = new yf.LineDot(RentedExpenditures, {
+      location: '#lineDot7',
       width: 800,
       yTitle: "Dollar (million)",
       yGridDashArray: '10 2',
@@ -774,24 +806,6 @@ class Demo extends Component {
     //linedot5.update();
     //linedot6.update();
 
-    let OwnerOccupiedExpenditures = [['Provinces', '2014', '2015', '2016', '2017', '2018'],
-    //    ['Canada', 10191, 10513, 11075, 11477, 11784],
-    ['NL', 184, 186, 182, 186, 183],
-    ['PEI', 37, 38, 37, 40, 41],
-    ['Nova Scotia', 360, 369, 399, 385, 390],
-    ['New Brunswick', 302, 313, 308, 312, 315],
-    ['Quebec', 2196, 2238, 2376, 2563, 2664],
-    ['Ontario', 4135, 4303, 4592, 4648, 4718],
-    ['Manitoba', 328, 344, 356, 378, 390],
-    ['Saskatchewan', 300, 308, 316, 334, 340],
-    ['Alberta', 1097, 1112, 1131, 1142, 1163],
-    ['British Columbia', 1237, 1287, 1362, 1471, 1561],
-    ['Yukon, NT and NV', 15, 15, 16, 18, 19],
-    ]  // https://doi.org/10.25318/3410009501-eng
-
-
-
-
     let ottawaHousePrice = [['year', 'price'],
     //['1956', 13351], ['1957', 14230], ['1958', 15564], ['1959', 16038], ['1960', 16791], ['1961', 16070], ['1962', 15952],
     //['1963', 16549], ['1964', 16563], ['1965', 17056], ['1966', 18004], ['1967', 19476], ['1968', 23329], ['1969', 25652], ['1970', 26532], ['1971', 27808], ['1972', 30576],
@@ -804,7 +818,7 @@ class Demo extends Component {
 
     // example 1  
     let line1 = new yf.LineDot(ottawaHousePrice, {
-      location: '#yfigure34',
+      location: '#line1',
       dotRadius: 2,
       lineStrokeWidth: 5,
       frameLeft: 60,
@@ -826,7 +840,7 @@ class Demo extends Component {
 
     // example 2
     let line2 = new yf.LineDot(gdpGrowth, {
-      location: '#yfigure35',
+      location: '#line2',
       dotRadius: 1,
       title: 'GDP growth rate with average'
     });
@@ -856,7 +870,7 @@ class Demo extends Component {
 
     // example 3
     let line3 = new yf.LineDot(RentedExpenditures1, {
-      location: '#yfigure36',
+      location: '#line3',
       dotRadius: 1,
       yTitle: "Dollar (million)",
       legendY: 0.2,
@@ -875,7 +889,7 @@ class Demo extends Component {
 
     // example 1  
     let line4 = new yf.LineDot(ottawaHousePrice, {
-      location: '#yfigure37',
+      location: '#line4',
       horizontal: true,
       dotRadius: 2,
       lineStrokeWidth: 5,
@@ -886,7 +900,7 @@ class Demo extends Component {
 
     // example 2
     let line5 = new yf.LineDot(gdpGrowth, {
-      location: '#yfigure38',
+      location: '#line5',
       horizontal: true,
       dotRadius: 1,
       title: 'GDP growth rate with average'
@@ -957,8 +971,8 @@ class Demo extends Component {
     ]
 
     // example 3 
-    let line7 = new yf.LineDot(big3Gdp, {
-      location: '#yfigure39',
+    let line6 = new yf.LineDot(big3Gdp, {
+      location: '#line6',
       width: 800,
       dotRadius: 1,
       title: 'GDP growth rate of superpower since 1960s',
@@ -968,16 +982,6 @@ class Demo extends Component {
       colors: ['#DA7C30', '#3E9651', '#922428', '#948B3D']
     });
 
-
-
-
-    let dataScatter2 = [["age", "WWWWWWWiii", "score2", "gWggH", "i2654"]];
-    for (let i = 0; i < 60; i++) {
-      let element = [i + 18, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100 + 200), Math.floor(Math.random() * 100 + 400), Math.floor(Math.random() * 100 + 600)]
-      dataScatter2.push(element)
-    }
-
-
     let examsMathReading = [['math', 'female reading'], [72, 72], [69, 90], [90, 95], [71, 83], [88, 95], [65, 81], [50, 53], [69, 75], [54, 58], [65, 75], [69, 73], [67, 69], [62, 70], [69, 74], [63, 65],
     [56, 72], [74, 81], [50, 64], [75, 90], [58, 73], [53, 58], [50, 56], [55, 65], [66, 71], [57, 74], [71, 84], [33, 41], [82, 85], [69, 80], [59, 58], [60, 72], [39, 64], [58, 63], [41, 51], [61, 74],
     [62, 68], [47, 49], [73, 80], [76, 83], [71, 71], [58, 70], [73, 86], [65, 72], [79, 86], [63, 72], [58, 67], [65, 67], [85, 91], [58, 67], [87, 100,], [52, 76], [70, 64], [77, 89], [51, 58], [99, 100,],
@@ -985,7 +989,7 @@ class Demo extends Component {
 
     // example 1  
     let scatter1 = new yf.Scatter(examsMathReading, {
-      location: '#yfigure40',
+      location: '#scatter1',
       dotRadius: 6,
       title: 'Math and reading score'
     });
@@ -1003,9 +1007,9 @@ class Demo extends Component {
 
     // example 2 
     let scatter2 = new yf.Scatter(exams, {
-      location: '#yfigure41',
+      location: '#scatter2',
       dotRadius: 3,
-      title: 'Math, reading, and writing score (sudo data)'
+      title: 'Math, reading, and writing (sudo data)'
     });
 
     let latitudeTemperature = [['Latitude', 'Temperature'], [31.2, 6.666], [32.9, 3.333], [33.6, 1.666], [35.4, -0.5555], [34.3, 8.333], [38.4, 5.555],
@@ -1018,7 +1022,7 @@ class Demo extends Component {
 
     // example 3 
     let scatter3 = new yf.Scatter(latitudeTemperature, {
-      location: '#yfigure42',
+      location: '#scatter3',
       //dotRadius: 7,
       colors: ['#948B3D'],
       title: 'January Temperature'
@@ -1036,8 +1040,8 @@ class Demo extends Component {
       [42, 11, 4, -7], [44, 12, 4, -8], [46, 13, 4, -9], [48, 14, 4, -10], [50, 15, 4, -11],];
 
     // example 3
-    let scatter7 = new yf.Scatter(sudoScatter, {
-      location: '#yfigure43',
+    let scatter4 = new yf.Scatter(sudoScatter, {
+      location: '#scatter4',
       width: 800,
       //dotRadius: 3,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'],
@@ -1048,18 +1052,69 @@ class Demo extends Component {
   }
 
   render() {
-    const demoFigures = [];
-    for (let i = 1; i < 50; i++) {
-      demoFigures.push(
-        <div id={'yfigure' + i}></div>)
+    const groupedBar = []
+    const simpleBar = []
+    const stackedBar = []
+    const horizontalBar = []
 
+    const sortableBar = []
+    const histogram = []
+    const lineDot = []
+    const line = []
+    const scatter = []
+
+    for (let i = 1; i < 8; i++) {
+      groupedBar.push(<div key={'grou' + i} id={'groupedBar' + i}></div>)
+      simpleBar.push(<div key={'simp' + i} id={'simpleBar' + i}></div>)
+      stackedBar.push(<div key={'stac' + i} id={'stackedBar' + i}></div>)
+      horizontalBar.push(<div key={'hori' + i} id={'horizontalBar' + i}></div>)
+      sortableBar.push(<div key={'sort' + i} id={'sortableBar' + i}></div>)
+      histogram.push(<div key={'hist' + i} id={'histogram' + i}></div>)
+      lineDot.push(<div key={'line' + i} id={'lineDot' + i}></div>)
+      line.push(<div key={'line' + i} id={'line' + i}></div>)
+      scatter.push(<div key={'scat' + i} id={'scatter' + i}></div>)
     }
 
     return (
       <div className='text-left'>
-        <h4 className="text-left">Demo</h4>
+        <DemoNav/>
+        <h2 className="text-left">Demo (clickable legend)</h2>
+        <div><h2>Bar graph</h2></div>
+        <div><h3>Grouped Bar</h3></div>
         <div className="row align-items-center">
-          {demoFigures}
+          {groupedBar}
+        </div>
+        <div><h3>Simple bar</h3></div>
+        <div className="row align-items-center">
+          {simpleBar}
+        </div>
+        <div><h3>Stacked bar</h3></div>
+        <div className="row align-items-center">
+          {stackedBar}
+        </div>
+        <div><h3>Horizontal bar</h3></div>
+        <div className="row align-items-center">
+          {horizontalBar}
+        </div>
+        <div><h2>Sortable Bar</h2></div>
+        <div className="row align-items-center">
+          {sortableBar}
+        </div>
+        <div><h2>Histogram</h2></div>
+        <div className="row align-items-center">
+          {histogram}
+        </div>
+        <div><h2>LineDot</h2></div>
+        <div className="row align-items-center">
+          {lineDot}
+        </div>
+        <div><h2>Line</h2></div>
+        <div className="row align-items-center">
+          {line}
+        </div>
+        <div><h2>Scatter</h2></div>
+        <div className="row align-items-center">
+          {scatter}
         </div>
         <br />
       </div>

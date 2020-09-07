@@ -1,21 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import getStarted1 from '../media/getStarted1.png'
+import getStarted2 from '../media/getStarted2.png'
+import getStarted3 from '../media/getStarted3.png'
+import getStarted4 from '../media/getStarted4.png'
 
-function GetStart () {
-    return (
-        <div>
-          <div className="container text-left small">
-            <br />
-            <div className="btn-group">
-             <Link to="#" className="btn btn-success"><h4>Buy Licence</h4></Link>
+function GetStart() {
+  return (
+    <div>
+      <div className="container text-left">
+        <br />
+        <span className="sticky"><Link to="#" className="btn btn-success"><font size="5">Buy Licence</font></Link></span>
+        <span><a className="btn btn-secondary" href="/getStarted.png" download><font size="5">Download</font></a></span>
+        <hr />
+        <h4 className="text-left">Get start</h4>
+        <p>1. Add the YFigure library to your html: </p>
+        <p><img src={getStarted1} alt='code'></img></p>
+        <p>2. Use it as in Javascript (write anywhere below 1.).</p>
+        <p>E.g., add a figure to the html body: </p>
+        <p><img src={getStarted2} alt='code'></img></p>
+        <p>3. To add to a speicific location:</p>
+        <p>3a. Add to your html file:</p>
+        <p><img src={getStarted3} alt='code'></img></p>
+        <p>3b. Add a figure to that location: </p>
+        <p><img src={getStarted4} alt='code'></img></p>
+        <p>Enjoy!</p>
 
-             <Link to="#" className="btn btn-secondary"><h4>Download</h4></Link>
-           </div>
-            <hr/>
-            <h4 className="text-left">Get start</h4>
-          </div>
-        </div>
-      )
+      </div>
+    </div >
+  )
 }
 
 export default GetStart;
