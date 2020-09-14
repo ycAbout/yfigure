@@ -5,20 +5,38 @@ header {
     margin-right: 1em;
 }
 
-nav {
+#websiteNav {
     margin-left: 1.5em;
     margin-right: 1.5em;
 }
 
+#demoNav {
+    position: sticky;
+    top:0;
+}
+
+#importantButtons {
+    position: sticky;
+    top:0;
+}
+
+#singleFigure {
+    padding-bottom: 12px;
+    margin: 1px;
+    border: 2px solid #33A523;
+}
+
+#majorContent {
+    display: flex;
+}
+
 main {
     margin-left: 3em;
-    width: 67%;
-    float: left;
+    width: 68%;
 }
 
 aside {
     width: 25%; 
-    float: left;
 }
 
 footer {

@@ -3,42 +3,49 @@ import * as yf from 'yfigure'
 
 function Figure(props) {
   return (
-    <div className="col-sm-6">
-      <div className="card">
-        <div className="card-body">
-          <div id='bar1'></div>
-          <hr />
-          <a href={'placeholder'} className="card-link">Link</a>
-          <br />
-        </div>
+    <div id="singleFigure">
+      <div id={props.location}>
       </div>
+      <hr></hr>
+      <a className="container" href={'placeholder'}>codepen</a>
+      <br />
     </div>
   );
 }
 
 function DemoNav() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light">
-      <li className="navbar-brand">Demo</li>
-      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul className="navbar-nav mr-auto">
-          <li className="nav-item active">
-            <a className="nav-link" >Bar Graph <span className="sr-only">(current)</span></a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" >Sortable Bar</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" >Histogram</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" >Line Dot</a>
-          </li>
-        </ul>
-      </div>
+    <nav id="demoNav" style={{ marginleft: 0 }} className="navbar navbar-light bg-light">
+      <a className="navbar-brand" href="#">Demo (clickable legend)</a>
+      <ul className="nav">
+        <li className="nav-item">
+          <a className="nav-link" href="#groupedBar">Grouped Bar</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#simpleBar">Simple Bar</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#stackedBar">Stacked Bar</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#horizontalBar">Horizontal Bar</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#sortableBar">Sortable Bar</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#histogram">Histogram</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#lineDot">LineDot</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#line">Line</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#scatter">Scatter</a>
+        </li>
+      </ul>
     </nav>
   );
 }
@@ -1064,59 +1071,73 @@ class Demo extends Component {
     const scatter = []
 
     for (let i = 1; i < 8; i++) {
-      groupedBar.push(<div key={'grou' + i} id={'groupedBar' + i}></div>)
-      simpleBar.push(<div key={'simp' + i} id={'simpleBar' + i}></div>)
-      stackedBar.push(<div key={'stac' + i} id={'stackedBar' + i}></div>)
-      horizontalBar.push(<div key={'hori' + i} id={'horizontalBar' + i}></div>)
-      sortableBar.push(<div key={'sort' + i} id={'sortableBar' + i}></div>)
-      histogram.push(<div key={'hist' + i} id={'histogram' + i}></div>)
-      lineDot.push(<div key={'line' + i} id={'lineDot' + i}></div>)
-      line.push(<div key={'line' + i} id={'line' + i}></div>)
-      scatter.push(<div key={'scat' + i} id={'scatter' + i}></div>)
+      if (i<5) {
+        groupedBar.push(<Figure key={'grou' + i} location={'groupedBar' + i} />);
+        simpleBar.push(<Figure key={'simp' + i} location={'simpleBar' + i} />);
+        stackedBar.push(<Figure key={'stac' + i} location={'stackedBar' + i} />);
+        sortableBar.push(<Figure key={'sort' + i} location={'sortableBar' + i} />);
+        histogram.push(<Figure key={'hist' + i} location={'histogram' + i} />);
+        scatter.push(<Figure key={'scat' + i} location={'scatter' + i} />);
+      }
+      if (i<8) {
+        horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} />);
+        lineDot.push(<Figure key={'line' + i} location={'lineDot' + i} />);
+      }
+      if (i<7) line.push(<Figure key={'line' + i} location={'line' + i} />);
+      
+      //      groupedBar.push(<div><div key={'grou' + i} id={'groupedBar' + i}></div><button>abcdafserx</button></div>)
+      //simpleBar.push(<div key={'simp' + i} id={'simpleBar' + i}></div>)
+      //stackedBar.push(<div key={'stac' + i} id={'stackedBar' + i}></div>)
+      //horizontalBar.push(<div key={'hori' + i} id={'horizontalBar' + i}></div>)
+      //sortableBar.push(<div key={'sort' + i} id={'sortableBar' + i}></div>)
+      //histogram.push(<div key={'hist' + i} id={'histogram' + i}></div>)
+      //lineDot.push(<div key={'line' + i} id={'lineDot' + i}></div>)
+      //line.push(<div key={'line' + i} id={'line' + i}></div>)
+      //scatter.push(<div key={'scat' + i} id={'scatter' + i}></div>)
     }
 
     return (
       <div className='text-left'>
-        <DemoNav/>
-        <h2 className="text-left">Demo (clickable legend)</h2>
-        <div><h2>Bar graph</h2></div>
-        <div><h3>Grouped Bar</h3></div>
-        <div className="row align-items-center">
-          {groupedBar}
+        <DemoNav />
+        <div data-spy="scroll" data-target="#demoNav" data-offset="0">
+          <div><h4 id="groupedBar">Grouped Bar</h4></div>
+          <div className="row align-items-center">
+            {groupedBar}
+          </div>
+          <div><h4 id="simpleBar">Simple bar</h4></div>
+          <div className="row align-items-center">
+            {simpleBar}
+          </div>
+          <div><h4 id="stackedBar">Stacked bar</h4></div>
+          <div className="row align-items-center">
+            {stackedBar}
+          </div>
+          <div><h4 id="horizontalBar">Horizontal bar</h4></div>
+          <div className="row align-items-center">
+            {horizontalBar}
+          </div>
+          <div><h4 id="sortableBar">Sortable Bar</h4></div>
+          <div className="row align-items-center">
+            {sortableBar}
+          </div>
+          <div><h4 id="histogram">Histogram</h4></div>
+          <div className="row align-items-center">
+            {histogram}
+          </div>
+          <div><h4 id="lineDot">LineDot</h4></div>
+          <div className="row align-items-center">
+            {lineDot}
+          </div>
+          <div><h4 id="line">Line</h4></div>
+          <div className="row align-items-center">
+            {line}
+          </div>
+          <div><h4 id="scatter">Scatter</h4></div>
+          <div className="row align-items-center">
+            {scatter}
+          </div>
+          <br />
         </div>
-        <div><h3>Simple bar</h3></div>
-        <div className="row align-items-center">
-          {simpleBar}
-        </div>
-        <div><h3>Stacked bar</h3></div>
-        <div className="row align-items-center">
-          {stackedBar}
-        </div>
-        <div><h3>Horizontal bar</h3></div>
-        <div className="row align-items-center">
-          {horizontalBar}
-        </div>
-        <div><h2>Sortable Bar</h2></div>
-        <div className="row align-items-center">
-          {sortableBar}
-        </div>
-        <div><h2>Histogram</h2></div>
-        <div className="row align-items-center">
-          {histogram}
-        </div>
-        <div><h2>LineDot</h2></div>
-        <div className="row align-items-center">
-          {lineDot}
-        </div>
-        <div><h2>Line</h2></div>
-        <div className="row align-items-center">
-          {line}
-        </div>
-        <div><h2>Scatter</h2></div>
-        <div className="row align-items-center">
-          {scatter}
-        </div>
-        <br />
       </div>
     )
   }
