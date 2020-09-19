@@ -1353,7 +1353,7 @@ var yf = (function (exports, d3) {
       (this._options.legendY || parseInt(this._options.legendY) === 0) ? true : this._options.legendY = 0.12;
       this._options.legendWidth ? true : options.legendWidth = 600;
       this._options.legendFont ? true : options.legendFont = '10px sans-serif';
-      this._options.lineStrokeWidth ? true : this._options.lineStrokeWidth = 2; 
+      this._options.lineStrokeWidth ? true : this._options.lineStrokeWidth = 2;
 
       //validate format
       if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
@@ -1495,11 +1495,43 @@ var yf = (function (exports, d3) {
               .attr("cx", element => horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]))
               .attr("cy", element => horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1]))
               .attr("r", dotRadius)
-              .attr("fill", colorScale(yDataNames[i]))
-              .on('mouseover', function (element) {
-                this.setAttribute("opacity", 0.6);
-                let transformValue = this.getAttribute("transform");
-                let text = element[xDataIndex] + ' : ' + element[i + 1];
+              .attr("fill", colorScale(yDataNames[i]));
+          }
+        }
+
+        // Create multiple rect on top of the content area, for mouse over effect
+        let dataTipBandWidth = (xScale.range()[1] - xScale.range()[0]) / dataValue.length;
+        content
+          .append('g')
+          .selectAll('rect')
+          .data(dataValue)
+          .join('rect')
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .attr('x', (element) => horizontal ? 0 : xScale(element[xDataIndex]) - dataTipBandWidth / 2)
+          .attr('width', horizontal ? innerWidth : dataTipBandWidth)
+          .attr('y', (element) => horizontal ? xScale(element[xDataIndex]) - dataTipBandWidth / 2 : 0)
+          .attr('height', horizontal ? dataTipBandWidth : innerHeight)
+          .on('mouseover', function (element) {
+            let datatip = content
+              .append('g')
+              .attr('id', 'yfDataPointDisplay999sky999sky999sky');
+
+            datatip.append("line")
+              .attr("x1", horizontal ? 0 : xScale(element[xDataIndex]))
+              .attr("y1", horizontal ? yScale(element[xDataIndex]) : 0)   // +0.5 to line up with tick
+              .attr("x2", horizontal ? innerWidth : xScale(element[xDataIndex]))
+              .attr("y2", horizontal ? yScale(element[xDataIndex]) : innerHeight)
+              .style('stroke', 'black')
+              .style('stroke-width', 1)
+              .style("stroke-dasharray", '4 2');
+
+            // draw each y data
+            for (let i = 0; i < yDataNames.length; i++) {
+              // if legend is unclicked
+              if (legendState[i]) {
+
+                let text = element[i + 1];
                 let proposed = content
                   .append('text')
                   .attr('font-size', '16px')
@@ -1510,23 +1542,21 @@ var yf = (function (exports, d3) {
 
                 proposed.remove();
 
-                let currentPosition = this.getBBox();
-                let midX = currentPosition.x + currentPosition.width / 2;
+                let midX = horizontal ? xScale(element[i + 1]) : xScale(element[xDataIndex]);
                 let x = midX - proposedWidth / 2;
-                let y = (currentPosition.y - 7) - proposedHeight;
-                
+                let y = (horizontal ? yScale(element[xDataIndex]) : yScale(element[i + 1])) - dotRadius - 5 - proposedHeight;
+
                 //over left right limit move
-                if (midX + proposedWidth / 2 > innerWidth) x -= midX + proposedWidth / 2 - innerWidth;
-                if (x < 0) x += -x;
+                let rightX = x + proposedWidth;
+                if (rightX > innerWidth) x -= rightX - innerWidth;
+                let leftX = x;
+                if (leftX < 0) x += -leftX;
 
                 //over top bottom limit move
                 //top
-                if (y < 0) y = currentPosition.y + 7 + currentPosition.height;
-
-                let datatip = content
-                  .append('g')
-                  .attr('id', 'yfDataPointDisplay999sky999sky999sky')
-                  .attr("transform", transformValue);
+                if (y < 0) y += -(y) + dotRadius * 2 + 5;
+                //bottom
+                if (y + proposedHeight > innerHeight) y -= (y + proposedHeight) - innerHeight;
 
                 datatip
                   .append('rect')
@@ -1546,13 +1576,14 @@ var yf = (function (exports, d3) {
                   .attr('x', x + 3)
                   .attr('y', y)
                   .text(text);
-              })
-              .on('mouseout', function () {
-                this.setAttribute("opacity", 1);
-                d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
-              });
-          }
-        }
+
+              }
+            }
+          })
+          .on('mouseout', function () {
+            this.setAttribute("opacity", 1);
+            d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+          });
 
         if (horizontal) {    // switch xScale and yScale to make axis
           let middleMan = xScale;
@@ -1645,7 +1676,11 @@ var yf = (function (exports, d3) {
             }
           }
         }
+
       }
+
+
+
 
       this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
