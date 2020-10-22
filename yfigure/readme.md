@@ -30,11 +30,10 @@ let tech = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103
 let groupBar = new yf.Bar(tech, {location: '#awesomeYFigure1'});
 </script>
 ```
-note: This library packed d3v5 (Copyright 2020 Mike Bostock) into it.
+note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
 
 
 ## Functions API
-
 ### bar(data, options = {})
 This function draws a horizontal bar graph (y represents continuous value) using d3 and svg.  
 * @param {object} data    
