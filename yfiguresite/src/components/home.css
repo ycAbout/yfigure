@@ -21,9 +21,10 @@ header {
 }
 
 #singleFigure {
-    padding-bottom: 12px;
-    margin: 1px;
-    border: 2px solid #33A523;
+    padding-bottom: 1em;
+    margin: 2px;
+    border-left: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
 }
 
 #majorContent {

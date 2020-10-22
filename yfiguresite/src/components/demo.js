@@ -6,8 +6,7 @@ function Figure(props) {
     <div id="singleFigure">
       <div id={props.location}>
       </div>
-      <hr></hr>
-      <a className="container" href={'placeholder'}>codepen</a>
+      <a style={{marginLeft: '1em'}} href={'placeholder'}>codepen</a>
       <br />
     </div>
   );
@@ -639,7 +638,7 @@ class Demo extends Component {
 
 
 
-    //generate a sudo normal distributed dataset
+    //generate a pseudo normal distributed dataset
     let dataHistogram = [["value"]];
     for (let i = 0; i < 300; i++) {
       let element = [(Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) / 5 * 10]
@@ -1001,7 +1000,7 @@ class Demo extends Component {
       title: 'Math and reading score'
     });
 
-    //sudo data
+    //pseudo data
     let exams = [['math', 'female reading', 'female writing', 'male reading', 'male writing'], [72, 72, 74, 74, 76], [69, 90, 88, 57, 52], [90, 95, 93, 61, 61], [71, 83, 78, 62, 61],
     [88, 95, 92, 84, 78], [65, 81, 73, 60, 58], [50, 53, 58, 58, 60], [69, 75, 78, 58, 53], [54, 58, 61, 66, 61], [65, 75, 70, 77, 71], [69, 73, 73, 74, 72], [67, 69, 75, 43, 41],
     [62, 70, 75, 64, 62], [69, 74, 74, 100, 95], [63, 65, 61, 81, 71], [56, 72, 65, 70, 75], [74, 81, 83, 67, 59], [50, 64, 59, 67, 67], [75, 90, 88, 54, 56], [58, 73, 68, 45, 41],
@@ -1016,7 +1015,7 @@ class Demo extends Component {
     let scatter2 = new yf.Scatter(exams, {
       location: '#scatter2',
       dotRadius: 3,
-      title: 'Math, reading, and writing (sudo data)'
+      title: 'Math, reading, and writing (pseudo data)'
     });
 
     let latitudeTemperature = [['Latitude', 'Temperature'], [31.2, 6.666], [32.9, 3.333], [33.6, 1.666], [35.4, -0.5555], [34.3, 8.333], [38.4, 5.555],
@@ -1037,7 +1036,7 @@ class Demo extends Component {
 
 
 
-    let sudoScatter = [
+    let pseudoScatter = [
       ['data1', 'data2', 'data3', 'data4'], [1, 0, 4, 8], [1, 0, 4, 8], [2, 1, 5, 9], [2, -1, 3, 7], [3, 2, 6, 10], [3, -2, 2, 6], [4, 3, 7, 11],
       [4, -3, 1, 5], [5, 4, 8, 12], [5, -4, 0, 4], [6, 5, 9, 13], [6, -5, -1, 3], [7, 6, 10, 14], [7, -6, -2, 2], [8, 7, 11, 15], [8, -7, -3, 1],
       [9, 8, 12, 16], [9, -8, -4, 0], [10, 9, 13, 17], [10, -9, -5, -1], [11, 9, 13, 17], [11, -9, -5, -1], [12, 8, 12, 16], [12, -8, -4, 0],
@@ -1047,13 +1046,13 @@ class Demo extends Component {
       [42, 11, 4, -7], [44, 12, 4, -8], [46, 13, 4, -9], [48, 14, 4, -10], [50, 15, 4, -11],];
 
     // example 3
-    let scatter4 = new yf.Scatter(sudoScatter, {
+    let scatter4 = new yf.Scatter(pseudoScatter, {
       location: '#scatter4',
       width: 800,
       //dotRadius: 3,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#535154', '#6B4C9A', '#922428', '#948B3D'],
       legendX: 0.1,
-      title: 'sudo data scatter'
+      title: 'pseudo data scatter'
     });
 
   }
