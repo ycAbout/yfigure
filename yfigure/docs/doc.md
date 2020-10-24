@@ -30,8 +30,6 @@ let tech = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103
 let groupBar = new yf.Bar(tech, {location: '#awesomeYFigure1'});
 </script>
 ```
-Note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
-
 ## Classes API
 ### yf.Bar(data, options = {})
 * @param [[2d array]] data    
