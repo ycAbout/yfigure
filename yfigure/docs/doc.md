@@ -10,7 +10,7 @@ There are plenty figure libraries, but yfigure aims to provide the simplest but 
 1. Add the YFigure library to your html:  
 `<script src='` ****`<yourpath>`/yfigure.js**** `'></script>`  
 
-2. Use it as normal javascript (write anywhere below 1.):
+2. Use it as normal javascript (write anywhere below 1.):  
 E.g., Add a figure to the html body
  ```
 <script>
@@ -30,40 +30,54 @@ let tech = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103
 let groupBar = new yf.Bar(tech, {location: '#awesomeYFigure1'});
 </script>
 ```
-note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
+Note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
 
 ## Classes API
 ### yf.Bar(data, options = {})
 * @param [[2d array]] data    
     A 2d array in the format of `[[column1Name, column2Name],[Row1Column1Value, Row1Column2Value],[Row2Column1Value, Row2Column2Value]...]`.  
-    Column1 is the category name of the data, column2 is the value
+    Column1 is the category name of the data, column2 is the value.  
+    E.g.: `[["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80]]`
 * @param {object=} options 
-    An optional object contains all figure options in the format of key value pairs `{ option1Name: option1Value, option2Name: option2Value, ...}`.   
+    An optional object contains all figure options in the format of key value pairs `{ option1Name: option1Value, option2Name: option2Value, ...}`.  
+    E.g. `{width:'400', height: '300'}`  
+
 #### Grouped Bar
-* simply include more than two columns in data.
+* simply include more than two columns in data.  
+E.g.,
+```
+let techData = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103, 91, 93], ['3rd', 106, 101, 86], ['4th', 120, 131, 92]]
+```
 ##### Example
 ```
 ```
 #### Simple Bar
-* simply include only two columns in data.
+* simply include only two columns in data.  
+E.g.,
+```
+let techData = [['Quarter', 'APPL'], ['1st', 84],['2nd', 91], ['3rd', 101], ['4th', 131]]
+```
 ##### Example
 ```
 ```
+
 #### Stacked Bar
 * simply include `stacked: true` in options.
 ##### Example
 ```
 ```
+
 #### Horizontal Bar
 * simply include `horizontal: true` in options.
 ##### Example
 ```
 ```
 ### yf.SortableBar(data, options = {})
-* only simple bar is sortable, otherwise the same as bar.
+* the same as the simple bar, but is sortable.
 ##### Example
 ```
 ```
+
 ### yf.Histogram(data, options = {})
 * @param [[2d array]] data    
     A 2d array in the format of `[[column1Name],[Row1Column1Value],[Row2Column1Value]...]`.  
@@ -73,11 +87,13 @@ note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
 ##### Example
 ```
 ```
+
 ### yf.LineDot(data, options = {})
 * @param [[2d array]] data    
     same as bar.
 * @param {object=} options 
     same as bar.   
+
 #### Line Dot
 * by default.
 ##### Example
@@ -88,6 +104,7 @@ note: This library packed part of d3v5 (Copyright 2020 Mike Bostock) into it.
 ##### Example
 ```
 ```
+
 ### yf.Scatter(data, options = {})
 * @param [[2d array]] data    
     same as bar, except first column is numeric.  
