@@ -8,6 +8,7 @@ import HowtoUse from './howtouse';
 function DocIndex() {
   return (
     <aside id='docIndex'>
+      <a className='text-dark' href="#">&#x2191;Top</a>
       <ul>
         <li><a className='text-dark' href="#introduction">Introduction</a></li>
         <li><a className='text-dark' href="#howToUse">How to use</a></li>
