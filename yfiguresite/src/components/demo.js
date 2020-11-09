@@ -6,7 +6,7 @@ function Figure(props) {
     <div id="singleFigure">
       <div id={props.location}>
       </div>
-      <a style={{marginLeft: '1em'}} href={'placeholder'}>codepen</a>
+      <a style={{ marginLeft: '1em' }} href={'placeholder'}>codepen</a>
       <br />
     </div>
   );
@@ -15,8 +15,11 @@ function Figure(props) {
 function DemoNav() {
   return (
     <nav id="demoNav" style={{ marginleft: 0 }} className="navbar navbar-light bg-light">
-      <a className="navbar-brand" href="#">Demo (clickable legend)</a>
+
       <ul className="nav">
+        <li className="nav-item">
+          <a href="#">&#x2191;Demo(Clickable legend)</a>
+        </li>
         <li className="nav-item">
           <a className="nav-link" href="#groupedBar">Grouped Bar</a>
         </li>
@@ -1070,7 +1073,7 @@ class Demo extends Component {
     const scatter = []
 
     for (let i = 1; i < 8; i++) {
-      if (i<5) {
+      if (i < 5) {
         groupedBar.push(<Figure key={'grou' + i} location={'groupedBar' + i} />);
         simpleBar.push(<Figure key={'simp' + i} location={'simpleBar' + i} />);
         stackedBar.push(<Figure key={'stac' + i} location={'stackedBar' + i} />);
@@ -1078,12 +1081,12 @@ class Demo extends Component {
         histogram.push(<Figure key={'hist' + i} location={'histogram' + i} />);
         scatter.push(<Figure key={'scat' + i} location={'scatter' + i} />);
       }
-      if (i<8) {
+      if (i < 8) {
         horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} />);
         lineDot.push(<Figure key={'line' + i} location={'lineDot' + i} />);
       }
-      if (i<7) line.push(<Figure key={'line' + i} location={'line' + i} />);
-      
+      if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} />);
+
       //      groupedBar.push(<div><div key={'grou' + i} id={'groupedBar' + i}></div><button>abcdafserx</button></div>)
       //simpleBar.push(<div key={'simp' + i} id={'simpleBar' + i}></div>)
       //stackedBar.push(<div key={'stac' + i} id={'stackedBar' + i}></div>)
