@@ -13,6 +13,13 @@ class BaseSimpleGroupAxis {
     this._options = options;    //_ does not have any real effect, just visually indicate private variables.
     this._data = data;
     this._brand = 'yfigure';
+    this._getCommonOption = this._getCommonOption.bind(this);  //bind this, not sure whether it is necessary for private methods
+    this._getAxisOption = this._getAxisOption.bind(this);
+    this._validate2dArray = this._validate2dArray.bind(this);
+    this._setDataParameters = this._setDataParameters.bind(this);
+    this._drawAxis = this._drawAxis.bind(this);
+    this._drawTitle = this._drawTitle.bind(this);
+    this.update = this.update.bind(this);
   }
 
   /**

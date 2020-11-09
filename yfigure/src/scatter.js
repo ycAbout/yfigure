@@ -35,6 +35,7 @@ class Scatter extends BaseSimpleGroupAxis {
     typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
+    this._draw= this._draw.bind(this);
     this._draw(this._data, this._options);
   }
 

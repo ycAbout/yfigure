@@ -22,6 +22,7 @@ class SortableBar extends BaseSimpleGroupAxis {
     if (typeof this._options.horizontal !== 'boolean') { throw new Error('Option horizontal need to be a boolean!') }
 
     this._validate2dArray(this._data);
+    this._draw= this._draw.bind(this);
     this._draw(this._data, this._options);
   }
 
