@@ -9,7 +9,13 @@ export default [
   //    file: './dist/yfigure.min.js',
   //    format: 'umd',
   //    name: 'yf',
-  //    plugins: [terser({ output: { preamble: `// Version: ${meta.version} Copyright ${(new Date).getFullYear().toString()} Yalin Chen;` } })]
+  //    plugins: [
+  //      terser({ 
+  //        output: { 
+  //          preamble: `// Version: ${meta.version} Copyright ${(new Date).getFullYear().toString()} Yalin Chen;
+  //          This is a commerical software. You have up to 60 days to evalue it. Please remove it after 60 days if you do not have license.` 
+  //        } 
+  //      })]
   //  }],
   //  plugins: [resolve()]
   //}, 
