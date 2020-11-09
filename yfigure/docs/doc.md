@@ -19,6 +19,7 @@ let dataBar = [["group", "score"], [1, 50], [2, 80], [3, -30], [4, -80], [5, 40]
 let bar1 = new yf.Bar(dataBar, {//key:value options});
 </script>
   ```
+
 3. To add to a speicific location:  
 3a. Add to your html file:  
 `<div id='awesomeYFigure1'></div>`  
@@ -30,6 +31,7 @@ let tech = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103
 let groupBar = new yf.Bar(tech, {location: '#awesomeYFigure1'});
 </script>
 ```
+
 ## Classes API
 ### yf.Bar(data, options = {})
 * @param [[2d array]] data    
