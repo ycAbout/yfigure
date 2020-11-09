@@ -21,7 +21,7 @@ function Nav () {
                 </li>
 
                 <li className="nav-item">
-                  <Link className="nav-link" to="./doc">Doc</Link>
+                  <Link className="nav-link" to="./doc">Documentation</Link>
                 </li>
               </ul>
             </div>

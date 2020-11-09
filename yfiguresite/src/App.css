@@ -2,6 +2,26 @@
   text-align: center;
 }
 
+.docMain {
+  text-align: left;
+  margin-left: 1em;
+  padding: 1em;
+}
+
+#docMajorContent {
+  display: flex;
+}
+
+#docIndex {
+  margin-left: 2em;
+  text-align: left;
+  width: 280px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  border-style: groove;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
