@@ -15,11 +15,6 @@ header {
     top:0;
 }
 
-#importantButtons {
-    position: sticky;
-    top:0;
-}
-
 #singleFigure {
     padding-bottom: 1em;
     margin: 2px;
@@ -37,7 +32,17 @@ main {
 }
 
 aside {
-    width: 25%; 
+    width: 25%;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    overflow: scroll;
+}
+
+#importantButtons {
+    position: sticky;
+    top: 0;
 }
 
 footer {
