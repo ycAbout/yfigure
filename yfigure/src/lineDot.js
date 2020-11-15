@@ -40,7 +40,7 @@ class LineDot extends BaseSimpleGroupAxis {
     typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
-    this._draw= this._draw.bind(this);
+    this._draw = this._draw.bind(this);
     this._draw(this._data, this._options);
   }
 
@@ -183,16 +183,17 @@ class LineDot extends BaseSimpleGroupAxis {
         .attr('width', horizontal ? innerWidth : dataTipBandWidth)
         .attr('y', (element) => horizontal ? xScale(element[xDataIndex]) - dataTipBandWidth / 2 : 0)
         .attr('height', horizontal ? dataTipBandWidth : innerHeight)
-        .on('mouseover', function (element) {
+        .each((element, index) => {
           let datatip = content
             .append('g')
-            .attr('id', 'yfDataPointDisplay999sky999sky999sky');
+            .attr('id', id + 'dataPointDisplay999sky999sky999sky' + index)
+            .attr('display', 'none');
 
           datatip.append("line")
             .attr("x1", horizontal ? 0 : xScale(element[xDataIndex]))
-            .attr("y1", horizontal ? yScale(element[xDataIndex]) : 0)   // +0.5 to line up with tick
+            .attr("y1", horizontal ? xScale(element[xDataIndex]) : 0)   // +0.5 to line up with tick, 
             .attr("x2", horizontal ? innerWidth : xScale(element[xDataIndex]))
-            .attr("y2", horizontal ? yScale(element[xDataIndex]) : innerHeight)
+            .attr("y2", horizontal ? xScale(element[xDataIndex]) : innerHeight)
             .style('stroke', 'black')
             .style('stroke-width', 1)
             .style("stroke-dasharray", '4 2');
@@ -213,9 +214,9 @@ class LineDot extends BaseSimpleGroupAxis {
 
               proposed.remove();
 
-              let midX = horizontal ? xScale(element[i + 1]) : xScale(element[xDataIndex]);
+              let midX = horizontal ? yScale(element[i + 1]) : xScale(element[xDataIndex]);
               let x = midX - proposedWidth / 2;
-              let y = (horizontal ? yScale(element[xDataIndex]) : yScale(element[i + 1])) - dotRadius - 5 - proposedHeight;
+              let y = (horizontal ? xScale(element[xDataIndex]) : yScale(element[i + 1])) - dotRadius - 5 - proposedHeight;
 
               //over left right limit move
               let rightX = x + proposedWidth;
@@ -247,13 +248,15 @@ class LineDot extends BaseSimpleGroupAxis {
                 .attr('x', x + 3)
                 .attr('y', y)
                 .text(text)
-
             }
           }
         })
-        .on('mouseout', function () {
+        .on('mouseover', function (element, index) {
+          d3.select('#' + id + 'dataPointDisplay999sky999sky999sky' + index).attr('display', 'null');
+        })
+        .on('mouseout', function (element, index) {
           this.setAttribute("opacity", 1);
-          d3.select('#yfDataPointDisplay999sky999sky999sky').remove();
+          d3.select('#' + id + 'dataPointDisplay999sky999sky999sky' + index).attr('display', 'none');
         });
 
       if (horizontal) {    // switch xScale and yScale to make axis
