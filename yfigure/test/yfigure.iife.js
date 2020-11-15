@@ -1382,9 +1382,9 @@ var yf = (function (exports, d3) {
   }
 
   /**
-   * A LineDot class for a line with dot graph (y represents continuous value).  
+   * A Line class for a line with dot graph (y represents continuous value).  
    */
-  class LineDot extends BaseSimpleGroupAxis {
+  class Line extends BaseSimpleGroupAxis {
     /**
      * @param {array} data      A 2d array data in the format of `[['columnXName', 'columnY1Name', 'columnY2Name'],['a', n1, n2],['b', n3, n4]]`.  
      * @param {object=} options An optional object contains following key value pairs:
@@ -1396,7 +1396,7 @@ var yf = (function (exports, d3) {
       super(data, options);
 
       //set up graph specific option
-      this._options.dotRadius ? true : this._options.dotRadius = 4;
+      this._options.dotRadius ? true : this._options.dotRadius = 0;
       this._options.horizontal === true ? true : this._options.horizontal = false;
 
       (this._options.legendX || parseInt(this._options.legendX) === 0) ? true : this._options.legendX = 0.18;
@@ -1730,11 +1730,7 @@ var yf = (function (exports, d3) {
             }
           }
         }
-
       }
-
-
-
 
       this._drawTitle(...[svg, width, height, marginLeft, marginTop, frameTop, frameLeft, title, titleFont, titleColor, titleX, titleY, titleRotate]);
 
@@ -2261,7 +2257,7 @@ var yf = (function (exports, d3) {
 
   exports.Bar = Bar;
   exports.Histogram = Histogram;
-  exports.LineDot = LineDot;
+  exports.Line = Line;
   exports.Scatter = Scatter;
   exports.SortableBar = SortableBar;
   exports.author = author;

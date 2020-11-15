@@ -35,7 +35,7 @@ class Scatter extends BaseSimpleGroupAxis {
     typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
-    this._draw= this._draw.bind(this);
+    this._draw = this._draw.bind(this);
     this._draw(this._data, this._options);
   }
 
@@ -170,7 +170,7 @@ class Scatter extends BaseSimpleGroupAxis {
               let midX = currentPosition.x + currentPosition.width / 2;
               let x = midX - proposedWidth / 2;
               let y = (currentPosition.y - 7) - proposedHeight
-              
+
               //over left right limit move
               if (midX + proposedWidth / 2 > innerWidth) x -= midX + proposedWidth / 2 - innerWidth;
               if (x < 0) x += -x;

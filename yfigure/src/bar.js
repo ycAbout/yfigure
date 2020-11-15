@@ -47,7 +47,7 @@ class Bar extends BaseSimpleGroupAxis {
     typeof this._options.legendFont !== 'string' ? makeError(`Option legendFont needs to be a string!`) : true;
 
     this._validate2dArray(this._data);
-    this._draw= this._draw.bind(this);
+    this._draw = this._draw.bind(this);
     this._draw(this._data, this._options);
   }
 
@@ -293,7 +293,7 @@ class Bar extends BaseSimpleGroupAxis {
               let midX = currentPosition.x + currentPosition.width / 2;
               let x = midX - proposedWidth / 2;
               let y = element[i + 1] > 0 ? (currentPosition.y - 7) - proposedHeight : currentPosition.y + currentPosition.height + 7
-              
+
               //over left right limit move
               let baseX = horizontal ? 0 : xScale(element[xDataIndex])
               let rightX = baseX + (midX + proposedWidth / 2);
@@ -304,10 +304,10 @@ class Bar extends BaseSimpleGroupAxis {
               //over top bottom limit move
               let baseY = horizontal ? yScale(element[xDataIndex]) : 0;
               //top
-              if (baseY + y < 0) y+= -(baseY + y) - 10;
+              if (baseY + y < 0) y += -(baseY + y) - 10;
               //bottom
-              if (baseY + y + proposedHeight > innerHeight) y -=  (baseY + y + proposedHeight) - innerHeight -10;
-         
+              if (baseY + y + proposedHeight > innerHeight) y -= (baseY + y + proposedHeight) - innerHeight - 10;
+
               let datatip = content
                 .append('g')
                 .attr('id', 'yfDataPointDisplay999sky999sky999sky')
