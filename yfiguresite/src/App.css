@@ -4,12 +4,26 @@
 
 .docMain {
   text-align: left;
-  margin-left: 1em;
-  padding: 1em;
+}
+
+h2 {
+  margin-top: 1em;
+}
+
+h3 {
+  margin-top: 2em;
+}
+
+h4 {
+  margin-top: 2em;
 }
 
 #docMajorContent {
   display: flex;
+}
+
+#classAPIReference p {
+  padding-left: 1em;
 }
 
 #docIndex {

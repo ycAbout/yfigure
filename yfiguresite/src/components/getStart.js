@@ -13,7 +13,7 @@ function GetStart() {
         </div>
         <hr />
         <h4 className="text-left">
-          <span>Get start </span>
+          <span>Get start in 1 minute</span>
           <span><Link className='text-secondary' to="./doc">(See full doc)</Link></span>
         </h4>
         <HowtoUse />

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import * as yf from 'yfigure'
+import * as yf from 'yfigure';
+
 
 function Figure(props) {
   return (
@@ -18,7 +19,7 @@ function DemoNav() {
 
       <ul className="nav">
         <li className="nav-item">
-          <a href="#">&#x2191;Demo(Clickable legend)</a>
+          <a href="#top">&#x2191;Demo(legend Clickable)</a>
         </li>
         <li className="nav-item">
           <a className="nav-link" href="#groupedBar">Grouped Bar</a>
@@ -39,10 +40,10 @@ function DemoNav() {
           <a className="nav-link" href="#histogram">Histogram</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#lineDot">LineDot</a>
+          <a className="nav-link" href="#line">Line</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#line">Line</a>
+          <a className="nav-link" href="#lineDot">Line Dot</a>
         </li>
         <li className="nav-item">
           <a className="nav-link" href="#scatter">Scatter</a>
@@ -665,155 +666,6 @@ class Demo extends Component {
 
 
 
-    let canadaGdpRate10Years = [['year', 'Canada gdp growth rate'], ["2009", "-2.9"], ["2010", "3.1"], ["2011", "3.1"], ["2012", "1.8"], ["2013", "2.3"],
-    ["2014", "2.9"], ["2015", "0.7"], ["2016", "1.1"], ["2017", "3.0"], ["2018", "1.9"]];
-
-    // example 1  
-    let linedot1 = new yf.LineDot(canadaGdpRate10Years, {
-      location: '#lineDot1',
-      title: 'Canada GDP growth rate past 10 years'
-    });
-
-    let gdpRate = [
-      ['year', 'China', 'US', 'Malaysia', 'Israel'],
-      ['2013', 7.76, 1.68, 4.69, 4.11],
-      ['2014', 7.30, 2.57, 6.01, 3.41],
-      ['2015', 6.90, 2.86, 5.03, 3.04],
-      ['2016', 6.70, 1.49, 4.22, 4.09],
-      ['2017', 6.90, 2.27, 5.90, 3.33],
-      ['2018', 6.50, 2.80, 4.70, 3.50],
-      ['average', 7.01, 2.28, 5.09, 3.58]
-    ]
-
-    // example 2
-    let linedot2 = new yf.LineDot(gdpRate, {
-      location: '#lineDot2',
-      dotRadius: 6,
-      xPadding: 0.4,
-      title: 'GDP growth 2013-2018',
-      yTitle: 'growth rate (%)'
-    });
-
-    let negativeMigration = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
-    ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
-
-    // example 3 
-    let linedot3 = new yf.LineDot(negativeMigration, {
-      location: '#lineDot3',
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
-      legendX: 0.28,
-      legendY: 0.85,
-      legendFont: '14px times',
-      xPadding: 0.2,
-      xTitle: '',
-      frameLeft: 45,
-      yTitle: 'Persons (x1000)',
-      title: 'Net migration over every 5 years'
-
-    });
-
-
-
-    let Saskatoon2010to2019tem = [['Month', 'High temperature (°C)', 'Low temperature (°C)'], ['January', -8, -19], ['February', -9, -20], ['March', 0, -11], ['April', 10, -3],
-    ['May', 19, 4], ['June', 23, 10], ['July', 25, 12], ['August', 24, 10], ['September', 19, 5], ['October', 10, -2], ['November', -2, -11], ['December', -8, -17]]
-
-    let linedot4 = new yf.LineDot(Saskatoon2010to2019tem, {
-      location: '#lineDot4',
-      horizontal: true,
-      title: 'Saskatoon tempreture 2010 to 2019',
-      yTitle: ''
-    });
-
-    let gdpRate2 = [
-      ['year', 'China', 'US', 'Malaysia', 'Israel'],
-      ['2013', 7.76, 1.68, 4.69, 4.11],
-      ['2014', 7.30, 2.57, 6.01, 3.41],
-      ['2015', 6.90, 2.86, 5.03, 3.04],
-      ['2016', 6.70, 1.49, 4.22, 4.09],
-      ['2017', 6.90, 2.27, 5.90, 3.33],
-      ['2018', 6.50, 2.80, 4.70, 3.50],
-      ['average', 7.01, 2.28, 5.09, 3.58]
-    ]
-
-    // example 2
-    let linedot5 = new yf.LineDot(gdpRate2, {
-      location: '#lineDot5',
-      dotRadius: 6,
-      horizontal: true,
-      title: 'GDP growth 2013-2018',
-      yTitle: 'growth rate (%)'
-    });
-
-
-    let negativeMigration2 = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
-    ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
-
-    let linedot6 = new yf.LineDot(negativeMigration, {
-      location: '#lineDot6',
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
-      legendFont: '14px times',
-      horizontal: true,
-      yAxisPosition: ['right'],
-      yTitle: '',
-      frameLeft: 45,
-      xTitle: 'Persons (x1000)',
-      //tickLabelHide: ['bottom 1 3 5 7 9'],
-      xTicks: 6,
-      title: 'Net migration over every 5 years'
-
-    });
-
-
-
-    let RentedExpenditures =
-      [['year', 'NL', 'PEI', 'NS', 'NB', 'QC', 'ON', 'MB', 'SK', 'AB', 'BC', 'YK + NT + NV'],
-      ['2000', 30, 8, 78, 46, 658, 880, 65, 53, 180, 266, 5],
-      ['2001', 33, 8, 82, 47, 791, 1028, 73, 59, 196, 273, 6],
-      ['2002', 34, 8, 82, 56, 871, 1065, 79, 63, 224, 307, 6],
-      ['2003', 35, 9, 90, 61, 978, 1207, 85, 69, 246, 337, 7],
-      ['2004', 41, 10, 104, 72, 1074, 1377, 98, 79, 289, 390, 8],
-      ['2005', 44, 11, 113, 79, 1184, 1507, 108, 87, 316, 429, 9],
-      ['2006', 48, 12, 127, 85, 1280, 1625, 116, 94, 347, 476, 9],
-      ['2007', 50, 12, 130, 93, 1380, 1743, 123, 97, 377, 518, 10],
-      ['2008', 52, 13, 139, 98, 1472, 1836, 134, 104, 397, 556, 10],
-      ['2009', 55, 14, 147, 104, 1550, 1937, 140, 110, 416, 587, 10],
-      ['2010', 56, 14, 147, 101, 1532, 1907, 137, 111, 413, 584, 10],
-      ['2011', 55, 14, 153, 105, 1550, 1971, 141, 115, 437, 621, 13],
-      ['2012', 56, 15, 156, 109, 1609, 2049, 150, 118, 452, 646, 15],
-      ['2013', 57, 15, 159, 111, 1637, 2083, 152, 121, 589, 660, 16],
-      ['2014', 58, 16, 160, 116, 1746, 2305, 160, 136, 527, 726, 16],
-      ['2015', 58, 16, 166, 120, 1789, 2429, 169, 142, 543, 761, 16],
-      ['2016', 57, 16, 181, 120, 1914, 2611, 178, 148, 562, 812, 18],
-      ['2017', 59, 17, 175, 121, 2081, 2662, 191, 158, 573, 885, 18],
-      ['2018', 58, 18, 180, 123, 2179, 2692, 199, 162, 582, 945, 21],
-      ] // https://doi.org/10.25318/3410009501-eng
-
-    // example 3
-    let lineDot7 = new yf.LineDot(RentedExpenditures, {
-      location: '#lineDot7',
-      width: 800,
-      yTitle: "Dollar (million)",
-      yGridDashArray: '10 2',
-      yGridStrokeWidth: 0.2,
-      xPadding: 0.4,
-      legendX: 0.2,
-      frameRight: 40,
-      yAxisPosition: ['right'],
-      yTitlePosition: ['right'],
-      //      axisLongLineRemove: ['bottom'],
-      //      xTickLabelRotate: -20,
-      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
-      backgroundColor: 'rgba(50, 115, 220, 0.1)',
-      title: 'Canada Home Landlord/Tenants-occupied Expenditures'
-    });
-
-    //linedot1.update();
-    //linedot2.update();
-    //linedot3.update();
-    //linedot4.update();
-    //linedot5.update();
-    //linedot6.update();
-
     let ottawaHousePrice = [['year', 'price'],
     //['1956', 13351], ['1957', 14230], ['1958', 15564], ['1959', 16038], ['1960', 16791], ['1961', 16070], ['1962', 15952],
     //['1963', 16549], ['1964', 16563], ['1965', 17056], ['1966', 18004], ['1967', 19476], ['1968', 23329], ['1969', 25652], ['1970', 26532], ['1971', 27808], ['1972', 30576],
@@ -825,9 +677,8 @@ class Demo extends Component {
     ['2019', 465221],]
 
     // example 1  
-    let line1 = new yf.LineDot(ottawaHousePrice, {
+    let line1 = new yf.Line(ottawaHousePrice, {
       location: '#line1',
-      dotRadius: 2,
       lineStrokeWidth: 5,
       frameLeft: 60,
       tickLabelHide: ['bottom 1-4 6-9 11-14 16-19 21-24 26-29 31-35'],
@@ -847,9 +698,8 @@ class Demo extends Component {
     ]
 
     // example 2
-    let line2 = new yf.LineDot(gdpGrowth, {
+    let line2 = new yf.Line(gdpGrowth, {
       location: '#line2',
-      dotRadius: 1,
       title: 'GDP growth rate with average'
     });
 
@@ -877,9 +727,8 @@ class Demo extends Component {
       ] // https://doi.org/10.25318/3410009501-eng
 
     // example 3
-    let line3 = new yf.LineDot(RentedExpenditures1, {
+    let line3 = new yf.Line(RentedExpenditures1, {
       location: '#line3',
-      dotRadius: 1,
       yTitle: "Dollar (million)",
       legendY: 0.2,
       frameRight: 40,
@@ -896,10 +745,9 @@ class Demo extends Component {
 
 
     // example 1  
-    let line4 = new yf.LineDot(ottawaHousePrice, {
+    let line4 = new yf.Line(ottawaHousePrice, {
       location: '#line4',
       horizontal: true,
-      dotRadius: 2,
       lineStrokeWidth: 5,
       xTicks: 6,
       tickLabelHide: ['left 1-4 6-9 11-14 16-19 21-24 26-29 31-35'],
@@ -907,10 +755,9 @@ class Demo extends Component {
     });
 
     // example 2
-    let line5 = new yf.LineDot(gdpGrowth, {
+    let line5 = new yf.Line(gdpGrowth, {
       location: '#line5',
       horizontal: true,
-      dotRadius: 1,
       title: 'GDP growth rate with average'
     });
 
@@ -979,16 +826,171 @@ class Demo extends Component {
     ]
 
     // example 3 
-    let line6 = new yf.LineDot(big3Gdp, {
+    let line6 = new yf.Line(big3Gdp, {
       location: '#line6',
       width: 800,
-      dotRadius: 1,
       title: 'GDP growth rate of superpower since 1960s',
       //tickLabelHide: ['bottom 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 333'],
       //need to be simplified
       tickLabelHide: ['bottom 1 2 3 4 6 7 8 9 11 12 13 14 16 17 18 19 21 22 23 24 26 27 28 29 31 32 33 34 36 37 38 39 41 42 43 44 46 47 48 49 51 52 53 54 56'],
       colors: ['#DA7C30', '#3E9651', '#922428', '#948B3D']
     });
+
+
+    let canadaGdpRate10Years = [['year', 'Canada gdp growth rate'], ["2009", "-2.9"], ["2010", "3.1"], ["2011", "3.1"], ["2012", "1.8"], ["2013", "2.3"],
+    ["2014", "2.9"], ["2015", "0.7"], ["2016", "1.1"], ["2017", "3.0"], ["2018", "1.9"]];
+
+    // example 1  
+    let linedot1 = new yf.Line(canadaGdpRate10Years, {
+      location: '#lineDot1',
+      dotRadius: 4,
+      title: 'Canada GDP growth rate past 10 years'
+    });
+
+    let gdpRate = [
+      ['year', 'China', 'US', 'Malaysia', 'Israel'],
+      ['2013', 7.76, 1.68, 4.69, 4.11],
+      ['2014', 7.30, 2.57, 6.01, 3.41],
+      ['2015', 6.90, 2.86, 5.03, 3.04],
+      ['2016', 6.70, 1.49, 4.22, 4.09],
+      ['2017', 6.90, 2.27, 5.90, 3.33],
+      ['2018', 6.50, 2.80, 4.70, 3.50],
+      ['average', 7.01, 2.28, 5.09, 3.58]
+    ]
+
+    // example 2
+    let linedot2 = new yf.Line(gdpRate, {
+      location: '#lineDot2',
+      dotRadius: 6,
+      xPadding: 0.4,
+      title: 'GDP growth 2013-2018',
+      yTitle: 'growth rate (%)'
+    });
+
+    let negativeMigration = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
+    ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
+
+    // example 3 
+    let linedot3 = new yf.Line(negativeMigration, {
+      location: '#lineDot3',
+      dotRadius: 4,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      legendX: 0.28,
+      legendY: 0.85,
+      legendFont: '14px times',
+      xPadding: 0.2,
+      xTitle: '',
+      frameLeft: 45,
+      yTitle: 'Persons (x1000)',
+      title: 'Net migration over every 5 years'
+
+    });
+
+
+
+    let Saskatoon2010to2019tem = [['Month', 'High temperature (°C)', 'Low temperature (°C)'], ['January', -8, -19], ['February', -9, -20], ['March', 0, -11], ['April', 10, -3],
+    ['May', 19, 4], ['June', 23, 10], ['July', 25, 12], ['August', 24, 10], ['September', 19, 5], ['October', 10, -2], ['November', -2, -11], ['December', -8, -17]]
+
+    let linedot4 = new yf.Line(Saskatoon2010to2019tem, {
+      location: '#lineDot4',
+      dotRadius: 4,
+      horizontal: true,
+      title: 'Saskatoon tempreture 2010 to 2019',
+      yTitle: ''
+    });
+
+    let gdpRate2 = [
+      ['year', 'China', 'US', 'Malaysia', 'Israel'],
+      ['2013', 7.76, 1.68, 4.69, 4.11],
+      ['2014', 7.30, 2.57, 6.01, 3.41],
+      ['2015', 6.90, 2.86, 5.03, 3.04],
+      ['2016', 6.70, 1.49, 4.22, 4.09],
+      ['2017', 6.90, 2.27, 5.90, 3.33],
+      ['2018', 6.50, 2.80, 4.70, 3.50],
+      ['average', 7.01, 2.28, 5.09, 3.58]
+    ]
+
+    // example 2
+    let linedot5 = new yf.Line(gdpRate2, {
+      location: '#lineDot5',
+      dotRadius: 6,
+      horizontal: true,
+      title: 'GDP growth 2013-2018',
+      yTitle: 'growth rate (%)'
+    });
+
+
+    let negativeMigration2 = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
+    ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
+
+    let linedot6 = new yf.Line(negativeMigration, {
+      location: '#lineDot6',
+      dotRadius: 4,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      legendFont: '14px times',
+      horizontal: true,
+      yAxisPosition: ['right'],
+      yTitle: '',
+      frameLeft: 45,
+      xTitle: 'Persons (x1000)',
+      //tickLabelHide: ['bottom 1 3 5 7 9'],
+      xTicks: 6,
+      title: 'Net migration over every 5 years'
+
+    });
+
+
+
+    let RentedExpenditures =
+      [['year', 'NL', 'PEI', 'NS', 'NB', 'QC', 'ON', 'MB', 'SK', 'AB', 'BC', 'YK + NT + NV'],
+      ['2000', 30, 8, 78, 46, 658, 880, 65, 53, 180, 266, 5],
+      ['2001', 33, 8, 82, 47, 791, 1028, 73, 59, 196, 273, 6],
+      ['2002', 34, 8, 82, 56, 871, 1065, 79, 63, 224, 307, 6],
+      ['2003', 35, 9, 90, 61, 978, 1207, 85, 69, 246, 337, 7],
+      ['2004', 41, 10, 104, 72, 1074, 1377, 98, 79, 289, 390, 8],
+      ['2005', 44, 11, 113, 79, 1184, 1507, 108, 87, 316, 429, 9],
+      ['2006', 48, 12, 127, 85, 1280, 1625, 116, 94, 347, 476, 9],
+      ['2007', 50, 12, 130, 93, 1380, 1743, 123, 97, 377, 518, 10],
+      ['2008', 52, 13, 139, 98, 1472, 1836, 134, 104, 397, 556, 10],
+      ['2009', 55, 14, 147, 104, 1550, 1937, 140, 110, 416, 587, 10],
+      ['2010', 56, 14, 147, 101, 1532, 1907, 137, 111, 413, 584, 10],
+      ['2011', 55, 14, 153, 105, 1550, 1971, 141, 115, 437, 621, 13],
+      ['2012', 56, 15, 156, 109, 1609, 2049, 150, 118, 452, 646, 15],
+      ['2013', 57, 15, 159, 111, 1637, 2083, 152, 121, 589, 660, 16],
+      ['2014', 58, 16, 160, 116, 1746, 2305, 160, 136, 527, 726, 16],
+      ['2015', 58, 16, 166, 120, 1789, 2429, 169, 142, 543, 761, 16],
+      ['2016', 57, 16, 181, 120, 1914, 2611, 178, 148, 562, 812, 18],
+      ['2017', 59, 17, 175, 121, 2081, 2662, 191, 158, 573, 885, 18],
+      ['2018', 58, 18, 180, 123, 2179, 2692, 199, 162, 582, 945, 21],
+      ] // https://doi.org/10.25318/3410009501-eng
+
+    // example 3
+    let lineDot7 = new yf.Line(RentedExpenditures, {
+      location: '#lineDot7',
+      dotRadius: 4,
+      width: 800,
+      yTitle: "Dollar (million)",
+      yGridDashArray: '10 2',
+      yGridStrokeWidth: 0.2,
+      xPadding: 0.4,
+      legendX: 0.2,
+      frameRight: 40,
+      yAxisPosition: ['right'],
+      yTitlePosition: ['right'],
+      //      axisLongLineRemove: ['bottom'],
+      //      xTickLabelRotate: -20,
+      colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
+      backgroundColor: 'rgba(50, 115, 220, 0.1)',
+      title: 'Canada Home Landlord/Tenants-occupied Expenditures'
+    });
+
+    //linedot1.update();
+    //linedot2.update();
+    //linedot3.update();
+    //linedot4.update();
+    //linedot5.update();
+    //linedot6.update();
+
 
     let examsMathReading = [['math', 'female reading'], [72, 72], [69, 90], [90, 95], [71, 83], [88, 95], [65, 81], [50, 53], [69, 75], [54, 58], [65, 75], [69, 73], [67, 69], [62, 70], [69, 74], [63, 65],
     [56, 72], [74, 81], [50, 64], [75, 90], [58, 73], [53, 58], [50, 56], [55, 65], [66, 71], [57, 74], [71, 84], [33, 41], [82, 85], [69, 80], [59, 58], [60, 72], [39, 64], [58, 63], [41, 51], [61, 74],
@@ -1067,8 +1069,8 @@ class Demo extends Component {
 
     const sortableBar = []
     const histogram = []
-    const lineDot = []
     const line = []
+    const lineDot = []
     const scatter = []
 
     for (let i = 1; i < 8; i++) {
@@ -1082,19 +1084,9 @@ class Demo extends Component {
       }
       if (i < 8) {
         horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} />);
-        lineDot.push(<Figure key={'line' + i} location={'lineDot' + i} />);
+        lineDot.push(<Figure key={'lineDot' + i} location={'lineDot' + i} />);
       }
       if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} />);
-
-      //      groupedBar.push(<div><div key={'grou' + i} id={'groupedBar' + i}></div><button>abcdafserx</button></div>)
-      //simpleBar.push(<div key={'simp' + i} id={'simpleBar' + i}></div>)
-      //stackedBar.push(<div key={'stac' + i} id={'stackedBar' + i}></div>)
-      //horizontalBar.push(<div key={'hori' + i} id={'horizontalBar' + i}></div>)
-      //sortableBar.push(<div key={'sort' + i} id={'sortableBar' + i}></div>)
-      //histogram.push(<div key={'hist' + i} id={'histogram' + i}></div>)
-      //lineDot.push(<div key={'line' + i} id={'lineDot' + i}></div>)
-      //line.push(<div key={'line' + i} id={'line' + i}></div>)
-      //scatter.push(<div key={'scat' + i} id={'scatter' + i}></div>)
     }
 
     return (
@@ -1125,13 +1117,13 @@ class Demo extends Component {
           <div className="row align-items-center">
             {histogram}
           </div>
-          <div><h4 id="lineDot">LineDot</h4></div>
-          <div className="row align-items-center">
-            {lineDot}
-          </div>
           <div><h4 id="line">Line</h4></div>
           <div className="row align-items-center">
             {line}
+          </div>
+          <div><h4 id="lineDot">Line Dot</h4></div>
+          <div className="row align-items-center">
+            {lineDot}
           </div>
           <div><h4 id="scatter">Scatter</h4></div>
           <div className="row align-items-center">

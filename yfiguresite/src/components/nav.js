@@ -17,7 +17,7 @@ function Nav () {
                   <Link className="nav-link" to="./licence">Buy Licence </Link>
                 </li>
                 <li className="nav-item">
-                <a className="nav-link" href="/getStarted.png" download>Download</a>
+                <a className="nav-link" href="/getStarted.png" download>Download Latest</a>
                 </li>
 
                 <li className="nav-item">
