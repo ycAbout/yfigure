@@ -94,7 +94,7 @@ function DocContent() {
           <p>
             <code>
               let techData = [['Quarter', 'MSFT', 'APPL', 'AMZN'], ['1st', 91, 84, 88],['2nd', 103, 91, 93], ['3rd', 106, 101, 86], ['4th', 120, 131, 92]]
-              <div>let myfigure = new yf.Bar( techData, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.Bar( techData, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
           <h4 id='apiSimpleBar'>- Simple Bar</h4>
@@ -102,7 +102,7 @@ function DocContent() {
           <p>
             <code>
               let techData = [['Quarter', 'APPL'], ['1st', 84],['2nd', 91], ['3rd', 101], ['4th', 131]]
-              <div>let myfigure = new yf.Bar( techData, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.Bar( techData, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
           <h4 id='apiStackedBar'>- Stacked Bar</h4>
@@ -153,7 +153,7 @@ function DocContent() {
           <p>
             <code>
               let techData = [['Company', '1st', '2nd', '3rd'], ['MSFT', 91, 103, 106, 120],['APPL', 84, 91, 101, 131], ['AMZN', 88, 93, 86, 92]]
-              <div>let myfigure = new yf.SortableBar( techData, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.SortableBar( techData, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
 
@@ -198,7 +198,7 @@ function DocContent() {
               [-1.83], [-1.78], [-0.92], [-1.1], [-0.63], [-1.19], [1.18], [0.18], [-1.09], [1.03], [0.48], [-1.11], [0.18], [1.18], [-0.69],
               [-0.17], [1.38], [0.6], [0.31], [-0.53], [2.01], [0.49], [0.01], [0.07], [-0.25], [0.93], [-0.41], [1.54], [-0.36], [-2.4], [-0.65],
               [-0.3], [-1], [1.71], [0.15], [0.3], [-0.47], [0.05], [-0.29], [1.6], [0.76], [-0.16], [-0.37], [0.2], [0.83], [-0.71]]
-              <div>let myfigure = new yf.new yf.Histogram(normalDistribution, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.new yf.Histogram(normalDistribution, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
 
@@ -252,7 +252,7 @@ function DocContent() {
               ['2017', 2.27],
               ['2018', 2.80],
               ]
-            <div>let myfigure = new yf.Line(gdpRate, &#123; //key:value options (optional) &#125;);</div>
+            <div>let myfigure = new yf.Line(gdpRate, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
           <p>
@@ -267,7 +267,7 @@ function DocContent() {
               ['2017', 6.90, 2.27, 5.90, 3.33],
               ['2018', 6.50, 2.80, 4.70, 3.50],
               ]
-              <div>let myfigure = new yf.Line(gdpRate, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.Line(gdpRate, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
 
@@ -329,7 +329,7 @@ function DocContent() {
               [17, 3, 7, 11], [17, -3, 1, 5], [18, 2, 6, 10], [18, -2, 2, 6], [19, 1, 5, 9], [19, -1, 3, 7], [20, 0, 4, 8], [20, 0, 4, 8], [22, 1, 4, 6],
               [24, 2, 4, 4], [26, 3, 4, 2], [28, 4, 4, 0], [30, 5, 4, -1], [32, 6, 4, -2], [34, 7, 4, -3], [36, 8, 4, -4], [38, 9, 4, -5], [40, 10, 4, -6],
               [42, 11, 4, -7], [44, 12, 4, -8], [46, 13, 4, -9], [48, 14, 4, -10], [50, 15, 4, -11],];
-              <div>let myfigure = new yf.Scatter(pseudoScatterData, &#123; //key:value options (optional) &#125;);</div>
+              <div>let myfigure = new yf.Scatter(pseudoScatterData, &#123; /*key:value options (optional)*/ &#125;);</div>
             </code>
           </p>
         </article>

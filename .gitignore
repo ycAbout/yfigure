@@ -23,5 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 yfiguresite/node_modules/*
+yfiguresite/build/*
 yfigure/node_modules/*
 yfigure/test/remoteTest/node_modules/*

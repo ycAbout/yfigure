@@ -10,9 +10,10 @@ function SingleLicence() {
       <div className="card-body">
         <h5 className="card-title">Single Developer Licence</h5>
         <p>Early bird promotion price: </p> 
-        <p className="card-title" >$49 CAD</p>
+        <p>$49 CAD</p>
         <p> Full price: </p>
-        <p className="card-title"> <strike>$99 CAD</strike></p>
+        <p> <strike>$99 CAD</strike></p>
+        <p> Up to a year free update </p>
         <p className="card-text">please email: <a href="mailto:example@tutorialspark.com">yc.about@gmail.com</a> for more information.</p>
       </div>
     </div>)

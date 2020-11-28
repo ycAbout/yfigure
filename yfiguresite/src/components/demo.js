@@ -7,7 +7,7 @@ function Figure(props) {
     <div id="singleFigure">
       <div id={props.location}>
       </div>
-      <a style={{ marginLeft: '1em' }} href={'placeholder'}>codepen</a>
+      <a style={{ marginLeft: '1em' }} target='_blank' rel="noopener noreferrer" href={props.codepenUrl}> try in codepen</a>
       <br />
     </div>
   );
@@ -53,7 +53,6 @@ function DemoNav() {
   );
 }
 
-
 class Demo extends Component {
 
   componentDidMount() {
@@ -64,7 +63,7 @@ class Demo extends Component {
     ['Third', 1062, 1012, 857],
     ['Fourth', 1203, 1305, 916]]
 
-    // example 2
+
     let groupBar1 = new yf.Bar(techCompany2019, {
       location: '#groupedBar1',
       frameLeft: 40,
@@ -110,7 +109,7 @@ class Demo extends Component {
       ['Market cap', 'Microsoft', 'Apple', 'Amazon', 'Alphabet', 'Alibaba', 'Facebook'],
       ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
     ]
-    // example 1
+
     let groupBar3 = new yf.Bar(largestCompanies2020, {
       location: '#groupedBar3',
       frameLeft: 40,
@@ -141,7 +140,7 @@ class Demo extends Component {
       // ['2018', 2.92732272821085,  1.38567356958762,  0.788455875670337],
     ]
 
-    // example 2
+
     let groupBar4 = new yf.Bar(gdpRate2007to2010, {
       location: '#groupedBar4',
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
@@ -161,13 +160,13 @@ class Demo extends Component {
     //bar6.update();
 
 
-    // example 1
-    let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar1 = new yf.Bar(population, { location: '#simpleBar1' });
 
-    // example 2 rotate x tick lables, change layout, font
+    let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
+    let simpleBar1 = new yf.Bar(population, { location: '#simpleBar1' });
+
+
     let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let bar2 = new yf.Bar(population2, {
+    let simpleBar2 = new yf.Bar(population2, {
       location: '#simpleBar2',
       title: 'World Population',
       colors: ['#1f9400', '#1f9400'], // second for negative value
@@ -180,8 +179,8 @@ class Demo extends Component {
     });
 
     let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
-    // example 3 negative data
-    let bar3 = new yf.Bar(Saskatoon2010to2019Low, {
+
+    let simpleBar3 = new yf.Bar(Saskatoon2010to2019Low, {
       location: '#simpleBar3',
       title: 'Saskatoon temprature 2010 to 2019',
       titleY: 0.95,
@@ -196,13 +195,13 @@ class Demo extends Component {
     });
 
 
-    // example 4 change color, bar padding
+
     let canadaBudget = [['year', 'Surplus/deficit (% GDP)'], ['1995', -4.64], ['1996', -3.62], ['1997', -1.02], ['1998', 0.33],
     ['1999', 0.62], ['2000', 1.42], ['2001', 1.94], ['2002', 0.71], ['2003', 0.55], ['2004', 0.73], ['2005', 0.11], ['2006', 0.93],
     ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
     ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
 
-    let bar4 = new yf.Bar(canadaBudget, {
+    let simpleBar4 = new yf.Bar(canadaBudget, {
       location: '#simpleBar4',
       width: 800,
       height: 350,
@@ -227,7 +226,7 @@ class Demo extends Component {
     ['2020/2021', 6705, 1237, 3168, 1554],
     ] // https://doi.org/10.25318/2710000601-eng
 
-    // example 2
+
     let stackedBar1 = new yf.Bar(CanadaSpendScicence, {
       location: '#stackedBar1',
       stacked: true,
@@ -253,7 +252,7 @@ class Demo extends Component {
     ['Nunavut', 34.9, -57.8],
     ['Yukon', 36.5, -63.0]]
 
-    // example 2
+
     let stackedBar2 = new yf.Bar(canadaTemprature, {
       location: '#stackedBar2',
       stacked: true,
@@ -281,7 +280,7 @@ class Demo extends Component {
     ]
 
 
-    // example 2
+
     let stackedBar3 = new yf.Bar(gdp2007to2010, {
       location: '#stackedBar3',
       stacked: true,
@@ -324,7 +323,7 @@ class Demo extends Component {
       ['2018/2019', 93, 47, 347, 241, 712, 6027, 1583, 9930, 4390, 40, 130, 67,],
     ]
 
-    // example 2
+
     let stackedBar4 = new yf.Bar(SaskatchewanMoveOut, {
       location: '#stackedBar4',
       stacked: true,
@@ -341,7 +340,7 @@ class Demo extends Component {
       ["Turkey", 84], ["Iran", 84], ["Germany", 84],
     ]
 
-    // example 2
+
     let horizontalBar1 = new yf.Bar(worldPopulation2020, {
       location: '#horizontalBar1',
       horizontal: true,
@@ -362,7 +361,7 @@ class Demo extends Component {
     ['Germany', 2719], ['India', -2663], ['Indonesia', -495], ['Italy', 745], ['Japan', 358], ['Mexico', -300], ['Saudi Arabia', 675], ['South Africa', 727],
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
-    // example 2
+
     let horizontalBar2 = new yf.Bar(G20NetMigration2012to2017, {
       location: '#horizontalBar2',
       horizontal: true,
@@ -437,7 +436,7 @@ class Demo extends Component {
       //['Nunavut', -289, -218, -262, -281, -407,],
     ];
 
-    // example 2
+
     let horizontalBar5 = new yf.Bar(ontarioMoveOut, {
       location: '#horizontalBar5',
       stacked: true,
@@ -467,7 +466,7 @@ class Demo extends Component {
       //    ['NV', 336, 349, 314, 373, 588],
     ]
 
-    // example 2
+
     let horizontalBar6 = new yf.Bar(ontarioMoveIn, {
       location: '#horizontalBar6',
       stacked: true,
@@ -489,7 +488,7 @@ class Demo extends Component {
     ['Turkey', -40, -50, 1763, 1420], ['United Kingdom', 992, 2189, 1300, 1303], ['United States', 5335, 5429, 4962, 4774]
     ]
 
-    // example 2
+
     let horizontalBar7 = new yf.Bar(G20NetMigration2002to2017, {
       location: '#horizontalBar7',
       stacked: true,
@@ -517,7 +516,7 @@ class Demo extends Component {
     ["France", 66977], ["Germany", 82906], ["India", 1352617], ["Indonesia", 267663], ["Italy", 60422], ["Japan", 126529],
     ["Mexico", 126191], ["Saudi Arabia", 33700], ["South Africa", 57780], ["Turkey", 82320], ["United Kingdom", 66460], ["United States", 326688]]
 
-    // example 1
+
     let sortableBar1 = new yf.SortableBar(G20population2019, {
       location: '#sortableBar1',
       frameLeft: 65,
@@ -540,7 +539,7 @@ class Demo extends Component {
     ['Germany', 2719], ['India', -2663], ['Indonesia', -495], ['Italy', 745], ['Japan', 358], ['Mexico', -300], ['Saudi Arabia', 675], ['South Africa', 727],
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
-    // example 1
+
     let sortableBar2 = new yf.SortableBar(G20Migration2012to2017, {
       location: '#sortableBar2',
       frameLeft: 45,
@@ -558,7 +557,7 @@ class Demo extends Component {
     let withinCanadaMigration2018to2019 = [['provinces', 'person'], ['NL', -4501], ['PEI', 129], ['NS', 3306], ['NB', 606], ['QC', -3049],
     ['ON', 11731], ['MB', -9246], ['SK', -9688], ['AB', 5542], ['BC', 6111], ['YK', -226], ['NT', -598], ['NV', -117]]
 
-    // example 2
+
     let sortableBar3 = new yf.SortableBar(withinCanadaMigration2018to2019, {
       location: '#sortableBar3',
       horizontal: true,
@@ -576,7 +575,7 @@ class Demo extends Component {
     ["Luxembourg", 49], ["Mexico", -300], ["Netherlands", 80], ["New Zealand", 74], ["Norway", 140], ["Poland", -147], ["Portugal", -30], ["Slovak Republic", 7],
     ["Slovenia", 10], ["Spain", 200], ["Sweden", 200], ["Switzerland", 260], ["Turkey", 1420], ["United Kingdom", 1303], ["United States", 4774]]
 
-    // example 3
+
     let sortableBar4 = new yf.SortableBar(OECDMigration2012to2017, {
       location: '#sortableBar4',
       width: 800,
@@ -604,7 +603,7 @@ class Demo extends Component {
     [-0.17], [1.38], [0.6], [0.31], [-0.53], [2.01], [0.49], [0.01], [0.07], [-0.25], [0.93], [-0.41], [1.54], [-0.36], [-2.4], [-0.65],
     [-0.3], [-1], [1.71], [0.15], [0.3], [-0.47], [0.05], [-0.29], [1.6], [0.76], [-0.16], [-0.37], [0.2], [0.83], [-0.71]]
 
-    // example 2 
+
     let histogram1 = new yf.Histogram(normalDistribution, {
       location: '#histogram1',
       nBins: 10,
@@ -628,7 +627,7 @@ class Demo extends Component {
     [11.01], [8.17], [9.49], [11.78], [10.64], [9.14], [10.58], [10.92], [10.67], [11.12], [10.35], [11.51], [10.47], [10.2], [10.53], [10.79],
     [11.73], [8.88], [9.97], [10.05], [8.51], [8.68], [11.18], [10.23], [7.93], [11.66], [9.86], [11.42], [10.48]]
 
-    // example 1  
+
     let histogram2 = new yf.Histogram(normal, { location: '#histogram2' });
 
     let histogram3 = new yf.Histogram(normalDistribution, {
@@ -656,7 +655,7 @@ class Demo extends Component {
       dataHistogram.push(element)
     }
 
-    // example 4 
+
     let histogram4 = new yf.Histogram(dataHistogram, {
       location: '#histogram4',
       width: 800,
@@ -676,7 +675,7 @@ class Demo extends Component {
     ['2010', 327225], ['2011', 343284], ['2012', 351792], ['2013', 357348], ['2014', 361707], ['2015', 367632], ['2016', 371901], ['2017', 392474], ['2018', 407571],
     ['2019', 465221],]
 
-    // example 1  
+
     let line1 = new yf.Line(ottawaHousePrice, {
       location: '#line1',
       lineStrokeWidth: 5,
@@ -697,7 +696,7 @@ class Demo extends Component {
       ['average', 6.28, 3.88, 2.13],
     ]
 
-    // example 2
+
     let line2 = new yf.Line(gdpGrowth, {
       location: '#line2',
       title: 'GDP growth rate with average'
@@ -726,7 +725,7 @@ class Demo extends Component {
       ['2018', 2179, 2692, 582, 945],
       ] // https://doi.org/10.25318/3410009501-eng
 
-    // example 3
+
     let line3 = new yf.Line(RentedExpenditures1, {
       location: '#line3',
       yTitle: "Dollar (million)",
@@ -744,7 +743,7 @@ class Demo extends Component {
 
 
 
-    // example 1  
+
     let line4 = new yf.Line(ottawaHousePrice, {
       location: '#line4',
       horizontal: true,
@@ -754,7 +753,7 @@ class Demo extends Component {
       title: 'Ottawa House Price Since 1980s'
     });
 
-    // example 2
+
     let line5 = new yf.Line(gdpGrowth, {
       location: '#line5',
       horizontal: true,
@@ -825,7 +824,7 @@ class Demo extends Component {
       ['2018', '6.56697385961871', '2.25480434572114', '2.92732272821085'],
     ]
 
-    // example 3 
+
     let line6 = new yf.Line(big3Gdp, {
       location: '#line6',
       width: 800,
@@ -840,7 +839,7 @@ class Demo extends Component {
     let canadaGdpRate10Years = [['year', 'Canada gdp growth rate'], ["2009", "-2.9"], ["2010", "3.1"], ["2011", "3.1"], ["2012", "1.8"], ["2013", "2.3"],
     ["2014", "2.9"], ["2015", "0.7"], ["2016", "1.1"], ["2017", "3.0"], ["2018", "1.9"]];
 
-    // example 1  
+
     let linedot1 = new yf.Line(canadaGdpRate10Years, {
       location: '#lineDot1',
       dotRadius: 4,
@@ -858,7 +857,7 @@ class Demo extends Component {
       ['average', 7.01, 2.28, 5.09, 3.58]
     ]
 
-    // example 2
+
     let linedot2 = new yf.Line(gdpRate, {
       location: '#lineDot2',
       dotRadius: 6,
@@ -870,7 +869,7 @@ class Demo extends Component {
     let negativeMigration = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
     ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
-    // example 3 
+
     let linedot3 = new yf.Line(negativeMigration, {
       location: '#lineDot3',
       dotRadius: 4,
@@ -910,7 +909,7 @@ class Demo extends Component {
       ['average', 7.01, 2.28, 5.09, 3.58]
     ]
 
-    // example 2
+
     let linedot5 = new yf.Line(gdpRate2, {
       location: '#lineDot5',
       dotRadius: 6,
@@ -964,7 +963,7 @@ class Demo extends Component {
       ['2018', 58, 18, 180, 123, 2179, 2692, 199, 162, 582, 945, 21],
       ] // https://doi.org/10.25318/3410009501-eng
 
-    // example 3
+
     let lineDot7 = new yf.Line(RentedExpenditures, {
       location: '#lineDot7',
       dotRadius: 4,
@@ -997,7 +996,7 @@ class Demo extends Component {
     [62, 68], [47, 49], [73, 80], [76, 83], [71, 71], [58, 70], [73, 86], [65, 72], [79, 86], [63, 72], [58, 67], [65, 67], [85, 91], [58, 67], [87, 100,], [52, 76], [70, 64], [77, 89], [51, 58], [99, 100,],
     [75, 85], [78, 82], [51, 63], [55, 69], [79, 92], [88, 93], [87, 95], [51, 49], [75, 81], [59, 66], [76, 72]]
 
-    // example 1  
+
     let scatter1 = new yf.Scatter(examsMathReading, {
       location: '#scatter1',
       dotRadius: 6,
@@ -1015,7 +1014,7 @@ class Demo extends Component {
     [77, 89, 98, 56, 47], [51, 58, 54, 54, 48], [99, 100, 100, 65, 68], [75, 85, 82, 58, 55], [78, 82, 79, 54, 45], [51, 63, 61, 58, 62], [55, 69, 65, 67, 65], [79, 92, 89, 74, 76],
     [88, 93, 93, 62, 66], [87, 95, 86, 68, 72], [51, 49, 51, 71, 67], [75, 81, 84, 71, 68], [59, 66, 67, 68, 61], [76, 72, 71, 52, 46],]
 
-    // example 2 
+
     let scatter2 = new yf.Scatter(exams, {
       location: '#scatter2',
       dotRadius: 3,
@@ -1030,7 +1029,7 @@ class Demo extends Component {
     [33.3, 3.333], [36.7, -0.5556], [35.6, -4.444], [29.4, 9.444], [30.1, 6.666], [41.1, -7.778], [45, -13.888], [37, 0], [48.1, 0.5555], [48.1, -7.222], [43.4, -12.77], [43.3, -10.55],
     [41.2, -10],]
 
-    // example 3 
+
     let scatter3 = new yf.Scatter(latitudeTemperature, {
       location: '#scatter3',
       //dotRadius: 7,
@@ -1049,7 +1048,7 @@ class Demo extends Component {
       [24, 2, 4, 4], [26, 3, 4, 2], [28, 4, 4, 0], [30, 5, 4, -1], [32, 6, 4, -2], [34, 7, 4, -3], [36, 8, 4, -4], [38, 9, 4, -5], [40, 10, 4, -6],
       [42, 11, 4, -7], [44, 12, 4, -8], [46, 13, 4, -9], [48, 14, 4, -10], [50, 15, 4, -11],];
 
-    // example 3
+
     let scatter4 = new yf.Scatter(pseudoScatter, {
       location: '#scatter4',
       width: 800,
@@ -1073,20 +1072,95 @@ class Demo extends Component {
     const lineDot = []
     const scatter = []
 
+    const codepenGroupedBar = ['empty',
+      'https://codepen.io/ycabout/pen/zYBVNJx',
+      'https://codepen.io/ycabout/pen/XWKLpwb',
+      'https://codepen.io/ycabout/pen/gOMNgNz',
+      'https://codepen.io/ycabout/pen/rNLEjXV',
+    ];
+
+    const codepenSimpleBar = ['empty',
+      'https://codepen.io/ycabout/pen/qBNzrWR',
+      'https://codepen.io/ycabout/pen/gOMNmYz',
+      'https://codepen.io/ycabout/pen/NWrZpKe',
+      'https://codepen.io/ycabout/pen/rNLEyNO',
+    ];
+
+    const codepenStackedBar = ['empty',
+      'https://codepen.io/ycabout/pen/yLaBXPK',
+      'https://codepen.io/ycabout/pen/LYRPLOK',
+      'https://codepen.io/ycabout/pen/BaLBZJp',
+      'https://codepen.io/ycabout/pen/eYdORyL',
+      '',
+    ];
+
+    const codepenSortableBar = ['empty',
+      'https://codepen.io/ycabout/pen/YzGKQvy',
+      'https://codepen.io/ycabout/pen/mdrbwKE',
+      'https://codepen.io/ycabout/pen/QWKLgxa',
+      'https://codepen.io/ycabout/pen/poEzwKV',
+
+    ];
+    const codepenHistogram = ['empty',
+      'https://codepen.io/ycabout/pen/NWRKgBa',
+      'https://codepen.io/ycabout/pen/zYKOzLe',
+      'https://codepen.io/ycabout/pen/GRjKEXj',
+      'https://codepen.io/ycabout/pen/yLaBXxE',
+    ];
+
+    const codepenScatter = ['empty',
+      'https://codepen.io/ycabout/pen/LYRPLaE',
+      'https://codepen.io/ycabout/pen/OJRLgqg',
+      'https://codepen.io/ycabout/pen/bGwbRZY',
+      'https://codepen.io/ycabout/pen/KKgPqEe',
+    ];
+
+    const codepenLine = ['empty',
+      'https://codepen.io/ycabout/pen/ExgYXeJ',
+      'https://codepen.io/ycabout/pen/JjRPJag',
+      'https://codepen.io/ycabout/pen/vYXBZVG',
+      'https://codepen.io/ycabout/pen/eYdORPQ',
+      'https://codepen.io/ycabout/pen/wvzweQq',
+      'https://codepen.io/ycabout/pen/rNMBwQo',
+
+    ];
+
+    const codepenHorizontalBar = ['empty',
+      'https://codepen.io/ycabout/pen/ExgYXor',
+      'https://codepen.io/ycabout/pen/VwKZWQY',
+      'https://codepen.io/ycabout/pen/BaLBZYW',
+      'https://codepen.io/ycabout/pen/VwKZWXY',
+      'https://codepen.io/ycabout/pen/rNMBwdq',
+      'https://codepen.io/ycabout/pen/oNzvwdv',
+      'https://codepen.io/ycabout/pen/GRjKEdq',
+    ];
+
+    const codepenLineDot = ['empty',
+      'https://codepen.io/ycabout/pen/zYKOzyX',
+      'https://codepen.io/ycabout/pen/oNzvwmX',
+      'https://codepen.io/ycabout/pen/vYXBZbK',
+      'https://codepen.io/ycabout/pen/GRjKEzr',
+      'https://codepen.io/ycabout/pen/bGwbRzY',
+      'https://codepen.io/ycabout/pen/NWRKgoX',
+      'https://codepen.io/ycabout/pen/poEzwGZ',
+    ];
+
+
+
     for (let i = 1; i < 8; i++) {
       if (i < 5) {
-        groupedBar.push(<Figure key={'grou' + i} location={'groupedBar' + i} />);
-        simpleBar.push(<Figure key={'simp' + i} location={'simpleBar' + i} />);
-        stackedBar.push(<Figure key={'stac' + i} location={'stackedBar' + i} />);
-        sortableBar.push(<Figure key={'sort' + i} location={'sortableBar' + i} />);
-        histogram.push(<Figure key={'hist' + i} location={'histogram' + i} />);
-        scatter.push(<Figure key={'scat' + i} location={'scatter' + i} />);
+        groupedBar.push(<Figure key={'grou' + i} location={'groupedBar' + i} codepenUrl={codepenGroupedBar[i]} />);
+        simpleBar.push(<Figure key={'simp' + i} location={'simpleBar' + i} codepenUrl={codepenSimpleBar[i]} />);
+        stackedBar.push(<Figure key={'stac' + i} location={'stackedBar' + i} codepenUrl={codepenStackedBar[i]} />);
+        sortableBar.push(<Figure key={'sort' + i} location={'sortableBar' + i} codepenUrl={codepenSortableBar[i]} />);
+        histogram.push(<Figure key={'hist' + i} location={'histogram' + i} codepenUrl={codepenHistogram[i]} />);
+        scatter.push(<Figure key={'scat' + i} location={'scatter' + i} codepenUrl={codepenScatter[i]} />);
       }
       if (i < 8) {
-        horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} />);
-        lineDot.push(<Figure key={'lineDot' + i} location={'lineDot' + i} />);
+        horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} codepenUrl={codepenHorizontalBar[i]} />);
+        lineDot.push(<Figure key={'lineDot' + i} location={'lineDot' + i} codepenUrl={codepenLineDot[i]} />);
       }
-      if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} />);
+      if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} codepenUrl={codepenLine[i]}/>);
     }
 
     return (
