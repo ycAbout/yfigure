@@ -26,7 +26,7 @@ let bar2 = new yf.Bar(population2, {
     colors: ['#1f9400', '#1f9400'], // second for negative value
     xAxisPosition: ['bottom', 'top'],
     yAxisPosition: ['left', 'right'],
-    axisLongLineRemove: ['top', 'right'],
+    axisLineRemove: ['top', 'right'],
     xAxisFont: '14px times',
     yAxisFont: '14px times',
     backgroundColor: 'rgb(57,204,204, 0.1)',
@@ -113,6 +113,12 @@ let groupBar2 = new yf.Bar(techCompany2019, {
     //withinGroupPadding: 0.1
 });
 
+groupBar2.update(techCompany2019, {
+    yAxisStrokeWidth: '0'
+})
+
+console.log(groupBar2._options.axisStrokeWidth);
+
 
 let QuebecMoveOut = [
     ["year", "Manitoba", "Saskatchewan", "Alberta", "British Columbia"],
@@ -166,7 +172,7 @@ let groupBar4 = new yf.Bar(gdpRate2007to2010, {
     title: 'GDP Growth During 08 Financial Crisis',
     yTitle: 'Growth rate (%)',
     yAxisPosition: ['left', 'right'],
-    axisLongLineRemove: ['top'],
+    axisLineRemove: ['top'],
     backgroundColor: 'rgba(50, 115, 220, 0.1)',
 });
 
@@ -614,7 +620,7 @@ let canadaGdpRate10Years = [['year', 'Canada gdp growth rate'], ["2009", "-2.9"]
 ["2014", "2.9"], ["2015", "0.7"], ["2016", "1.1"], ["2017", "3.0"], ["2018", "1.9"]];
 
 // example 1  
-let linedot1 = new yf.LineDot(canadaGdpRate10Years, { title: 'Canada GDP growth rate past 10 years' });
+let linedot1 = new yf.Line(canadaGdpRate10Years, { title: 'Canada GDP growth rate past 10 years' });
 
 gdpRate = [
     ['year', 'China', 'US', 'Malaysia', 'Israel'],
@@ -628,7 +634,7 @@ gdpRate = [
 ]
 
 // example 2
-let linedot2 = new yf.LineDot(gdpRate, {
+let linedot2 = new yf.Line(gdpRate, {
     dotRadius: 6,
     xPadding: 0.4,
     title: 'GDP growth 2013-2018',
@@ -639,7 +645,7 @@ let negativeMigration = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -5
 ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
 // example 3 
-let linedot3 = new yf.LineDot(negativeMigration, {
+let linedot3 = new yf.Line(negativeMigration, {
     colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
     legendX: 0.28,
     legendY: 0.85,
@@ -657,7 +663,7 @@ br();
 let Saskatoon2010to2019tem = [['Month', 'High temperature (°C)', 'Low temperature (°C)'], ['January', -8, -19], ['February', -9, -20], ['March', 0, -11], ['April', 10, -3],
 ['May', 19, 4], ['June', 23, 10], ['July', 25, 12], ['August', 24, 10], ['September', 19, 5], ['October', 10, -2], ['November', -2, -11], ['December', -8, -17]]
 
-let linedot4 = new yf.LineDot(Saskatoon2010to2019tem, {
+let linedot4 = new yf.Line(Saskatoon2010to2019tem, {
     horizontal: true,
     title: 'Saskatoon tempreture 2010 to 2019',
     yTitle: ''
@@ -675,7 +681,7 @@ gdpRate2 = [
 ]
 
 // example 2
-let linedot5 = new yf.LineDot(gdpRate2, {
+let linedot5 = new yf.Line(gdpRate2, {
     dotRadius: 6,
     horizontal: true,
     title: 'GDP growth 2013-2018',
@@ -686,7 +692,7 @@ let linedot5 = new yf.LineDot(gdpRate2, {
 let negativeMigration2 = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
 ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
-let linedot6 = new yf.LineDot(negativeMigration, {
+let linedot6 = new yf.Line(negativeMigration, {
     colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
     legendFont: '14px times',
     horizontal: true,
@@ -726,7 +732,7 @@ let RentedExpenditures =
     ] // https://doi.org/10.25318/3410009501-eng
 
 // example 3
-let lineDot5 = new yf.LineDot(RentedExpenditures, {
+let lineDot5 = new yf.Line(RentedExpenditures, {
     width: 800,
     yTitle: "Dollar (million)",
     yGridDashArray: '10 2',
@@ -736,7 +742,7 @@ let lineDot5 = new yf.LineDot(RentedExpenditures, {
     frameRight: 40,
     yAxisPosition: ['right'],
     yTitlePosition: ['right'],
-    //      axisLongLineRemove: ['bottom'],
+    //      axisLineRemove: ['bottom'],
     //      xTickLabelRotate: -20,
     colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
     backgroundColor: 'rgba(50, 115, 220, 0.1)',
@@ -779,7 +785,7 @@ let ottawaHousePrice = [['year', 'price'],
 ['2019', 465221],]
 
 // example 1  
-let line1 = new yf.LineDot(ottawaHousePrice, {
+let line1 = new yf.Line(ottawaHousePrice, {
     dotRadius: 2,
     lineStrokeWidth: 5,
     frameLeft: 60,
@@ -800,7 +806,7 @@ let gdpGrowth = [
 ]
 
 // example 2
-let line2 = new yf.LineDot(gdpGrowth, {
+let line2 = new yf.Line(gdpGrowth, {
     dotRadius: 1,
     title: 'GDP growth rate with average'
 });
@@ -829,7 +835,7 @@ let RentedExpenditures1 =
     ] // https://doi.org/10.25318/3410009501-eng
 
 // example 3
-let line3 = new yf.LineDot(RentedExpenditures1, {
+let line3 = new yf.Line(RentedExpenditures1, {
     dotRadius: 1,
     yTitle: "Dollar (million)",
     legendY: 0.2,
@@ -847,7 +853,7 @@ let line3 = new yf.LineDot(RentedExpenditures1, {
 br();
 
 // example 1  
-let line4 = new yf.LineDot(ottawaHousePrice, {
+let line4 = new yf.Line(ottawaHousePrice, {
     horizontal: true,
     dotRadius: 2,
     lineStrokeWidth: 5,
@@ -857,7 +863,7 @@ let line4 = new yf.LineDot(ottawaHousePrice, {
 });
 
 // example 2
-let line5 = new yf.LineDot(gdpGrowth, {
+let line5 = new yf.Line(gdpGrowth, {
     horizontal: true,
     dotRadius: 1,
     title: 'GDP growth rate with average'
@@ -928,7 +934,7 @@ let big3Gdp = [
 ]
 
 // example 3 
-let line7 = new yf.LineDot(big3Gdp, {
+let line7 = new yf.Line(big3Gdp, {
     width: 800,
     dotRadius: 1,
     title: 'GDP growth rate of superpower since 1960s',

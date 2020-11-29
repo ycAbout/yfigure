@@ -1,6 +1,6 @@
 {
   "name": "yfigure",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "description": "an easy to use data visualization javascript library",
   "main": "main.js",
   "scripts": {

@@ -164,13 +164,8 @@ var yf = (function (exports, d3) {
       let titleRotate = parseInt(options.titleRotate);
 
       let marginTop, marginLeft, marginBottom, marginRight;
-
-      // make margin short cut for all margin
-      if (options.margin || parseInt(options.margin) === 0) {
-        validateNumStr(options.margin, 'margin');
-        marginTop = marginLeft = marginBottom = marginRight = parseInt(options.margin);
-        // any one of the margin is set
-      } else if ((options['marginLeft'] || parseInt(options.marginLeft) === 0)
+      // any one of the margin is set
+      if ((options['marginLeft'] || parseInt(options.marginLeft) === 0)
         || (options['marginTop'] || parseInt(options.marginTop) === 0)
         || (options['marginRight'] || parseInt(options.marginRight) === 0)
         || (options['marginBottom'] || parseInt(options.marginBottom) === 0)
@@ -191,19 +186,17 @@ var yf = (function (exports, d3) {
         marginRight = parseInt(options['marginRight']);
         marginBottom = parseInt(options['marginBottom']);
 
+      } else if (options.margin || parseInt(options.margin) === 0) { // make margin short cut for all margin
+        validateNumStr(options.margin, 'margin');
+        marginTop = marginLeft = marginBottom = marginRight = parseInt(options.margin);
       } else {
         options.margin = 25;
         marginTop = marginLeft = marginBottom = marginRight = options.margin;
       }
 
       let frameTop, frameLeft, frameBottom, frameRight;
-
-      // make frame short cut for all frames
-      if (options.frame || parseInt(options.frame) === 0) {
-        validateNumStr(options.frame, 'frame');
-        frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
-        // any one of the frame is set
-      } else if ((options.frameLeft || parseInt(options.frameLeft) === 0)
+      // any one of the frame is set
+      if ((options.frameLeft || parseInt(options.frameLeft) === 0)
         || (options.frameTop || parseInt(options.frameTop) === 0)
         || (options.frameRight || parseInt(options.frameRight) === 0)
         || (options.frameBottom || parseInt(options.frameBottom) === 0)
@@ -223,6 +216,10 @@ var yf = (function (exports, d3) {
         frameTop = parseInt(options.frameTop);
         frameRight = parseInt(options.frameRight);
         frameBottom = parseInt(options.frameBottom);
+      } else if (options.frame || parseInt(options.frame) === 0) {      // make frame short cut for all frames
+        validateNumStr(options.frame, 'frame');
+        frameTop = frameLeft = frameBottom = frameRight = parseInt(options.frame);
+
       } else {
         options.frame = 30;
         frameTop = frameLeft = frameBottom = frameRight = options.frame;
@@ -266,7 +263,7 @@ var yf = (function (exports, d3) {
       (options.xTickSize || parseFloat(options.xTickSize) === 0) ? true : options.xTickSize = 6;
       (options.yTickSize || parseFloat(options.yTickSize) === 0) ? true : options.yTickSize = 6;
       options.tickLabelHide ? true : options.tickLabelHide = [];
-      options.axisLongLineRemove ? true : options.axisLongLineRemove = [];
+      options.axisLineRemove ? true : options.axisLineRemove = [];
       options.xGridColor ? true : options.xGridColor = '';
       options.xGridDashArray ? true : options.xGridDashArray = '';
       options.xGridStrokeWidth ? true : options.xGridStrokeWidth = 0;
@@ -296,7 +293,7 @@ var yf = (function (exports, d3) {
       validateArray(options.xTitlePosition, 'xTitlePosition');
       validateArray(options.yTitlePosition, 'yTitlePosition');
       validateArray(options.tickLabelHide, 'tickLabelHide');
-      validateArray(options.axisLongLineRemove, 'axisLongLineRemove');
+      validateArray(options.axisLineRemove, 'axisLineRemove');
 
       function validateString(stringToBe, errorString) {
         typeof stringToBe !== 'string' ? makeError(`Option ${errorString} needs to be an string!`) : true;
@@ -337,13 +334,8 @@ var yf = (function (exports, d3) {
       (options.line0 !== true && options.line0 !== false) ? makeError('Option line0 needs to be a boolean!') : true;
 
       let xAxisColor, yAxisColor, xTitleColor, yTitleColor, xTickLabelColor, yTickLabelColor;
-
-      // make axisColor shortcut for all axis related colors
-      if (options.axisColor) {
-        validateString(options.axisColor, 'axisColor');
-        xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
-        // any one of the margin is set
-      } else if (options['xAxisColor'] || options['yAxisColor'] || options['xTitleColor'] || options['yTitleColor'] || options['xTickLabelColor'] || options['yTickLabelColor ']) {
+      // any one of the margin is set
+      if (options['xAxisColor'] || options['yAxisColor'] || options['xTitleColor'] || options['yTitleColor'] || options['xTickLabelColor'] || options['yTickLabelColor ']) {
         options['xAxisColor'] ? true : options['xAxisColor'] = 'black';
         options['yAxisColor'] ? true : options['yAxisColor'] = 'black';
         options['xTitleColor'] ? true : options['xTitleColor'] = 'black';
@@ -366,19 +358,18 @@ var yf = (function (exports, d3) {
         xTickLabelColor = options['xTickLabelColor'];
         yTickLabelColor = options['yTickLabelColor '];
 
-      } else {
+      } else if (options.axisColor) {      // make axisColor shortcut for all axis related colors
+        validateString(options.axisColor, 'axisColor');
+        xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
+      }
+      else {
         options.axisColor = 'black';
         xAxisColor = yAxisColor = xTitleColor = yTitleColor = xTickLabelColor = yTickLabelColor = options.axisColor;
       }
 
-
       let xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth;
-      // make margin short cut for all margin
-      if (options.axisStrokeWidth) {
-        validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
-        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = parseFloat(options.axisStrokeWidth);
-        // any one of the margin is set
-      } else if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
+      // anyone is set
+      if (options.xAxisStrokeWidth || options.yAxisStrokeWidth || options.xTickStrokeWidth || options.yTickStrokeWidth) {
         options.xAxisStrokeWidth ? true : options.xAxisStrokeWidth = 1;
         options.yAxisStrokeWidth ? true : options.yAxisStrokeWidth = 1;
         options.xTickStrokeWidth ? true : options.xTickStrokeWidth = 1;
@@ -394,7 +385,11 @@ var yf = (function (exports, d3) {
         yAxisStrokeWidth = parseFloat(options.yAxisStrokeWidth);
         xTickStrokeWidth = parseFloat(options.xTickStrokeWidth);
         yTickStrokeWidth = parseFloat(options.yTickStrokeWidth);
-      } else {
+      } else if (options.axisStrokeWidth) {       // make axisStrokeWidth short cut for all
+        validateNumStr(options.axisStrokeWidth, 'axisStrokeWidth');
+        xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = parseFloat(options.axisStrokeWidth);
+      }
+      else {
         options.axisStrokeWidth = 1;
         xAxisStrokeWidth = yAxisStrokeWidth = xTickStrokeWidth = yTickStrokeWidth = options.axisStrokeWidth;
       }
@@ -416,7 +411,7 @@ var yf = (function (exports, d3) {
       let xTickSize = parseFloat(options.xTickSize);
       let yTickSize = parseFloat(options.yTickSize);
       let tickLabelHide = options.tickLabelHide;
-      let axisLongLineRemove = options.axisLongLineRemove;
+      let axisLineRemove = options.axisLineRemove;
       let xGridColor = options.xGridColor.toString();
       let xGridDashArray = options.xGridDashArray.toString();
       let yGridColor = options.yGridColor.toString();
@@ -431,7 +426,7 @@ var yf = (function (exports, d3) {
       let line0StrokeWidth = parseFloat(options.line0StrokeWidth);
 
       return [xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-        xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLongLineRemove,
+        xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLineRemove,
         xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
         yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
         line0StrokeWidth, line0DashArray]
@@ -476,7 +471,7 @@ var yf = (function (exports, d3) {
      */
     _drawAxis(...[svg, xScale, yScale, yMin, yMax, xDataName, yDataName, innerWidth, innerHeight, frameTop, frameBottom, frameRight, frameLeft, horizontal,
       xAxisPosition, xAxisPositionSet, yAxisPosition, yAxisPositionSet, xTitlePosition, xTitlePositionSet, yTitlePosition, yTitlePositionSet,
-      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLongLineRemove,
+      xTitle, yTitle, xAxisFont, yAxisFont, xTitleFont, yTitleFont, xTickLabelRotate, xTicks, yTicks, xTickSize, yTickSize, tickLabelHide, axisLineRemove,
       xGridColor, xGridDashArray, xGridStrokeWidth, yGridColor, yGridDashArray, yGridStrokeWidth, line0, xAxisColor, yAxisColor, xTitleColor,
       yTitleColor, xTickLabelColor, yTickLabelColor, xAxisStrokeWidth, yAxisStrokeWidth, xTickStrokeWidth, yTickStrokeWidth, line0Stroke,
       line0StrokeWidth, line0DashArray]) {
@@ -559,7 +554,7 @@ var yf = (function (exports, d3) {
           });
         }
 
-        if (axisLongLineRemove.includes(xAxisPosition[i])) {
+        if (axisLineRemove.includes(xAxisPosition[i])) {
           xAxis
             .select("path")
             .remove();
@@ -621,7 +616,7 @@ var yf = (function (exports, d3) {
         }
 
 
-        if (axisLongLineRemove.includes(yAxisPosition[i])) {
+        if (axisLineRemove.includes(yAxisPosition[i])) {
           yAxis
             .select("path")
             .remove();
