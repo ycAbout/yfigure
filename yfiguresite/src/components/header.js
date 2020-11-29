@@ -6,7 +6,7 @@ function Header () {
         <div className="row align-items-center">
           <div className="col-sm-6">
             <h2 >YFigure</h2>
-            <p>current version: 1.0.0 beta</p>
+            <p>current version: 1.0.0</p>
             <h5>An easier to use Javascript data visualization library</h5>
           </div>
           <div className="col-sm-6" >

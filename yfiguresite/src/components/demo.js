@@ -151,7 +151,6 @@ class Demo extends Component {
       title: 'GDP Growth During 08 Financial Crisis',
       yTitle: 'Growth rate (%)',
       yAxisPosition: ['left', 'right'],
-      axisLongLineRemove: ['top'],
       backgroundColor: 'rgba(50, 115, 220, 0.1)',
     });
 
@@ -172,7 +171,7 @@ class Demo extends Component {
       colors: ['#1f9400', '#1f9400'], // second for negative value
       xAxisPosition: ['bottom', 'top'],
       yAxisPosition: ['left', 'right'],
-      axisLongLineRemove: ['top', 'right'],
+      axisLineRemove: ['top', 'right'],
       xAxisFont: '14px times',
       yAxisFont: '14px times',
       backgroundColor: 'rgb(57,204,204, 0.1)',
@@ -976,7 +975,6 @@ class Demo extends Component {
       frameRight: 40,
       yAxisPosition: ['right'],
       yTitlePosition: ['right'],
-      //      axisLongLineRemove: ['bottom'],
       //      xTickLabelRotate: -20,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
       backgroundColor: 'rgba(50, 115, 220, 0.1)',

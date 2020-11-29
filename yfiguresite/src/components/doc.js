@@ -351,12 +351,12 @@ function DocContent() {
             <tbody>
               <tr><td>width</td><td>400</td><td> Sets width of the svg</td></tr>
               <tr><td>height</td><td>300</td><td> Sets height of the svg</td></tr>
-              <tr><td>margin</td><td>25</td><td>Sets all the margin properties in one declaration, overrides individual margin settings.</td></tr>
+              <tr><td>margin</td><td>25</td><td>Sets all the margin properties in one declaration, individual margin settings override it.</td></tr>
               <tr><td>marginLeft</td><td>25</td><td>Sets inside margin</td></tr>
               <tr><td>marginTop</td><td>25</td><td>Sets inside margin</td></tr>
               <tr><td>marginRight</td><td>25</td><td>Sets inside margin</td></tr>
               <tr><td>marginBottom</td><td>25</td><td>Sets inside margin</td></tr>
-              <tr><td>frame</td><td>25</td><td>Sets all the frame properties in one declaration, overrides individual frame settings. frame is to hold axises.</td></tr>
+              <tr><td>frame</td><td>25</td><td>Sets all the frame properties in one declaration, individual frame settings override it. frame is to hold axises.</td></tr>
               <tr><td>frameLeft</td><td>25</td><td>Sets inside frame</td></tr>
               <tr><td>frameTop</td><td>25</td><td>Sets inside frame</td></tr>
               <tr><td>frameRight</td><td>25</td><td>Sets inside frame</td></tr>
@@ -406,20 +406,20 @@ function DocContent() {
               <tr><td>yTicks</td><td>null</td><td>Sets axis tick number  // approximate</td></tr>
               <tr><td>xTickSize</td><td>6</td><td>? Sets axis tick size, negative number changes direction</td></tr>
               <tr><td>yTickSize</td><td>6</td><td>? Sets axis tick size, negative number changes direction</td></tr>
-              <tr><td>axisColor</td><td>''</td><td>Sets axises (and ticks), labels, and titles color in one declaration, overrides individual settings.</td></tr>
+              <tr><td>axisColor</td><td>''</td><td>Sets axises (and ticks), labels, and titles color in one declaration, individual settings override it.</td></tr>
               <tr><td>xAxisColor</td><td>'black'</td><td>Set individual color</td></tr>
               <tr><td>yAxisColor</td><td>'black'</td><td>Set individual color</td></tr>
               <tr><td>xTitleColor</td><td>'black'</td><td>Set individual color</td></tr>
               <tr><td>yTitleColor</td><td>'black'</td><td>Set individual color</td></tr>
               <tr><td>xTickLabelColor</td><td>'black'</td><td>Set individual color</td></tr>
               <tr><td>yTickLabelColor</td><td>'black'</td><td>Set individual color</td></tr>
-              <tr><td>axisStrokeWidth</td><td>1</td><td>Sets axis (and ticks) line width in one declaration, overrides individual settings.</td></tr>
+              <tr><td>axisStrokeWidth</td><td>1</td><td>Sets axis (and ticks) line width in one declaration, individual settings override it.</td></tr>
               <tr><td>xAxisStrokeWidth</td><td>1</td><td>Sets individual line width</td></tr>
               <tr><td>yAxisStrokeWidth</td><td>1</td><td>Sets individual line width</td></tr>
               <tr><td>xTickStrokeWidth</td><td>1</td><td>Sets individual line width</td></tr>
               <tr><td>yTickStrokeWidth</td><td>1</td><td>Sets individual line width</td></tr>
               <tr><td>tickLabelHide</td><td>[]</td><td>Sets which axis tick label to hide // example values`['top 0 2 4', 'bottom 1 3 5', 'left 0 2 4', 'right 1 3 5']`</td></tr>
-              <tr><td>axisLongLineRemove</td><td>[]</td><td>Sets which axis long line to removal // possible values`['top', 'bottom', 'left', 'right']`</td></tr>
+              <tr><td>axisLineRemove</td><td>[]</td><td>Sets which axis line to be removed, keep ticks // possible values`['top', 'bottom', 'left', 'right']`</td></tr>
               <tr><td>xTickLabelRotate</td><td>0</td><td>Sets x axis tick label rotating // needs to between (-90 to 90)</td></tr>
               <tr><td>xGridColor</td><td>''</td><td>Sets the x grid line color</td></tr>
               <tr><td>xGridDashArray</td><td>''</td><td>Sets the x grid line properties  // example values `'4 1'`</td></tr>
