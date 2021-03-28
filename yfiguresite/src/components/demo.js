@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import * as yf from 'yfigure';
-
 
 function Figure(props) {
   return (
@@ -64,7 +62,7 @@ class Demo extends Component {
     ['Fourth', 1203, 1305, 916]]
 
 
-    let groupBar1 = new yf.Bar(techCompany2019, {
+    let groupBar1 = new window.yf.Bar(techCompany2019, {
       location: '#groupedBar1',
       frameLeft: 40,
       title: '2019 Microsoft Apple Amazon',
@@ -87,7 +85,7 @@ class Demo extends Component {
       ["2018/2019", -341, -289, -2818, -3143],
     ]
 
-    let groupBar2 = new yf.Bar(QuebecMoveOut, {
+    let groupBar2 = new window.yf.Bar(QuebecMoveOut, {
       location: '#groupedBar2',
       yTitle: "Number of Quebecers moving",
       //yGridDashArray: '4 2',
@@ -110,7 +108,7 @@ class Demo extends Component {
       ['2020 First quarter', 1200, 1113, 971, 799, 522, 475]
     ]
 
-    let groupBar3 = new yf.Bar(largestCompanies2020, {
+    let groupBar3 = new window.yf.Bar(largestCompanies2020, {
       location: '#groupedBar3',
       frameLeft: 40,
       xPadding: 0.01,
@@ -141,7 +139,7 @@ class Demo extends Component {
     ]
 
 
-    let groupBar4 = new yf.Bar(gdpRate2007to2010, {
+    let groupBar4 = new window.yf.Bar(gdpRate2007to2010, {
       location: '#groupedBar4',
       colors: ['#DA7C30', '#3E9651', '#6B4C9A'],
       width: 800,
@@ -161,11 +159,11 @@ class Demo extends Component {
 
 
     let population = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let simpleBar1 = new yf.Bar(population, { location: '#simpleBar1' });
+    let simpleBar1 = new window.yf.Bar(population, { location: '#simpleBar1' });
 
 
     let population2 = [['Country', 'Population (million)'], ["UK", 68], ["Japan", 126], ["Germany", 84], ["France", 65], ["Italy", 60]]
-    let simpleBar2 = new yf.Bar(population2, {
+    let simpleBar2 = new window.yf.Bar(population2, {
       location: '#simpleBar2',
       title: 'World Population',
       colors: ['#1f9400', '#1f9400'], // second for negative value
@@ -179,7 +177,7 @@ class Demo extends Component {
 
     let Saskatoon2010to2019Low = [['Month', 'Low temperature (°C)'], ['November', -11], ['December', -17], ['January', -19], ['February', -20], ['March', -11]]
 
-    let simpleBar3 = new yf.Bar(Saskatoon2010to2019Low, {
+    let simpleBar3 = new window.yf.Bar(Saskatoon2010to2019Low, {
       location: '#simpleBar3',
       title: 'Saskatoon temprature 2010 to 2019',
       titleY: 0.95,
@@ -200,7 +198,7 @@ class Demo extends Component {
     ['2007', 0.92], ['2008', 0.61], ['2009', -0.55], ['2010', -3.59], ['2011', -2.10], ['2012', -1.58], ['2013', -1.17], ['2014', -0.42],
     ['2015', -0.03], ['2016', -0.14], ['2017', -0.93], ['2018', -0.89], ['2019', -0.63]]
 
-    let simpleBar4 = new yf.Bar(canadaBudget, {
+    let simpleBar4 = new window.yf.Bar(canadaBudget, {
       location: '#simpleBar4',
       width: 800,
       height: 350,
@@ -226,7 +224,7 @@ class Demo extends Component {
     ] // https://doi.org/10.25318/2710000601-eng
 
 
-    let stackedBar1 = new yf.Bar(CanadaSpendScicence, {
+    let stackedBar1 = new window.yf.Bar(CanadaSpendScicence, {
       location: '#stackedBar1',
       stacked: true,
       frameLeft: 45,
@@ -252,7 +250,7 @@ class Demo extends Component {
     ['Yukon', 36.5, -63.0]]
 
 
-    let stackedBar2 = new yf.Bar(canadaTemprature, {
+    let stackedBar2 = new window.yf.Bar(canadaTemprature, {
       location: '#stackedBar2',
       stacked: true,
       legendX: 0.88,
@@ -280,7 +278,7 @@ class Demo extends Component {
 
 
 
-    let stackedBar3 = new yf.Bar(gdp2007to2010, {
+    let stackedBar3 = new window.yf.Bar(gdp2007to2010, {
       location: '#stackedBar3',
       stacked: true,
       frameLeft: 45,
@@ -323,7 +321,7 @@ class Demo extends Component {
     ]
 
 
-    let stackedBar4 = new yf.Bar(SaskatchewanMoveOut, {
+    let stackedBar4 = new window.yf.Bar(SaskatchewanMoveOut, {
       location: '#stackedBar4',
       stacked: true,
       width: 800,
@@ -340,7 +338,7 @@ class Demo extends Component {
     ]
 
 
-    let horizontalBar1 = new yf.Bar(worldPopulation2020, {
+    let horizontalBar1 = new window.yf.Bar(worldPopulation2020, {
       location: '#horizontalBar1',
       horizontal: true,
       //  height: 400,
@@ -361,7 +359,7 @@ class Demo extends Component {
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
 
-    let horizontalBar2 = new yf.Bar(G20NetMigration2012to2017, {
+    let horizontalBar2 = new window.yf.Bar(G20NetMigration2012to2017, {
       location: '#horizontalBar2',
       horizontal: true,
       yAxisPosition: ['right'],
@@ -386,7 +384,7 @@ class Demo extends Component {
     ['British Columbia', 1362, 1471, 1561],
     ]  // https://doi.org/10.25318/3410009501-eng
 
-    let horizontalBar3 = new yf.Bar(OwnerOccupiedExpenditures3, {
+    let horizontalBar3 = new window.yf.Bar(OwnerOccupiedExpenditures3, {
       location: '#horizontalBar3',
       horizontal: true,
       scaleStart: 500,
@@ -408,7 +406,7 @@ class Demo extends Component {
 
 
 
-    let horizontalBar4 = new yf.Bar(netMigration2002to2017, {
+    let horizontalBar4 = new window.yf.Bar(netMigration2002to2017, {
       location: '#horizontalBar4',
       horizontal: true,
       scaleStart: 500,
@@ -436,7 +434,7 @@ class Demo extends Component {
     ];
 
 
-    let horizontalBar5 = new yf.Bar(ontarioMoveOut, {
+    let horizontalBar5 = new window.yf.Bar(ontarioMoveOut, {
       location: '#horizontalBar5',
       stacked: true,
       horizontal: true,
@@ -466,7 +464,7 @@ class Demo extends Component {
     ]
 
 
-    let horizontalBar6 = new yf.Bar(ontarioMoveIn, {
+    let horizontalBar6 = new window.yf.Bar(ontarioMoveIn, {
       location: '#horizontalBar6',
       stacked: true,
       horizontal: true,
@@ -488,7 +486,7 @@ class Demo extends Component {
     ]
 
 
-    let horizontalBar7 = new yf.Bar(G20NetMigration2002to2017, {
+    let horizontalBar7 = new window.yf.Bar(G20NetMigration2002to2017, {
       location: '#horizontalBar7',
       stacked: true,
       horizontal: true,
@@ -516,7 +514,7 @@ class Demo extends Component {
     ["Mexico", 126191], ["Saudi Arabia", 33700], ["South Africa", 57780], ["Turkey", 82320], ["United Kingdom", 66460], ["United States", 326688]]
 
 
-    let sortableBar1 = new yf.SortableBar(G20population2019, {
+    let sortableBar1 = new window.yf.SortableBar(G20population2019, {
       location: '#sortableBar1',
       frameLeft: 65,
       xTitle: '',
@@ -539,7 +537,7 @@ class Demo extends Component {
     ['Turkey', 1420], ['United Kingdom', 1303], ['United States', 4774]]
 
 
-    let sortableBar2 = new yf.SortableBar(G20Migration2012to2017, {
+    let sortableBar2 = new window.yf.SortableBar(G20Migration2012to2017, {
       location: '#sortableBar2',
       frameLeft: 45,
       xAxisPosition: ['top'],
@@ -557,7 +555,7 @@ class Demo extends Component {
     ['ON', 11731], ['MB', -9246], ['SK', -9688], ['AB', 5542], ['BC', 6111], ['YK', -226], ['NT', -598], ['NV', -117]]
 
 
-    let sortableBar3 = new yf.SortableBar(withinCanadaMigration2018to2019, {
+    let sortableBar3 = new window.yf.SortableBar(withinCanadaMigration2018to2019, {
       location: '#sortableBar3',
       horizontal: true,
       title: 'Within Canada Migration 2018-2019',
@@ -575,7 +573,7 @@ class Demo extends Component {
     ["Slovenia", 10], ["Spain", 200], ["Sweden", 200], ["Switzerland", 260], ["Turkey", 1420], ["United Kingdom", 1303], ["United States", 4774]]
 
 
-    let sortableBar4 = new yf.SortableBar(OECDMigration2012to2017, {
+    let sortableBar4 = new window.yf.SortableBar(OECDMigration2012to2017, {
       location: '#sortableBar4',
       width: 800,
       frameLeft: 45,
@@ -603,7 +601,7 @@ class Demo extends Component {
     [-0.3], [-1], [1.71], [0.15], [0.3], [-0.47], [0.05], [-0.29], [1.6], [0.76], [-0.16], [-0.37], [0.2], [0.83], [-0.71]]
 
 
-    let histogram1 = new yf.Histogram(normalDistribution, {
+    let histogram1 = new window.yf.Histogram(normalDistribution, {
       location: '#histogram1',
       nBins: 10,
       colors: ['green'],
@@ -627,9 +625,9 @@ class Demo extends Component {
     [11.73], [8.88], [9.97], [10.05], [8.51], [8.68], [11.18], [10.23], [7.93], [11.66], [9.86], [11.42], [10.48]]
 
 
-    let histogram2 = new yf.Histogram(normal, { location: '#histogram2' });
+    let histogram2 = new window.yf.Histogram(normal, { location: '#histogram2' });
 
-    let histogram3 = new yf.Histogram(normalDistribution, {
+    let histogram3 = new window.yf.Histogram(normalDistribution, {
       location: '#histogram3',
       nBins: 10,
       horizontal: true,
@@ -655,7 +653,7 @@ class Demo extends Component {
     }
 
 
-    let histogram4 = new yf.Histogram(dataHistogram, {
+    let histogram4 = new window.yf.Histogram(dataHistogram, {
       location: '#histogram4',
       width: 800,
       nBins: 50,
@@ -675,7 +673,7 @@ class Demo extends Component {
     ['2019', 465221],]
 
 
-    let line1 = new yf.Line(ottawaHousePrice, {
+    let line1 = new window.yf.Line(ottawaHousePrice, {
       location: '#line1',
       lineStrokeWidth: 5,
       frameLeft: 60,
@@ -696,7 +694,7 @@ class Demo extends Component {
     ]
 
 
-    let line2 = new yf.Line(gdpGrowth, {
+    let line2 = new window.yf.Line(gdpGrowth, {
       location: '#line2',
       title: 'GDP growth rate with average'
     });
@@ -725,7 +723,7 @@ class Demo extends Component {
       ] // https://doi.org/10.25318/3410009501-eng
 
 
-    let line3 = new yf.Line(RentedExpenditures1, {
+    let line3 = new window.yf.Line(RentedExpenditures1, {
       location: '#line3',
       yTitle: "Dollar (million)",
       legendY: 0.2,
@@ -743,7 +741,7 @@ class Demo extends Component {
 
 
 
-    let line4 = new yf.Line(ottawaHousePrice, {
+    let line4 = new window.yf.Line(ottawaHousePrice, {
       location: '#line4',
       horizontal: true,
       lineStrokeWidth: 5,
@@ -753,7 +751,7 @@ class Demo extends Component {
     });
 
 
-    let line5 = new yf.Line(gdpGrowth, {
+    let line5 = new window.yf.Line(gdpGrowth, {
       location: '#line5',
       horizontal: true,
       title: 'GDP growth rate with average'
@@ -824,7 +822,7 @@ class Demo extends Component {
     ]
 
 
-    let line6 = new yf.Line(big3Gdp, {
+    let line6 = new window.yf.Line(big3Gdp, {
       location: '#line6',
       width: 800,
       title: 'GDP growth rate of superpower since 1960s',
@@ -839,7 +837,7 @@ class Demo extends Component {
     ["2014", "2.9"], ["2015", "0.7"], ["2016", "1.1"], ["2017", "3.0"], ["2018", "1.9"]];
 
 
-    let linedot1 = new yf.Line(canadaGdpRate10Years, {
+    let linedot1 = new window.yf.Line(canadaGdpRate10Years, {
       location: '#lineDot1',
       dotRadius: 4,
       title: 'Canada GDP growth rate past 10 years'
@@ -857,7 +855,7 @@ class Demo extends Component {
     ]
 
 
-    let linedot2 = new yf.Line(gdpRate, {
+    let linedot2 = new window.yf.Line(gdpRate, {
       location: '#lineDot2',
       dotRadius: 6,
       xPadding: 0.4,
@@ -869,7 +867,7 @@ class Demo extends Component {
     ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
 
-    let linedot3 = new yf.Line(negativeMigration, {
+    let linedot3 = new window.yf.Line(negativeMigration, {
       location: '#lineDot3',
       dotRadius: 4,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
@@ -889,7 +887,7 @@ class Demo extends Component {
     let Saskatoon2010to2019tem = [['Month', 'High temperature (°C)', 'Low temperature (°C)'], ['January', -8, -19], ['February', -9, -20], ['March', 0, -11], ['April', 10, -3],
     ['May', 19, 4], ['June', 23, 10], ['July', 25, 12], ['August', 24, 10], ['September', 19, 5], ['October', 10, -2], ['November', -2, -11], ['December', -8, -17]]
 
-    let linedot4 = new yf.Line(Saskatoon2010to2019tem, {
+    let linedot4 = new window.yf.Line(Saskatoon2010to2019tem, {
       location: '#lineDot4',
       dotRadius: 4,
       horizontal: true,
@@ -909,7 +907,7 @@ class Demo extends Component {
     ]
 
 
-    let linedot5 = new yf.Line(gdpRate2, {
+    let linedot5 = new window.yf.Line(gdpRate2, {
       location: '#lineDot5',
       dotRadius: 6,
       horizontal: true,
@@ -921,7 +919,7 @@ class Demo extends Component {
     let negativeMigration2 = [['year', 'China', 'India', 'Mexico'], ['1992', -780, -553, -2019], ['1997', -383, -683, -2296], ['2002', -1966, -1889, -2206],
     ['2007', -2178, -2656, -562], ['2012', -1552, -2350, -422], ['2017', -1742, -2663, -300]];
 
-    let linedot6 = new yf.Line(negativeMigration, {
+    let linedot6 = new window.yf.Line(negativeMigration, {
       location: '#lineDot6',
       dotRadius: 4,
       colors: ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D'],
@@ -963,7 +961,7 @@ class Demo extends Component {
       ] // https://doi.org/10.25318/3410009501-eng
 
 
-    let lineDot7 = new yf.Line(RentedExpenditures, {
+    let lineDot7 = new window.yf.Line(RentedExpenditures, {
       location: '#lineDot7',
       dotRadius: 4,
       width: 800,
@@ -995,7 +993,7 @@ class Demo extends Component {
     [75, 85], [78, 82], [51, 63], [55, 69], [79, 92], [88, 93], [87, 95], [51, 49], [75, 81], [59, 66], [76, 72]]
 
 
-    let scatter1 = new yf.Scatter(examsMathReading, {
+    let scatter1 = new window.yf.Scatter(examsMathReading, {
       location: '#scatter1',
       dotRadius: 6,
       title: 'Math and reading score'
@@ -1013,7 +1011,7 @@ class Demo extends Component {
     [88, 93, 93, 62, 66], [87, 95, 86, 68, 72], [51, 49, 51, 71, 67], [75, 81, 84, 71, 68], [59, 66, 67, 68, 61], [76, 72, 71, 52, 46],]
 
 
-    let scatter2 = new yf.Scatter(exams, {
+    let scatter2 = new window.yf.Scatter(exams, {
       location: '#scatter2',
       dotRadius: 3,
       title: 'Math, reading, and writing (pseudo data)'
@@ -1028,7 +1026,7 @@ class Demo extends Component {
     [41.2, -10],]
 
 
-    let scatter3 = new yf.Scatter(latitudeTemperature, {
+    let scatter3 = new window.yf.Scatter(latitudeTemperature, {
       location: '#scatter3',
       //dotRadius: 7,
       colors: ['#948B3D'],
@@ -1047,7 +1045,7 @@ class Demo extends Component {
       [42, 11, 4, -7], [44, 12, 4, -8], [46, 13, 4, -9], [48, 14, 4, -10], [50, 15, 4, -11],];
 
 
-    let scatter4 = new yf.Scatter(pseudoScatter, {
+    let scatter4 = new window.yf.Scatter(pseudoScatter, {
       location: '#scatter4',
       width: 800,
       //dotRadius: 3,
@@ -1158,11 +1156,12 @@ class Demo extends Component {
         horizontalBar.push(<Figure key={'hori' + i} location={'horizontalBar' + i} codepenUrl={codepenHorizontalBar[i]} />);
         lineDot.push(<Figure key={'lineDot' + i} location={'lineDot' + i} codepenUrl={codepenLineDot[i]} />);
       }
-      if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} codepenUrl={codepenLine[i]}/>);
+      if (i < 7) line.push(<Figure key={'line' + i} location={'line' + i} codepenUrl={codepenLine[i]} />);
     }
 
     return (
       <div className='text-left'>
+        <div><a href="https://moving-canada.web.app/"><mark>New: </mark> Canada moving trend | Discover the best province in Canada</a></div>
         <DemoNav />
         <div data-spy="scroll" data-target="#demoNav" data-offset="0">
           <div><h4 id="groupedBar">Grouped Bar</h4></div>

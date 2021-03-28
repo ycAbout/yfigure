@@ -10,8 +10,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.0",
-    "yfigure": "file:../yfigure"
+    "react-scripts": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,6 +34,6 @@
     ]
   },
   "devDependencies": {
-    "firebase-tools": "^8.16.2"
+    "firebase-tools": "^9.8.0"
   }
 }
