@@ -13,7 +13,7 @@ export default [
         terser({ 
           output: { 
             preamble: `// Version: ${meta.version} Copyright ${(new Date).getFullYear().toString()} Yalin Chen;
-// This is a dual license (GPL and commerical) software. You are free to use it for non-profit purpose. If you want to use if for profit, please buy a license.
+// This is a dual license (GPL and commercial) software. You are free to use it for non-profit purpose. If you want to use if for profit, please buy a license.
 ` 
           } 
         })]
